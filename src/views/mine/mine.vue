@@ -108,6 +108,8 @@
           }).then(action => {
             if (action === "confirm") {
               this.$router.push("/mine/bind");
+            }else{
+              this.$router.push("/mine/login");
             }
           });
         } else {

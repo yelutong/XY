@@ -1,6 +1,6 @@
 <template> 
   <div class="wrapper page-goods">
-    <vHeader :title="goodsMainData.name" to="/55"/>
+    <vHeader :title="goodsMainData.name"/>
     <div class="lay-swiper white mt40">
       <v-swiper :swiper-data="picSwipe" />
     </div>
@@ -198,7 +198,8 @@ export default {
     }, 
     // 弹出电话
     callHelp() {
-      this.callService();
+     // this.callService();
+      this.$router.push({ path: "/goods/connectMe"});
     },
     // 加入购物车
     addToCart(id) {

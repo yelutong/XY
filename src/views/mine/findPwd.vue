@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper white page-bind">
-    <vHeader title="绑定"/>
+    <vHeader title="找回密码"/>
     <div class="item-bind">
       <i class="ico i-phone"></i> <input class="ipt" type="number" v-model.trim="bindInfo.phone" placeholder="请输入手机号" maxlength="11" />
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper white page-bind">
-    <vHeader title="绑定"/>
+    <vHeader title="注册"/>
     <div class="item-bind">
       <i class="ico i-phone"></i> <input class="ipt" type="number" v-model.trim="bindInfo.phone" placeholder="请输入手机号" maxlength="11" />
     </div>
@@ -9,7 +9,7 @@
       <button class="btn-submit btn-code" v-if="!bindInfo.hasSend" @click="getCode">获取验证码</button>
       <div class="cut-time" v-if="bindInfo.hasSend">剩余 {{ bindInfo.time }} s</div>
     </div>
-    <button class="btn-submit btn-bind flex1" @click="bindPhone">绑 定</button>
+    <button class="btn-submit btn-bind" @click="bindPhone">绑 定</button>
   </div>
 </template>
 
