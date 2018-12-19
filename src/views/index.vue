@@ -51,16 +51,7 @@ export default {
     this.getClassBylevel();
   },
   computed:{
-    currentView(){
-      if(this.onTab===0){
-        return indexNew;
-      }
-      else{
-       
-       
-      return <tabContent />;
-     }
-    }
+
   },
   methods: {
     onTabClick(item){

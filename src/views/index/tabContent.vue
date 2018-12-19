@@ -14,10 +14,12 @@
           <vTitle :title="items" />
         <div class="box2">
            <flexbox :gutter="0" wrap="wrap">
-            <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index" class="mgt10">
-              <p><img :src="urlPic+goods.goodsMainPhoto.split(',')[0]"></p>
+            <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index" class="mgt10" >
+              <div @click="toDetail(goods.id)">
+              <p class="boxPic"><img :src="urlPic+goods.goodsMainPhoto.split(',')[0]"></p>
               <p v-text="goods.goodsName" class="tabGoodsName center fs-12"></p>
               <p class="center"><b class="fs-15 txt-orange rt5" v-text="'¥'+goods.salePrice"></b><i class="center-line" v-text="'¥'+goods.marketPrice"></i></p>
+              </div>
             </flexbox-item> 
           </flexbox>
         </div>
@@ -44,9 +46,11 @@ export default {
   data() {
     return {
       urlPic:this.api.urlPic,
+      parentIds: this.parentId,
       totalPage: 1,
       currentPage: 0,
       listData:[],
+      classId: 0,
       pullupEnabled: true,
       status: {
         pullupStatus: 'default'
@@ -92,10 +96,18 @@ export default {
   },
   created() {
     // 读取用户其他数据
-    this.getBannerData();
-    this.loadMore();
     this.getTab(this.parentId);
+    this.loadMore(this.classId);
     console.log(this.parentId);
+  },
+  computed:{
+    
+  },
+  watch:{// 监听值的变化
+    parentId (val, oldVal) {
+      console.log(val, oldVal);
+      this.getTab(val);
+    }
   },
   methods: {
     getTab (id){
@@ -106,6 +118,8 @@ export default {
            if(res.data.content.length>0){
              this.list3 = res.data.content;
              this.items = res.data.content[0].className;
+             this.classId = res.data.content[0].id;
+             this.onTabsClick(res.data.content[0]);
            }
         }
       })
@@ -113,10 +127,10 @@ export default {
        //下单失败，请您稍后重试
       });
     },
-    loadMore (index) {
+    loadMore (classId) {
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;
-          this.$axios.post(this.api.getGoodsList,qs.parse({'goodsName':'上', "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+          this.$axios.post(this.api.getClassList,qs.parse({'goodsParentClassId':classId, "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
           .then(res => {
              console.log(res.data);
              this.totalPage=res.data.content.totalPage; 
@@ -138,18 +152,12 @@ export default {
         }, 10)
     },
     onTabsClick(item){
-      this.items = item;
+      this.items = item.className;
       console.log(this.items);
-      this.loadMore(1);
-    },
-    // 获取banner图数据
-    getBannerData() {
-      this.$axios.get(this.api.getBanner).then(res => {
-        let resData = res.data;
-        if (resData.code === 100) {
-        
-        }
-      });
+      this.listData = [];
+      this.totalPage = 1;
+      this.currentPage = 0;
+      this.loadMore(item.id);
     },
     refresh () {
        console.log('刷新');
@@ -159,7 +167,16 @@ export default {
             this.pullupEnabled && this.$refs.scroller.enablePullup()
           }, 10)
         })
-    } 
+    },
+    toDetail (id) {
+      console.log(21);
+      this.$router.push({//核心语句
+        path:'/goods',//跳转的路径
+        query:{//路由传参时push和query搭配使用 ，作用时传递参数
+          id: id  
+        }
+      })
+    }
   }
 };
 </script>

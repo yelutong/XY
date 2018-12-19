@@ -11,7 +11,7 @@ const ajaxUrl = {
   getClassTree: urlHost + 'goodsclass/getAllclassTree',// 获取所有分类
   getClassBylevel: urlHost + 'goodsclass/getGoodsClassBylevel/',//{level}获取所有分类
   getChildsList: urlHost + 'goodsclass/getChilds/',//{id}根据当前分类主键获取下级分类集合
-  
+  getClassList: urlHost + 'goods/list',//{id}根据当前分类主键获取下级分类集合
 
 
   goodsList:"https://api.mcyou.net/api/goods/list",//商品列表

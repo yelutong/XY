@@ -6,9 +6,11 @@
         <div class="box2">
            <flexbox :gutter="0" wrap="wrap">
             <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index" class="mgt10">
+              <div @click="toDetail(goods.id)">
               <p class="boxPic"><img :src="urlPic+goods.goodsMainPhoto.split(',')[0]"></p>
               <p v-text="goods.goodsName" class="tabGoodsName center fs-12"></p>
               <p class="center"><b class="fs-15 txt-orange rt5" v-text="'¥'+goods.salePrice"></b><i class="center-line" v-text="'¥'+goods.marketPrice"></i></p>
+             </div>
             </flexbox-item> 
           </flexbox>
         </div>
@@ -116,7 +118,16 @@ export default {
             this.pullupEnabled && this.$refs.scroller.enablePullup()
           }, 10)
         })
-    } 
+    },
+    toDetail (id) {
+      console.log(21);
+      this.$router.push({//核心语句
+        path:'/goods',//跳转的路径
+        query:{//路由传参时push和query搭配使用 ，作用时传递参数
+          id: id  
+        }
+      })
+    }
   }
 };
 </script>
