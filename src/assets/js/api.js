@@ -1,5 +1,5 @@
 // 域名
-const urlHost = 'http://t-api.xy999888.com/api/';//接口请求域名
+const urlHost = 'http://api.xy999888.cn/api/';//接口请求域名
 const ajaxHost = 'https://mg.xjjxsd.cn/api/mp';
 // 接口
 const ajaxUrl = {
