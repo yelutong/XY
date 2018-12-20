@@ -12,6 +12,12 @@ const ajaxUrl = {
   getClassBylevel: urlHost + 'goodsclass/getGoodsClassBylevel/',//{level}获取所有分类
   getChildsList: urlHost + 'goodsclass/getChilds/',//{id}根据当前分类主键获取下级分类集合
   getClassList: urlHost + 'goods/list',//{id}根据当前分类主键获取下级分类集合
+  login: urlHost + 'user/login',//登录
+  getRegCode: urlHost + 'smscode/send/reg/',//{userName}获取注册验证码
+  getFindPwdCode: urlHost + 'smscode/send/forget/',//{userName}获取注册验证码
+  register: urlHost + 'user/register',//登录
+  findPwd: urlHost + 'user/forgetPassword',//找回密码
+  getUserData: urlHost + 'user/info',//获取个人中心信息
 
 
   goodsList:"https://api.mcyou.net/api/goods/list",//商品列表

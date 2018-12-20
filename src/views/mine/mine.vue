@@ -96,8 +96,30 @@
     created() {
       // 进来判断是否绑定了手机号
       this.ifUserBind();
+      this.getUserData();
+      console.log(this.token);
     },
     methods: {
+      //获取个人中心信息
+      getUserData(){
+        this.$axios
+        .get(this.api.getUserData,{
+          headers: {"Authorization": this.token }
+         })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip(resData.msg);
+            return;
+          }else{
+            
+          }
+          console.log(resData);
+        })
+        .catch(res => {
+          this.showTip("注册失败，请稍后重试");
+        }); 
+      },
       // 判断是否绑定了手机号
       ifUserBind() {
         if (!this.userId) {

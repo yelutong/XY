@@ -2,14 +2,26 @@
   <div class="wrapper white page-bind">
     <vHeader title="注册"/>
     <div class="item-bind">
-      <i class="ico i-phone"></i> <input class="ipt" type="number" v-model.trim="bindInfo.phone" placeholder="请输入手机号" maxlength="11" />
+      <i class="ico i-phone"></i> <input class="ipt" type="number" v-model.trim="promoterUserId" placeholder="推荐人手机号(选填)" maxlength="11" />
     </div>
     <div class="item-bind">
-      <i class="ico i-lock"></i> <input class="ipt" type="number" v-model.trim="bindInfo.code" placeholder="请输入验证码" maxlength="11" />
-      <button class="btn-submit btn-code" v-if="!bindInfo.hasSend" @click="getCode">获取验证码</button>
-      <div class="cut-time" v-if="bindInfo.hasSend">剩余 {{ bindInfo.time }} s</div>
+      <i class="ico i-person"></i> <input class="ipt" type="number" v-model.trim="phone" placeholder="请输入手机号" maxlength="11" />
     </div>
-    <button class="btn-submit btn-bind" @click="bindPhone">绑 定</button>
+    <div class="item-bind">
+      <i class="ico i-lock"></i> <input class="ipt" :type="typeSet" v-model.trim="pwd" placeholder="请输入密码" maxlength="20" />
+      <span class="pwd_eyes close" @click='changeStatus' v-if="statusShow"></span>
+      <span class="pwd_eyes" @click='changeStatus' v-else></span>
+    </div>
+    <div class="item-bind">
+      <i class="ico i-ver"></i> <input class="ipt" type="number" v-model.trim="code" placeholder="请输入验证码" maxlength="11" />
+      <button class="btn-submit btn-code" v-if="!hasSend" @click="getCode">获取验证码</button>
+      <div class="cut-time" v-if="hasSend">剩余 {{ time }} s</div>
+    </div>
+    <button class="btn-submit btn-bind" @click="reg">注 册</button>
+    <p class="links">
+      <router-link to="/mine/login">登录</router-link> 
+      <router-link to="/mine/findPwd">忘记密码？</router-link>
+    </p>
   </div>
 </template>
 
@@ -21,12 +33,14 @@ const qs = require("qs");
 export default {
   data() {
     return {
-      bindInfo: {
-        phone: "",
-        code: "",
-        time: 60,
-        hasSend: false
-      }
+      promoterUserId: '',
+      phone: "",
+      pwd: "",
+      code: '',
+      time: 60,
+      hasSend: false,
+      typeSet: 'password',
+      statusShow: true
     };
   },
   components: {
@@ -36,34 +50,42 @@ export default {
     ...mapState(["token", "userId", "parentId"])
   },
   beforeCreate() {
-    document.title = "绑定注册";
+    document.title = "注册";
   },
-  created() {},
+  created() {
+    document.body.classList.add('bg-white');
+  },
+  destroyed(){
+    document.body.classList.remove('bg-white');
+  },
   methods: {
     ...mapActions(["atnUserId", "atnWeChatInfo"]),
+    //改变密码显示
+    changeStatus(){
+      if(this.statusShow){
+        this.statusShow = false;
+        this.typeSet = 'text';
+      }else{
+        this.statusShow = true;
+        this.typeSet = 'password';
+      }
+    },
     // 获取验证码
     getCode() {
-      const bindInfo = this.bindInfo;
-      if (bindInfo.hasSend) {
-        return;
-      }
-      if (bindInfo.phone.length !== 11) {
+      if (this.phone.length !== 11) {
         this.showTip("手机号码格式不正确");
         return;
       }
       this.$axios
-        .get(this.api.getMobileCode, {
-          headers: { access_token: this.token },
-          params: { mobile: bindInfo.phone }
-        })
+        .get(this.api.getRegCode+this.phone)
         .then(res => {
           const resData = res.data;
-          if (resData.code !== 100) {
-            this.showTip(resData.message);
+          if (resData.code != 1) {
+            this.showTip(resData.msg);
             return;
           }
           // 成功之后改变颜色，60秒后可再次发送
-          this.bindInfo.hasSend = true;
+          this.hasSend = true;
           this.showTip("验证码已发送到您的手机，请注意查收");
           this.countDownTime();
         })
@@ -75,12 +97,12 @@ export default {
     countDownTime() {
       let fnCount = () => {
         let count = setTimeout(() => {
-          if (this.bindInfo.time <= 0) {
+          if (this.time <= 0) {
             clearTimeout(count);
-            this.bindInfo.hasSend = false;
-            this.bindInfo.time = 60;
+            this.hasSend = false;
+            this.time = 60;
           } else {
-            this.bindInfo.time -= 1;
+            this.time -= 1;
             fnCount();
           }
         }, 1000);
@@ -88,55 +110,43 @@ export default {
       fnCount();
     },
     // 注册绑定手机号
-    bindPhone() {
-      const parentId = this.parentId || "";
-      const bindInfo = this.bindInfo;
-      if (bindInfo.phone.length !== 11) {
+    reg() {
+      if (this.phone.length !== 11) {
         this.showTip("手机号码格式不正确");
         return;
       }
-      if (bindInfo.code === "") {
+      if (this.code === "") {
         this.showTip("请输入验证码");
         return;
       }
-      const loading = Toast({
-        message: "绑定中...",
-        iconClass: "loading",
-        duration: 30000
-      });
       const ajaxData = {
-        parent_id: parentId,
-        mobile: bindInfo.phone,
-        auth_code: bindInfo.code
+        userName: this.phone,
+        password: this.pwd,
+        smsCode: this.code
       };
+      this.promoterUserId?ajaxData.promoterUserId=this.promoterUserId:'';
       this.$axios
-        .post(this.api.bindNewUser, qs.stringify(ajaxData), {
-          headers: {
-            "content-type": "application/x-www-form-urlencoded",
-            access_token: this.token
-          }
+        .post(this.api.register, JSON.stringify(ajaxData), {
+          headers: {"content-type": "application/json"}
         })
         .then(res => {
-          loading.close();
           const resData = res.data;
-          if (resData.code !== 100) {
-            this.showTip(resData.message);
+          if (resData.code !== 1) {
+            this.showTip(resData.msg);
             return;
+          }else{
+            this.showTip('注册成功');
+            let _this = this;
+            setTimeout(function(){ 
+              _this.$router.push('/mine/login'); 
+            }, 1000);
           }
-          // 绑定成功后，看是否返回了encryptionId
-          const objData = resData.data;
-          if (objData.encryptionId) {
-            // 如果存在，存好后返回
-            this.setUserIdBack(objData);
-          } else {
-            // 如果不存在，再查一遍访问接口（以防重复绑定不会返回id）
-            this.ifUserBind(this.token);
-          }
+          console.log(resData);
         })
         .catch(res => {
           loading.close();
-          this.showTip("绑定注册失败，请稍后重试");
-        });
+          this.showTip("注册失败，请稍后重试");
+      });
     },
     // 存储userId和微信信息后返回
     setUserIdBack(objData) {
@@ -146,25 +156,13 @@ export default {
         avatar: objData.wechatHeadImageUrl
       });
       const bindOk = Toast({
-        message: "绑定成功！",
+        msg: "绑定成功！",
         iconClass: "ok",
         duration: 2000
       });
       setTimeout(() => {
         this.$router.go(-1);
       }, 2600);
-    },
-    // 查询是否存在userId
-    ifUserBind(token) {
-      this.$axios
-        .get(this.api.getUserInfo, { headers: { access_token: token } })
-        .then(res => {
-          const resData = res.data;
-          // 如果接口成功且有数据，则已经绑定了，就存储再跳
-          if (resData.code === 100 && !!resData.data) {
-            this.setUserIdBack(resData.data);
-          }
-        });
     }
   }
 };
