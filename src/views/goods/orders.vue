@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper page-orders">
+    <vHeader title="我的订单"/>
     <div class="tab-nav">
       <div class="item" :class="{active:index === choseDex}" v-for="(item, index) in orderNav" :key="index" @click="tabOrderStatus(index)">
         {{ item.title }}
@@ -45,6 +46,7 @@ import { MessageBox, Toast, InfiniteScroll } from "mint-ui";
 import vLoadmore from "@/components/v-loadmore";
 import vNodata from "@/components/v-nodata";
 import vImglist from "@/components/v-imglist";
+import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
   data() {
@@ -84,7 +86,8 @@ export default {
   components: {
     "v-loadmore": vLoadmore,
     "v-nodata": vNodata,
-    "v-imglist": vImglist
+    "v-imglist": vImglist,
+    vHeader
   },
   computed: {
     ...mapState(["token"])

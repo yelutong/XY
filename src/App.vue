@@ -24,9 +24,9 @@ export default {
   },
   created() {
     // 通过openId拿到token
-    this.getToken();
+   // this.getToken();
     // 是否有推荐人id，有就存起来
-    this.hasParentId();
+   // this.hasParentId();
   },
   methods: {
     // 状态管理动作

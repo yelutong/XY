@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper page-mine">
-    <div class="lay-avatar">
+    <div class="lay-avatar" @click="isLogin">
       <div class="avatar">
         <img class="img" :src="weChatInfo.avatar" />
       </div>
-      <div class="name">{{ weChatInfo.name }}</div>
+      <div class="name">{{ userPhone?userPhone:weChatInfo.name}}</div>
     </div>
     <div class="lay-order">
       <div class="head">
@@ -35,18 +35,15 @@
 </template>
 
 <script>
-  import {
-    mapState
-  } from "vuex";
-  import {
-    MessageBox
-  } from "mint-ui";
+  import { mapState, mapActions } from "vuex";
+  import { MessageBox } from "mint-ui";
   import vFlexrow from "@/components/v-flexrow";
   import vCell from "@/components/v-cell";
   import vFooter from "@/components/v-footer";
   export default {
     data() {
       return {
+        userPhone:'',
         orderNav: [{
             title: "待付款",
             size: 19.5,
@@ -88,18 +85,22 @@
       "v-footer": vFooter
     },
     computed: {
-      ...mapState(["token", "userId", "weChatInfo", "weChatShare"])
+      ...mapState(["token", "userId", "weChatInfo", "weChatShare",'shareId'])
     },
     beforeCreate() {
       document.title = "个人中心";
     },
     created() {
-      // 进来判断是否绑定了手机号
-      this.ifUserBind();
       this.getUserData();
       console.log(this.token);
     },
     methods: {
+      ...mapActions(["atnUserId"]),
+      isLogin() {
+        if(!this.token){
+          this.$router.push('/mine/login');
+        }
+      },
       //获取个人中心信息
       getUserData(){
         this.$axios
@@ -112,16 +113,21 @@
             this.showTip(resData.msg);
             return;
           }else{
-            
+            this.userPhone = this.formatPhone(resData.content.userName);
+            this.atnUserId(resData.content.id);
+            console.log(this.userId);
           }
           console.log(resData);
+          // this.ifUserBind();// 进来判断是否绑定了手机号
         })
         .catch(res => {
-          this.showTip("注册失败，请稍后重试");
+          console.log(res);
+          //this.showTip("获取信息失败，请稍后重试");
         }); 
       },
       // 判断是否绑定了手机号
       ifUserBind() {
+        console.log('判断是否绑定了手机号');
         if (!this.userId) {
           MessageBox({
             title: "绑定提示",
