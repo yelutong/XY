@@ -18,6 +18,10 @@ const ajaxUrl = {
   register: urlHost + 'user/register',//登录
   findPwd: urlHost + 'user/forgetPassword',//找回密码
   getUserData: urlHost + 'user/info',//获取个人中心信息
+  getaddressList: urlHost + 'useraddress/list',//获取个人中心信息
+  addAddr: urlHost + 'useraddress/save',//增加地址
+
+
 
 
   goodsList:"https://api.mcyou.net/api/goods/list",//商品列表

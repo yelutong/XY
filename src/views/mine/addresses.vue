@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper page-addresses">
-    <div class="lay-adres">
+    <vHeader title="地址管理"/>
+    <div class="lay-adres mgt50">
       <div class="item" v-for="(item, index) in addressesList" :key="index">
         <div class="info" @click="selectAddress(item)">
           <div class="adres">{{ item.provinceName }} {{ item.cityName }} {{ item.areaName }} {{ item.shipAddress }}</div>
@@ -24,7 +25,7 @@
       <v-nodata v-if="noAddresses" bgcolor="grey" text="- 还没有收货地址 -" />
     </div>
     <div class="lay-action fix-btom">
-      <button class="btn-submit nordu" @click="pageToAddEdit('add')">+ 添加新地址</button>
+      <button class="btn-submit nordu full-screen" @click="pageToAddEdit('add')">+ 添加新地址</button>
     </div>
   </div>
 </template>
@@ -33,6 +34,7 @@
 import { mapState, mapActions } from "vuex";
 import { MessageBox } from "mint-ui";
 import vNodata from "@/components/v-nodata";
+import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
   data() {
@@ -42,7 +44,7 @@ export default {
       addressesList: []
     };
   },
-  components: { "v-nodata": vNodata },
+  components: { "v-nodata": vNodata, vHeader },
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"])
   },
@@ -58,11 +60,11 @@ export default {
     // 获取所有地址
     getAddressesList() {
       this.$axios
-        .get(this.api.getAddresses, { headers: { access_token: this.token } })
+        .get(this.api.getaddressList, { headers: {"Authorization": this.token } })
         .then(res => {
           const resData = res.data;
           if (
-            resData.code !== 100 ||
+            resData.code !== 1 ||
             !resData.data ||
             resData.data.length === 0
           ) {
