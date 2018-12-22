@@ -28,7 +28,7 @@
       return {
         stringValue: '0',
         value: [],
-        addressId: this.getUrlParam("address-id") || "",
+        addressId: this.getUrlParam("addressId") || "",
         addressData: {
           name: "",
           phone: "",
@@ -51,7 +51,7 @@
     created() {
       // 来源id，有id就是编辑，没有就是新增
       const addressId = this.addressId;
-      if (!!addressId) {
+      if (addressId) {
         // 延迟加载，以防cell组件没加载
         setTimeout(() => {
           this.getAddressData(addressId);
@@ -70,13 +70,8 @@
       // 读取需要编辑的地址
       getAddressData(addressId) {
         this.$axios
-          .get(this.api.getAddress, {
-            headers: {
-              access_token: this.token
-            },
-            params: {
-              address_id: addressId
-            }
+          .get(this.api.getAddrData+addressId, {
+            headers: {"Authorization": this.token }
           })
           .then(res => {
             const resData = res.data;
@@ -85,11 +80,12 @@
               return;
             }
             // 成功后赋值
-            const objData = resData.data;
-            this.addressData.name = objData.shipName;
-            this.addressData.phone = objData.shipPhone;
-            this.addressData.city = [objData.provinceName, objData.cityName, objData.areaName];
-            this.addressData.adres = objData.shipAddress;
+            const objData = resData.content;
+            this.addressData.name = objData.userName;
+            this.addressData.phone = objData.phone;
+            this.addressData.city = objData.areaInfo.split(' ');
+            this.addressData.adres = objData.address;
+            this.stringValue = objData.isChecked?'1':'0';
           })
           .catch(res => {
             this.showTip("读取来源地址失败");
@@ -133,8 +129,8 @@
         if (addressId) {
           okTip = "修改收货地址成功";
           errTip = "修改收货地址失败";
-          ajaxApi = this.api.editAddress;
-          ajaxData.address_id = addressId;
+          ajaxApi = this.api.updateAddrData;
+          ajaxData.id = addressId;
         }
         // 开始保存
         this.$axios

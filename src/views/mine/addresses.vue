@@ -4,12 +4,12 @@
     <div class="lay-adres mgt50">
       <div class="item" v-for="(item, index) in addressesList" :key="index">
         <div class="info" @click="selectAddress(item)">
-          <div class="adres">{{ item.provinceName }} {{ item.cityName }} {{ item.areaName }} {{ item.shipAddress }}</div>
-          <div class="name-phone">{{ item.shipName }} {{ item.shipPhone }}</div>
+          <div class="adres">{{ item.areaInfo }} {{ item.address }}</div>
+          <div class="name-phone">{{ item.userName }} {{ item.phone }}</div>
         </div>
         <div class="acts">
           <div class="act" @click="setAutoAddress(item)">
-            <i class="ico i-cks" :class="{checked:item.shipStatus==='Y'}"></i>{{ item.shipStatus==='Y'?'默认地址':'设为默认' }}
+            <i class="ico i-cks" :class="{checked:item.isChecked===true}"></i>{{ item.isChecked===true?'默认地址':'设为默认' }}
           </div>
           <div class="act-box">
             <div class="act" @click="pageToAddEdit('edit', item.id)">
@@ -63,21 +63,20 @@ export default {
         .get(this.api.getaddressList, { headers: {"Authorization": this.token } })
         .then(res => {
           const resData = res.data;
-          if (
-            resData.code !== 1 ||
-            !resData.data ||
-            resData.data.length === 0
-          ) {
+          console.log(resData);
+          if ( resData.code !== 1 || resData.content.length === 0) {
             this.noAddresses = true;
             this.addressesList = [];
             return;
+          }else{
+           this.noAddresses = false;
+           this.addressesList = resData.content;
+           console.log(this.addressesList);
           }
-          this.noAddresses = false;
-          this.addressesList = resData.data;
         })
         .catch(res => {
-          this.noAddresses = true;
-          this.showTip("获取地址列表失败");
+          //this.noAddresses = true;
+          //this.showTip("获取地址列表失败");
         });
     },
     // 设为默认地址
@@ -112,11 +111,12 @@ export default {
     // 新增||编辑收货地址
     pageToAddEdit(type, id) {
       this.$router.push(
-        "/mine/address" + (type === "edit" ? "?address-id=" + id : "")
+        "/mine/address" + (type === "edit" ? "?addressId=" + id : "")
       );
     },
     // 删除收货地址
     delAddress(id, index) {
+    console.log(id, index)
       MessageBox({
         title: "删除提示",
         message: "确定删除这条地址吗？",
@@ -124,13 +124,12 @@ export default {
       }).then(action => {
         if (action === "confirm") {
           this.$axios
-            .get(this.api.delAddress, {
-              headers: { access_token: this.token },
-              params: { address_id: id }
+            .get(this.api.deleteAddr+id, {
+              headers: { 'Authorization': this.token }
             })
             .then(res => {
               const resData = res.data;
-              if (resData.code !== 100) {
+              if (resData.code !== 1) {
                 this.showTip("删除失败，请重试");
                 return;
               }
@@ -142,7 +141,7 @@ export default {
               }
               // 然后还要判断是不是删掉了点选的记录的那条，以防他直接返回
               const choseAddress = this.choseAddress;
-              if (!!choseAddress && choseAddress.id === id) {
+              if (choseAddress && choseAddress.id === id) {
                 this.atnChoseAddress(null);
               }
             })

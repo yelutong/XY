@@ -20,9 +20,9 @@ const ajaxUrl = {
   getUserData: urlHost + 'user/info',//获取个人中心信息
   getaddressList: urlHost + 'useraddress/list',//获取个人中心信息
   addAddr: urlHost + 'useraddress/save',//增加地址
-
-
-
+  deleteAddr: urlHost + 'useraddress/delete/',//{ids}删除地址
+  getAddrData: urlHost + 'useraddress/info/',//{id}根据id获取地址信息
+  updateAddrData: urlHost + 'useraddress/update',//编辑更新收货地址
 
   goodsList:"https://api.mcyou.net/api/goods/list",//商品列表
 

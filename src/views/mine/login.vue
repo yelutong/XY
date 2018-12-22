@@ -72,7 +72,6 @@ export default {
           const resData = res.data;
           if (resData.code === 1) {
           	console.log(resData.content);
-            this.$setToken(resData.content);//存储token
           	this.atnToken(resData.content);
           	this.showTip('登录成功');
             let _this = this;
