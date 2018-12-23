@@ -1,11 +1,46 @@
 <template>
   <div class="wrapper page-pay">
-    <div class="pay-item nobd mb10">
-      <span class="tit">收货人：</span>
-      <div class="con">{{ orderInfo.shipName }} {{ orderInfo.shipPhone }}<br/> {{ orderInfo.provinceName }} {{ orderInfo.cityName }} {{ orderInfo.areaName }} {{orderInfo.shipAddress }}
+    <vHeader title="支付订单"/>
+    <div class="pay-item nobd vertical-view mt50">
+      
+      <div class="lay-address white pda15">
+      <div class="adress vertical-view">
+        <div class="full-screen fs-14 mgb5">收货地址</div>
+          <span class="name-phone lh-20">{{ showAddress.userName }} {{ showAddress.phone }}</span>
+          <span class="adres lh-20">{{ showAddress.areaInfo }} {{showAddress.address }}</span>
       </div>
     </div>
-    <div class="lay-goods white mb10">
+
+      <div class="lay-goods white mb10 mt10">
+        <div class="item" v-for="(item, index) in payGoodsList" :key="index">
+          <div class="img-box">
+            <img class="img" :src="item.img" />
+          </div>
+          <div class="info-box">
+            <div class="title">{{ item.name }}</div>
+            <div class="price-num">
+              <span class="price">￥{{ item.price }}</span>
+              <span class="num">× {{ item.num }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="white payMethod">
+      <div class="full-screen h40 mgb5 fs-14">支付方式</div>
+       <div class="full-screen justify-content-space-between">
+        <div class="horizontal-view orderPay">
+          <span><img :src="wx" /></span>
+          <span>
+            <p class="fs-13">微信支付</p>
+            <p class="mt5 fs-12 txt-gray">亿万用户的选择，更快更安全</p>
+          </span>
+        </div>
+        <div><i class="ico i-cks checked mt10"></i></div>
+      </div>
+     </div>
+    </div>
+    <!--<div class="lay-goods white mb10">
       <div class="item" v-for="(item, index) in orderInfo.goodsItem" :key="index">
         <div class="img-box">
           <img class="img" :src="item.img" />
@@ -35,15 +70,15 @@
       <span class="tit">备注：</span>
       <div class="con">{{ orderInfo.remark }}</div>
     </div>
+    -->
     <div class="lay-action fix-btom pay-act-btom">
       <div class="price-info">
         <span class="tag">实付：</span>
-        <span class="total">￥{{ orderInfo.totalPrice }}</span>
+        <span class="total">￥{{ price }}</span>
       </div>
-      <span class="has-pay" v-if="hasPay">已 支 付</span>
-      <template v-else>
+      <template>
         <span class="btn-submit nordu cancel" @click="cancelOrder">取 消</span>
-        <button class="btn-submit nordu" @click="payOrder">支 付</button>
+        <button class="btn-submit nordu per40" @click="payOrder">支 付</button>
       </template>
     </div>
   </div>
@@ -52,15 +87,21 @@
 <script>
 import { mapState } from "vuex";
 import { MessageBox, Toast } from "mint-ui";
+import vHeader from "@/components/v-header";
+import wx from "@/assets/images/wx@2x.png";
 const qs = require("qs");
 export default {
   data() {
     return {
-      orderId: this.getUrlParam("order-id") || "",
-      orderNo: this.getUrlParam("order-no") || "",
-      hasPay: this.getUrlParam("has-pay") ? true : false,
-      orderInfo: {}
+      showAddress:'',
+      wx: wx,
+      payGoodsList:[],
+      price: this.getUrlParam("payPrice") || "",
+      orderNo: this.getUrlParam("orderNumbers") || ""
     };
+  },
+  components: {
+    vHeader
   },
   computed: {
     ...mapState(["token"])
@@ -69,13 +110,7 @@ export default {
     document.title = "确认支付";
   },
   created() {
-    // 读取订单id和订单号
-    const orderId = this.orderId;
-    if (!orderId) {
-      this.showTip("没有获取到该订单号");
-    } else {
-      this.getOrderInfo(orderId);
-    }
+   this.getOrderInfo(this.orderNo);
   },
   methods: {
     // 计算出订单总价（不包含运费）
@@ -90,22 +125,31 @@ export default {
       return price;
     },
     // 读取订单信息
-    getOrderInfo(orderId) {
+    getOrderInfo(orderNo) {
       this.$axios
-        .get(this.api.getOrderInfo, {
-          headers: { access_token: this.token },
-          params: { order_id: orderId }
+        .get(this.api.orderformInfo+orderNo, {
+          headers: { "Authorization": this.token }
         })
         .then(res => {
           const resData = res.data;
-          if (resData.code !== 100) {
+          if (resData.code !== 1) {
             this.showTip("读取订单信息失败");
             return;
           }
           // 成功后组装下数据
-          const objData = resData.data;
+          const objData = resData.content;
+          this.showAddress = objData.orderformAddress;
           let goodsItem = [];
-          objData.orderDetails.forEach(val => {
+          objData.items.forEach(val => {
+            goodsItem.push({
+              name: val.goodsName,
+              price: val.totalPrice,
+              num: val.goodsCount,
+              img: this.api.urlPic+val.goodsPhoto.split(',')[0]
+            });
+          });
+          this.payGoodsList = goodsItem;
+         /* objData.orderDetails.forEach(val => {
             goodsItem.push({
               name: val.productName,
               weight: val.product.weight,
@@ -126,7 +170,7 @@ export default {
             totalPrice: objData.totalAmount,
             postage: objData.postage,
             goodsItem: goodsItem || []
-          };
+          };*/
         })
         .catch(res => {
           this.showTip("读取订单信息失败");
@@ -141,13 +185,12 @@ export default {
       }).then(action => {
         if (action === "confirm") {
           this.$axios
-            .get(this.api.cancelOrder, {
-              headers: { access_token: this.token },
-              params: { order_id: this.orderId }
+            .get(this.api.cancelOrder+this.orderNo, {
+              headers: { "Authorization": this.token }
             })
             .then(res => {
               const resData = res.data;
-              if (resData.code !== 100) {
+              if (resData.code !== 1) {
                 this.showTip("取消失败，请稍后重试");
                 return;
               }
@@ -173,26 +216,27 @@ export default {
       this.$axios
         .post(
           this.api.payOrder,
-          qs.stringify({
-            order_no: this.orderNo,
-            pay_type: "wechat"
+          JSON.stringify({
+           'channel': 2,
+           'orderNumbers': this.orderNo,
+           'payType': 'wxpublicpay'
           }),
           {
             headers: {
-              "content-type": "application/x-www-form-urlencoded",
-              access_token: this.token
+              "content-type": "application/json",
+              "Authorization": this.token
             }
           }
         )
         .then(res => {
           loading.close();
           const resData = res.data;
-          if (resData.code !== 100) {
+          if (resData.code !== 1) {
             this.showTip("支付失败，请稍后重试");
             return;
           }
           // 返回数据成功后，拿到参数唤起微信支付
-          const objData = resData.data;
+          const objData = resData.content;
           const weiXinArg = {
             appId: objData.appid,
             timeStamp: objData.timestamp,

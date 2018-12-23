@@ -53,12 +53,12 @@ export default {
       }
       this.$axios
         .get(this.api.getMobileCode, {
-          headers: { access_token: this.token },
+          headers: { "Authorization": this.token },
           params: { mobile: bindInfo.phone }
         })
         .then(res => {
           const resData = res.data;
-          if (resData.code !== 100) {
+          if (resData.code !== 1) {
             this.showTip(resData.message);
             return;
           }
@@ -113,18 +113,18 @@ export default {
         .post(this.api.bindNewUser, qs.stringify(ajaxData), {
           headers: {
             "content-type": "application/x-www-form-urlencoded",
-            access_token: this.token
+            "Authorization": this.token
           }
         })
         .then(res => {
           loading.close();
           const resData = res.data;
-          if (resData.code !== 100) {
+          if (resData.code !== 1) {
             this.showTip(resData.message);
             return;
           }
           // 绑定成功后，看是否返回了encryptionId
-          const objData = resData.data;
+          const objData = resData.content;
           if (objData.encryptionId) {
             // 如果存在，存好后返回
             this.setUserIdBack(objData);
@@ -157,12 +157,12 @@ export default {
     // 查询是否存在userId
     ifUserBind(token) {
       this.$axios
-        .get(this.api.getUserInfo, { headers: { access_token: token } })
+        .get(this.api.getUserInfo, { headers: { "Authorization": token } })
         .then(res => {
           const resData = res.data;
           // 如果接口成功且有数据，则已经绑定了，就存储再跳
-          if (resData.code === 100 && !!resData.data) {
-            this.setUserIdBack(resData.data);
+          if (resData.code === 1 && !!resData.content) {
+            this.setUserIdBack(resData.content);
           }
         });
     }

@@ -8,7 +8,7 @@
     </div>
     <div class="lay-order">
       <div class="head">
-        <v-cell title="订单详情" value="查看全部订单" align="right" ricon="blue" link="/goods/orders?status=4"></v-cell>
+        <v-cell title="订单详情" value="查看全部订单" align="right" ricon="blue" link="/goods/orders?status=[10,20,30,40,50]"></v-cell>
       </div>
       <div class="list">
         <v-flexrow :flexrow-data="orderNav"></v-flexrow>
@@ -152,18 +152,18 @@
         this.$axios
           .get(this.api.getJoinStatus, {
             headers: {
-              access_token: this.token
+              "Authorization": this.token
             }
           })
           .then(res => {
             const resData = res.data;
-            if (resData.code !== 100) {
+            if (resData.code !== 1) {
               this.joinLink = "/pages/join/join";
               return;
             }
             // 成功后根据状态跳转不同页面
-            this.joinLink = resData.data ?
-              "/mine/joinstatus?status=" + resData.data :
+            this.joinLink = resData.content ?
+              "/mine/joinstatus?status=" + resData.content :
               "/mine/join";
           })
           .catch(res => {
@@ -175,14 +175,14 @@
         this.$axios
           .get(this.api.getUserInfo, {
             headers: {
-              access_token: this.token
+              "Authorization": this.token
             }
           })
           .then(res => {
             const resData = res.data;
             // 有数据的话，就证明已绑定了
-            if (resData.code === 100 && !!resData.data) {
-              const serverType = resData.data.roleTypeDsid;
+            if (resData.code === 1 && !!resData.content) {
+              const serverType = resData.content.roleTypeDsid;
               if (serverType === 2) {
                 this.serveLink = "/mine/serveorders?type=junior";
               } else if (serverType === 3) {

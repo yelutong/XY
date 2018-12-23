@@ -1,6 +1,6 @@
 <template>
   <div id="vGoods" class="wrapper page-index">
-   <vHeader title="小V专区"/>
+   <vHeader title="小V专区" to="/index"/>
    <div class="white vGoods">
         <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
         <div class="box2">
