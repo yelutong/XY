@@ -79,23 +79,32 @@ export default {
           //this.showTip("获取地址列表失败");
         });
     },
-    // 设为默认地址
+    // 设为默认地址 实际上用的更新地址的接口
     setAutoAddress(item) {
-      if (item.shipStatus !== "Y") {
+    console.log(item);
+      if (item.isChecked===false) {
+      let ajaxData = {
+          userName: item.userName,
+          phone: item.phone,
+          areaId: item.areaId,
+          address: item.address,
+          areaInfo: item.areaInfo,
+          isChecked: true,
+          id: item.id
+        };
+
+    console.log(ajaxData);
         this.$axios
           .post(
-            this.api.setAutoAddress,
-            qs.stringify({ address_id: item.id }),
+            this.api.updateAddrData,
+            JSON.stringify(ajaxData),
             {
-              headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                access_token: this.token
-              }
+               headers: {"Authorization": this.token , "content-type": "application/json"}
             }
           )
           .then(res => {
             const resData = res.data;
-            if (resData.code !== 100) {
+            if (resData.code !== 1) {
               this.showTip("设置失败，请重试");
               return;
             }
