@@ -19,8 +19,10 @@ const goodsinfo = () =>
   import ('@/views/goods/goodsinfo'); // 商品图文详情
 const goodseva = () =>
   import ('@/views/goods/goodseva'); // 商品评价列表
+const goodsCart = () =>
+  import ('@/views/goods/goodsCart'); // 购物车
 const cart = () =>
-  import ('@/views/goods/cart'); // 购买商品
+  import ('@/views/goods/cart'); // 结算购物车商品
 const pay = () =>
   import ('@/views/goods/pay'); // 支付
 const orders = () =>
@@ -111,6 +113,10 @@ const router = new Router({
     {
       path: '/goods/goodseva',
       component: goodseva
+    },
+    {
+      path: '/goods/goodsCart',
+      component: goodsCart
     },
     {
       path: '/cart',

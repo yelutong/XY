@@ -4,29 +4,12 @@
     <div class="pay-item nobd vertical-view mt50">
       
       <div class="lay-address white pda15">
-      <div class="adress vertical-view">
-        <div class="full-screen fs-14 mgb5">收货地址</div>
-          <span class="name-phone lh-20">{{ showAddress.userName }} {{ showAddress.phone }}</span>
-          <span class="adres lh-20">{{ showAddress.areaInfo }} {{showAddress.address }}</span>
-      </div>
-    </div>
-
-      <div class="lay-goods white mb10 mt10">
-        <div class="item" v-for="(item, index) in payGoodsList" :key="index">
-          <div class="img-box">
-            <img class="img" :src="item.img" />
-          </div>
-          <div class="info-box">
-            <div class="title">{{ item.name }}</div>
-            <div class="price-num">
-              <span class="price">￥{{ item.price }}</span>
-              <span class="num">× {{ item.num }}</span>
-            </div>
-          </div>
+        <div class="adress vertical-view">
+          <div class="full-screen fs-14 mgb5">应支付金额：<i class="txt-orange fs-18">￥{{ price }}</i></div>
         </div>
       </div>
 
-      <div class="white payMethod">
+      <div class="white payMethod mt10">
       <div class="full-screen h40 mgb5 fs-14">支付方式</div>
        <div class="full-screen justify-content-space-between">
         <div class="horizontal-view orderPay">
@@ -40,46 +23,17 @@
       </div>
      </div>
     </div>
-    <!--<div class="lay-goods white mb10">
-      <div class="item" v-for="(item, index) in orderInfo.goodsItem" :key="index">
-        <div class="img-box">
-          <img class="img" :src="item.img" />
-        </div>
-        <div class="info-box">
-          <div class="title">{{ item.name }}</div>
-          <div class="price-num">
-            <span class="price">￥{{ item.price }}</span>
-            <span class="num">x {{ item.num }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pay-item">
-      <span class="tit">合计：</span>
-      <div class="con rt">
-        <span class="price">￥{{ orderInfo.allPrice }}</span>
-      </div>
-    </div>
-    <div class="pay-item">
-      <span class="tit">运费：</span>
-      <div class="con rt">
-        <span class="price">￥{{ orderInfo.postage }}</span>
-      </div>
-    </div>
-    <div class="pay-item nobd">
-      <span class="tit">备注：</span>
-      <div class="con">{{ orderInfo.remark }}</div>
-    </div>
-    -->
     <div class="lay-action fix-btom pay-act-btom">
-      <div class="price-info">
+     
+     <!-- <div class="price-info">
         <span class="tag">实付：</span>
         <span class="total">￥{{ price }}</span>
       </div>
-      <template>
+      
         <span class="btn-submit nordu cancel" @click="cancelOrder">取 消</span>
-        <button class="btn-submit nordu per40" @click="payOrder">支 付</button>
-      </template>
+      -->
+        <button class="btn-submit nordu full-screen" @click="payOrder">微信支付 <i class="fs-14">￥{{ price }}</i></button>
+      
     </div>
   </div>
 </template>
@@ -93,9 +47,7 @@ const qs = require("qs");
 export default {
   data() {
     return {
-      showAddress:'',
       wx: wx,
-      payGoodsList:[],
       price: this.getUrlParam("payPrice") || "",
       orderNo: this.getUrlParam("orderNumbers") || ""
     };
@@ -110,7 +62,7 @@ export default {
     document.title = "确认支付";
   },
   created() {
-   this.getOrderInfo(this.orderNo);
+   
   },
   methods: {
     // 计算出订单总价（不包含运费）
@@ -123,58 +75,6 @@ export default {
         price += val.product.salePrice * val.productCount;
       });
       return price;
-    },
-    // 读取订单信息
-    getOrderInfo(orderNo) {
-      this.$axios
-        .get(this.api.orderformInfo+orderNo, {
-          headers: { "Authorization": this.token }
-        })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("读取订单信息失败");
-            return;
-          }
-          // 成功后组装下数据
-          const objData = resData.content;
-          this.showAddress = objData.orderformAddress;
-          let goodsItem = [];
-          objData.items.forEach(val => {
-            goodsItem.push({
-              name: val.goodsName,
-              price: val.totalPrice,
-              num: val.goodsCount,
-              img: this.api.urlPic+val.goodsPhoto.split(',')[0]
-            });
-          });
-          this.payGoodsList = goodsItem;
-         /* objData.orderDetails.forEach(val => {
-            goodsItem.push({
-              name: val.productName,
-              weight: val.product.weight,
-              price: val.product.salePrice,
-              num: val.productCount,
-              img: val.product.photoMainUrls[0] || ""
-            });
-          });
-          this.orderInfo = {
-            shipName: objData.shipName,
-            shipPhone: objData.shipPhone,
-            provinceName: objData.provinceName,
-            cityName: objData.cityName,
-            areaName: objData.areaName,
-            shipAddress: objData.shipAddress,
-            allPrice: this.getAllPrice(objData.orderDetails),
-            remark: objData.orderRemark,
-            totalPrice: objData.totalAmount,
-            postage: objData.postage,
-            goodsItem: goodsItem || []
-          };*/
-        })
-        .catch(res => {
-          this.showTip("读取订单信息失败");
-        });
     },
     // 取消订单
     cancelOrder() {

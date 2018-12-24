@@ -50,10 +50,17 @@
     <div class="lay-action fix-btom pay-act-btom">
       <div class="service">
 
-        <div class="item per40" @click="callHelp">
+        <div class="per40 pd15 justify-content-space-around">
+          <div class="item" @click="callHelp">
           <i class="ico i-call"></i>
           <p class="text">客服</p>
+          </div>
+          <div class="item" @click="toCart">
+          <i class="ico i-cart"></i>
+          <p class="text">购物车</p>
+          </div>
         </div>
+        
         <div class="item per30 bg-blue btn-submit" @click="pageToBuy(id)">
           立即购买
         </div>
@@ -211,6 +218,9 @@ export default {
     callHelp() {
      // this.callService();
       this.$router.push({ path: "/goods/connectMe"});
+    },
+    toCart(){
+     this.$router.push({ path: "/goods/goodsCart"});
     },
     // 改变数量
     changeNum(type) {
