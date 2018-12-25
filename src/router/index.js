@@ -115,11 +115,12 @@ const router = new Router({
       component: goodseva
     },
     {
-      path: '/goods/goodsCart',
+      path: '/goodsCart',
       component: goodsCart
     },
     {
       path: '/cart',
+      name:'cart',
       component: cart
     },
     {

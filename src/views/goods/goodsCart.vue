@@ -5,19 +5,22 @@
     <mt-button class="txt-black fs-14 txt-edit" slot="right">编辑</mt-button>
   </mt-header>
 
-    <div class="lay-goods white mb10 mt50" v-if="isShowList">
-      <div class="items" v-for="(items,index) in goodsArr" :key="index">
-        <input type="checkbox" class="check goods-check shopCheck">{{ items.storeName }}
-        <div class="item" v-for="(item, index) in items.goodsBuyInfo" :key="index">
+    <div class="lay-goods pb42 mt50" v-if="isShowList">
+      <div class="items mb10 white pd15" v-for="(items,index) in goodsArr" :key="index">
+        <div class="relative h40 pdl25 fs-13">
+        <input type="checkbox" class="check goods-check shoreCheck" @click="checkAll(items)" v-model="checkallList" :value="items.storeId" />{{ items.storeName }}
+        </div>
+        <div class="item pdl40" v-for="(item, index) in items.goodsBuyInfo" :key="index">
+          <input type="checkbox" class="check goods-check goodsCheck" v-model="checked" :value="item.id"/>
         <div class="img-box">
           <img class="img" :src="item.img" />
         </div>
         <div class="info-box">
-          <div class="title">
+          <div class="title fs-12">
             {{ item.name }}
           </div>
           <div class="price-num">
-            <span class="price">￥{{ item.price }}</span>
+            <span class="price fs-15">￥{{ item.price }}</span>
             <div class="change-num">
               <span class="rdu" @click="changeNum('rdu', item)">-</span>
               <span class="num">{{ item.num }}</span>
@@ -30,14 +33,17 @@
     </div>
 
     <div class="lay-action fix-btom pay-act-btom fix-b50" v-if="isShowList">
+      <div class="relative h40 pdl40">
+        <input type="checkbox" class="ml15 check goods-check shopCheck" v-model="allSelect" @click="totalSelect"/>全选
+        </div>
       <div class="price-info flex1">
         <span class="tag">合计：</span>
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
       </div>
-      <button class="btn-submit per40" @click="makeOrder">结 算</button>
+      <button class="btn-submit per40" @click="makeOrder">去结算</button>
     </div>
     <v-nodata v-if="!isShowList" bgcolor="grey" text="- 购物车空空如也 -" />
-    <v-footer active="cart"/>
+    <v-footer active="goodsCart"/>
   </div>
 </template>
 
@@ -51,6 +57,13 @@ const qs = require("qs");
 export default {
   data() {
     return {
+      list: [],
+      checkall: false,
+      allSelect: false,
+      checkallList: [],
+      checked: [],
+      price:0,
+      count:0,
       isShowList: false,
       goodsCarts:[],
       payPrice: 0,
@@ -60,7 +73,7 @@ export default {
       num: '',
       id: this.getUrlParam("id"),
       showAddress: null,
-      goodsBuyInfo: [],
+     // goodsBuyInfo: [],
       goodsArr: [],
       goodsTips: "",
       uuid:''
@@ -74,42 +87,68 @@ export default {
     ...mapState(["token"]),
     // 总价计算
     totalPrice() {
-      console.log("执行了computed");
-      const orderPrice = {
-        'goodsCarts': this.goodsCarts,
-        'goodsChannel': this.goodsChannel,
-        'isUseIntegral': this.isUseIntegral,
-        'userCouponIds': this.userCouponIds
-      }
-      this.$axios
-        .post(this.api.orderPriceNew,
-        JSON.stringify(orderPrice),
-        {
-          headers: {"Authorization": this.token , "content-type": "application/json"}
-        })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到价格信息");
-            return;
-          }else{
-            console.log(resData);
-            this.payPrice = resData.content.payPrice;
+        this.payPrice = 0;
+        for(let i of this.goodsArr){
+          for(let k of i.goodsBuyInfo){
+            if(this.checked.length>0){
+              for(let j of this.checked){
+                if(j==k.id){
+                  this.payPrice += Number(k.price) * Number(k.num);
+                }
+              }
+            }else{
+              this.payPrice = 0;
+            }
           }
-        })
-        .catch(res => {
-         // this.showTip("未获取到商品信息");
-        });
+        }
         return this.payPrice
     }
   },
   beforeCreate(){
-    document.title = '填写订单';
+    document.title = '购物车';
   },
   created() {
     this.getCartList();
   },
   methods: {
+    totalSelect(){
+      console.log(this.allSelect)
+      if(this.allSelect){
+        this.checkallList = [];
+        this.checked = [];
+      }else{
+        this.checkallList = [];
+        this.checked = [];
+        for (let i of this.goodsArr){
+          this.checkallList.push(i.storeId);
+          for (let j of i.goodsBuyInfo){
+            this.checked.push(j.id);
+          }
+        }
+      }
+    },
+    checkAll(items) {
+      if(this.checkallList.indexOf(items.storeId)>-1){//存在
+        this.checkallList.splice(this.checkallList.indexOf(items.storeId),1);
+        for (let j of items.goodsBuyInfo){
+          if(this.checked.indexOf(j.id) > -1){
+            this.checked.splice(this.checked.indexOf(j.id), 1);
+          }
+        }
+      }else{//不存在
+        this.checkallList.push(items.storeId);
+        for (let k of items.goodsBuyInfo){
+          this.checked.push(k.id);
+        }
+      }
+
+      if(this.checkallList.length === this.goodsArr.length) {
+        this.allSelect = true
+      }else{
+        this.allSelect = false
+      }
+
+    },
     getCartList(){
       this.$axios
         .get(this.api.getCartList,{
@@ -127,6 +166,7 @@ export default {
               this.isShowList = true;
               const objData = resData.content;
               for( let items of objData){
+                let goodsBuyInfo = [];
                 for( let item of items.goodsCarts){
                   let objGoodsData = {
                   'id':item.id,
@@ -136,12 +176,12 @@ export default {
                   'price': item.price,
                   'img': this.api.urlPic+item.goodsPhoto.split(',')[0]
                   }
-                  this.goodsBuyInfo.push(objGoodsData);
+                  goodsBuyInfo.push(objGoodsData);
                 }
                 let itemInfo = {
                   'storeId':items.storeId,
                   'storeName': items.storeName,
-                  "goodsBuyInfo":this.goodsBuyInfo
+                  "goodsBuyInfo":goodsBuyInfo
                 }
                this.goodsArr.push(itemInfo)
               }
@@ -155,34 +195,6 @@ export default {
          // this.showTip("未获取到商品信息");
         });
     },
-    // 取要购买的商品信息
-    getBuyInfo(id) {
-      this.$axios
-        .get(this.api.getGoodsData+id)
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到商品信息");
-            return;
-          }else{
-            // 成功后赋值商品对象，并存进数组
-            const objData = resData.content;
-            let objGoodsData = {
-                'id': objData.id,
-                'num': 1,
-                'name': objData.goodsName,
-                'price': objData.salePrice,
-                'img': this.api.urlPic+objData.goodsMainPhoto.split(',')[0]
-            }
-            console.log(objGoodsData);
-            this.goodsBuyInfo.push(objGoodsData);
-            console.log(this.goodsBuyInfo);
-          }
-        })
-        .catch(res => {
-          //this.showTip("未获取到商品信息");
-        });
-    },
     // 改变数量
     changeNum(type, item) {
       if (type === "add") {
@@ -190,9 +202,6 @@ export default {
       } else if (item.num >= 2) {
         item.num -= 1;
       }
-      
-        
-     
       this.$axios
         .post(
           this.api.goodsCartUpdate,
@@ -215,120 +224,29 @@ export default {
             this.showTip("修改数量失败");
             return;
           }
-          const goodsBuyInfo = this.goodsBuyInfo;
-          if (goodsBuyInfo.length === 0) {
-            return 0;
-          }
-          let totalPrice = 0;
-          goodsBuyInfo.forEach(val => {
-            totalPrice += val.num * val.price;
-          });
-          this.payPrice = totalPrice;
           this.showTip("修改数量成功");
         })
         .catch(res => {
-         // this.showTip("修改数量失败");
-        });
-      
-    },
-    // 取用户默认地址
-    getAutoAddress() {
-      this.$axios
-        .get(this.api.getDefAddrData, { headers: { "Authorization": this.token } })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code === 1) {
-            this.showAddress = resData.content;
-            this.areaId = this.showAddress.areaId;
-            this.userAddressId = this.showAddress.id;
-          }
+          this.showTip("修改数量失败");
         });
     },
     // 结算下单
     makeOrder() {
       // 组合下单数据
-      const arrItems = [];
-      const goodsBuyInfo = this.goodsBuyInfo;
-      const showAddress = this.showAddress;
-      if (goodsBuyInfo.length === 0) {
-        this.showTip("未获取到商品信息");
+      if (this.checked.length === 0) {
+        this.showTip("请选择商品");
         return;
       }
-      if (!showAddress) {
-        this.showTip("请选择收货地址");
-        return;
-      }
-      // 组合items数组
-      goodsBuyInfo.forEach(val => {
-        arrItems.push({
-          id: val.id,
-          product_name: val.name,
-          count: val.num
-        });
-      });
-      const address = {
-        ship_name: showAddress.shipName,
-        ship_phone: showAddress.shipPhone,
-        area_name:
-          showAddress.provinceName +
-          " " +
-          showAddress.cityName +
-          " " +
-          showAddress.areaName,
-        ship_address: showAddress.shipAddress
-      };
-      // 组合地址和请求数据
-      const orderData = {
-        items: arrItems,
-        order_remark: this.goodsTips,
-        add_id: JSON.stringify(address)
-      };
-      // 然后发起下单请求
-      const loading = Toast({
-        message: "结算中...",
-        iconClass: "loading",
-        duration: 30000
-      });
-      
-      const orderArrData ={
-        'areaId': this.areaId,
-        'channel': 2,
-        'goodsCarts': this.goodsCarts,
-        'isUseIntegral': this.isUseIntegral,
-        'remark': this.goodsTips,
-        'userAddressId': this.userAddressId,
-        'userCouponIds': this.userCouponIds,
-        'uuid': 'h5'+this.uuid+""+this.areaId+""+this.userAddressId+""+this.isUseIntegral
-      }
-      this.$axios
-        .post(
-          this.api.getOrderForm,
-          JSON.stringify(orderArrData),
-          {
-            headers: {"Authorization": this.token , "content-type": "application/json"}
+      console.log(this.checked);
+      let selectArr = [];
+      for (let i of this.goodsArr){
+        for (let j of i.goodsBuyInfo){
+          if(this.checked.indexOf(j.id)>-1){
+            selectArr.push(j);
           }
-        )
-        .then(res => {
-          loading.close();
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("下单失败，请您稍后重试");
-            return;
-          }
-          const orderNumbers = resData.content;
-          // 下单成功后跳转支付页
-          this.$router.replace({
-            path: "/goods/pay",
-            query: {
-              "orderNumbers": orderNumbers,
-              'payPrice': this.payPrice
-            }
-          });
-        })
-        .catch(res => {
-          loading.close();
-          this.showTip("下单失败，请您稍后重试");
-        });
+        }
+      }
+      this.$router.push({name:'cart', params: { selectArr: selectArr}});
     }
   }
 };

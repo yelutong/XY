@@ -118,7 +118,7 @@ export default {
           this.api.payOrder,
           JSON.stringify({
            'channel': 2,
-           'orderNumbers': this.orderNo,
+           'orderNumbers': this.orderNo.split(','),
            'payType': 'wxpublicpay'
           }),
           {

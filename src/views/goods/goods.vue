@@ -220,7 +220,7 @@ export default {
       this.$router.push({ path: "/goods/connectMe"});
     },
     toCart(){
-     this.$router.push({ path: "/goods/goodsCart"});
+     this.$router.push({ path: "/goodsCart"});
     },
     // 改变数量
     changeNum(type) {

@@ -11,7 +11,7 @@
       </div>
       <i class="ico i-aow"></i>
     </router-link>
-    <div class="lay-goods white mb10" v-if="isShowList">
+    <div class="lay-goods white mb10 pd15" v-if="isShowList">
       <div class="item" v-for="(item, index) in goodsBuyInfo" :key="index">
         <div class="img-box">
           <img class="img" :src="item.img" />
@@ -22,11 +22,7 @@
           </div>
           <div class="price-num">
             <span class="price">￥{{ item.price }}</span>
-            <div class="change-num">
-              <span class="rdu" @click="changeNum('rdu', item)">-</span>
-              <span class="num">{{ item.num }}</span>
-              <span class="add" @click="changeNum('add', item)">+</span>
-            </div>
+            <span class="fs-12">x {{ item.num }}</span>
           </div>
         </div>
       </div>
@@ -40,9 +36,9 @@
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
         <span class="tip"> (不含运费)</span>
       </div>
-      <button class="btn-submit per40" @click="makeOrder">结 算</button>
+      <button class="btn-submit per40" @click="makeOrder">支付订单</button>
     </div>
-    <v-nodata v-if="!isShowList" bgcolor="grey" text="- 购物车空空如也 -" />
+    <v-nodata v-if="!isShowList" bgcolor="grey" text="- 暂无待支付订单 -" />
     <v-footer active="cart"/>
   </div>
 </template>
@@ -66,7 +62,6 @@ export default {
       goodsChannel: 1,
       isUseIntegral:0,
       num: '',
-      id: this.getUrlParam("id"),
       showAddress: null,
       goodsBuyInfo: [],
       goodsTips: "",
@@ -81,13 +76,13 @@ export default {
     ...mapState(["token", "autoAddress", "choseAddress"]),
     // 总价计算
     totalPrice() {
-      console.log("执行了computed");
       const orderPrice = {
         'goodsCarts': this.goodsCarts,
         'goodsChannel': this.goodsChannel,
         'isUseIntegral': this.isUseIntegral,
         'userCouponIds': this.userCouponIds
       }
+      console.log(orderPrice);
       this.$axios
         .post(this.api.orderPriceNew,
         JSON.stringify(orderPrice),
@@ -132,120 +127,28 @@ export default {
   },
   methods: {
     getCartList(){
-      this.$axios
-        .get(this.api.getCartList,{
-          headers: {"Authorization": this.token , "content-type": "application/json"}
-        })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到商品信息");
-            return;
-          }else{
-            console.log(resData);
-            // 成功后赋值商品对象，并存进数组
-            if(resData.content.length>0){
-              this.isShowList = true;
-              const objData = resData.content[0].goodsCarts;
-              for( let item of objData){
-                  let objGoodsData = {
-                  'id':item.id,
-                  'goodsId': item.goodsId,
-                  'num': item.goodsCount,
-                  'name': item.goodsName,
-                  'price': item.price,
-                  'img': this.api.urlPic+item.goodsPhoto.split(',')[0]
-                   }
-                this.uuid=this.uuid+""+item.id;
-                this.goodsCarts.push({'id':item.id});
-                this.goodsBuyInfo.push(objGoodsData);
-              }
-              console.log(this.uuid);
-              console.log(this.goodsBuyInfo);
-            }else{
-              this.isShowList = false;
-            }
-          }
-        })
-        .catch(res => {
-         // this.showTip("未获取到商品信息");
-        });
-    },
-    // 取要购买的商品信息
-    getBuyInfo(id) {
-      this.$axios
-        .get(this.api.getGoodsData+id)
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到商品信息");
-            return;
-          }else{
-            // 成功后赋值商品对象，并存进数组
-            const objData = resData.content;
-            let objGoodsData = {
-                'id': objData.id,
-                'num': 1,
-                'name': objData.goodsName,
-                'price': objData.salePrice,
-                'img': this.api.urlPic+objData.goodsMainPhoto.split(',')[0]
-            }
-            console.log(objGoodsData);
-            this.goodsBuyInfo.push(objGoodsData);
-            console.log(this.goodsBuyInfo);
-          }
-        })
-        .catch(res => {
-          //this.showTip("未获取到商品信息");
-        });
-    },
-    // 改变数量
-    changeNum(type, item) {
-      if (type === "add") {
-        item.num += 1;
-      } else if (item.num >= 2) {
-        item.num -= 1;
+      let resData = [];
+      if(this.$route.params.selectArr){
+        resData = this.$route.params.selectArr;
+        sessionStorage.setItem("selectArr",JSON.stringify(this.$route.params.selectArr));
+      }else{
+        resData = JSON.parse(sessionStorage.getItem("selectArr"));
       }
-      
-        
-     
-      this.$axios
-        .post(
-          this.api.goodsCartUpdate,
-          JSON.stringify({
-           'goodsCount': item.num,
-           'goodsId': item.goodsId,
-           'id': item.id
-          }),
-          {
-            headers: {
-              "content-type": "application/json",
-              "Authorization": this.token
-            }
+      console.log(resData)
+        // 成功后赋值商品对象，并存进数组
+        if(resData.length>0){
+          this.isShowList = true;
+          this.goodsBuyInfo=resData;
+          for (let i of resData){
+            this.uuid=this.uuid+""+i.id;
+            this.goodsCarts.push({'id':i.id});
           }
-        )
-        .then(res => {
-          console.log(res);
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("修改数量失败");
-            return;
-          }
-          const goodsBuyInfo = this.goodsBuyInfo;
-          if (goodsBuyInfo.length === 0) {
-            return 0;
-          }
-          let totalPrice = 0;
-          goodsBuyInfo.forEach(val => {
-            totalPrice += val.num * val.price;
-          });
-          this.payPrice = totalPrice;
-          this.showTip("修改数量成功");
-        })
-        .catch(res => {
-         // this.showTip("修改数量失败");
-        });
-      
+          console.log(this.uuid);
+          console.log(this.goodsBuyInfo);
+        }else{
+          this.isShowList = false;
+        }
+         
     },
     // 取用户默认地址
     getAutoAddress() {
@@ -274,37 +177,6 @@ export default {
         this.showTip("请选择收货地址");
         return;
       }
-      // 组合items数组
-      goodsBuyInfo.forEach(val => {
-        arrItems.push({
-          id: val.id,
-          product_name: val.name,
-          count: val.num
-        });
-      });
-      const address = {
-        ship_name: showAddress.shipName,
-        ship_phone: showAddress.shipPhone,
-        area_name:
-          showAddress.provinceName +
-          " " +
-          showAddress.cityName +
-          " " +
-          showAddress.areaName,
-        ship_address: showAddress.shipAddress
-      };
-      // 组合地址和请求数据
-      const orderData = {
-        items: arrItems,
-        order_remark: this.goodsTips,
-        add_id: JSON.stringify(address)
-      };
-      // 然后发起下单请求
-      const loading = Toast({
-        message: "结算中...",
-        iconClass: "loading",
-        duration: 30000
-      });
       
       const orderArrData ={
         'areaId': this.areaId,
@@ -325,7 +197,6 @@ export default {
           }
         )
         .then(res => {
-          loading.close();
           const resData = res.data;
           if (resData.code !== 1) {
             this.showTip("下单失败，请您稍后重试");
@@ -333,7 +204,7 @@ export default {
           }
           const orderNumbers = resData.content;
           // 下单成功后跳转支付页
-          this.$router.replace({
+          this.$router.push({
             path: "/goods/pay",
             query: {
               "orderNumbers": orderNumbers,
@@ -342,7 +213,6 @@ export default {
           });
         })
         .catch(res => {
-          loading.close();
           this.showTip("下单失败，请您稍后重试");
         });
     }
