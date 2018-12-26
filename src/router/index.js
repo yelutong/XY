@@ -41,6 +41,8 @@ const connectMe = () =>
 // 我的 -------------------------------
 const mine = () =>
   import ('@/views/mine/mine'); // 个人中心
+const set = () =>
+  import ('@/views/mine/set'); // 设置
 const wallet = () =>
   import ('@/views/mine/wallet'); // 我的钱包
 const mycard = () =>
@@ -155,6 +157,10 @@ const router = new Router({
     {
       path: '/mine',
       component: mine
+    },
+    {
+      path: '/mine/set',
+      component: set
     },
     {
       path: '/mine/wallet',

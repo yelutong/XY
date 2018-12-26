@@ -133,6 +133,9 @@ export default {
           const resData = res.data;
           if (resData.code !== 1) {
             this.showTip("支付失败，请稍后重试");
+            setTimeout(()=>{
+              this.$router.push({path: "/index"});
+            },2000)
             return;
           }
           // 返回数据成功后，拿到参数唤起微信支付

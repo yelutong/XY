@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper page-buy">
-    <router-link class="lay-address white mb10" :to="{path:'/mine/addresses', query:{from:'goods'}}" v-if="isShowList">
+    <vHeader title="填写订单"/>
+    <router-link class="lay-address white mb10 mt50" :to="{path:'/mine/addresses', query:{from:'goods'}}" v-if="isShowList">
       <i class="ico i-map"></i>
       <div class="adress">
         <template v-if="showAddress">
@@ -27,19 +28,22 @@
         </div>
       </div>
     </div>
+    <group class="mb10">
+    <x-switch title="使用兑换积分" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
+    </group>
     <div class="lay-tips white" v-if="isShowList">
       <textarea class="txa" placeholder="请填写备注" v-model="goodsTips" maxlength="200"></textarea>
     </div>
-    <div class="lay-action fix-btom pay-act-btom fix-b50" v-if="isShowList">
+    <div class="lay-action fix-btom pay-act-btom" v-if="isShowList">
       <div class="price-info flex1">
         <span class="tag">合计：</span>
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
-        <span class="tip"> (不含运费)</span>
+        <span class="tip" v-if="goodsIntegral">(抵扣积分{{goodsIntegral}})</span>
+        <span v-else class="tip"> (含运费)</span>
       </div>
       <button class="btn-submit per40" @click="makeOrder">支付订单</button>
     </div>
     <v-nodata v-if="!isShowList" bgcolor="grey" text="- 暂无待支付订单 -" />
-    <v-footer active="cart"/>
   </div>
 </template>
 
@@ -47,8 +51,9 @@
 // 购物车
 import { mapState } from "vuex";
 import { Toast } from "mint-ui";
-import vFooter from "@/components/v-footer";
+import { XSwitch, Group } from 'vux';
 import vNodata from "@/components/v-nodata";
+import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
   data() {
@@ -60,6 +65,7 @@ export default {
       payPrice: 0,
       userCouponIds: [],
       goodsChannel: 1,
+      goodsIntegral:'',
       isUseIntegral:0,
       num: '',
       showAddress: null,
@@ -69,8 +75,10 @@ export default {
     };
   },
   components: { 
-    'v-footer': vFooter,
-    "v-nodata": vNodata
+    "x-switch": XSwitch,
+    "group": Group,
+    "v-nodata": vNodata,
+    vHeader
   },
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"]),
@@ -78,7 +86,7 @@ export default {
     totalPrice() {
       const orderPrice = {
         'goodsCarts': this.goodsCarts,
-        'goodsChannel': this.goodsChannel,
+        'goodsChannel': this.isUseIntegral == '1'? 2: 1,
         'isUseIntegral': this.isUseIntegral,
         'userCouponIds': this.userCouponIds
       }
@@ -96,7 +104,13 @@ export default {
             return;
           }else{
             console.log(resData);
-            this.payPrice = resData.content.payPrice;
+            if(orderPrice.goodsChannel == 2){
+              this.payPrice = resData.content.exchange.salePrice;
+              this.goodsIntegral = resData.content.exchange.goodsIntegral;
+            }else{
+              this.goodsIntegral = '';
+              this.payPrice = resData.content.payPrice;
+            }
           }
         })
         .catch(res => {

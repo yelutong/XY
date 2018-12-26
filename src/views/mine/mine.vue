@@ -16,7 +16,8 @@
     </div>
     <div class="lay-action">
       <v-cell v-if="!!serveLink" title="服务订单" :link="serveLink" />
-      <v-cell title="钱包" link="/mine/wallet" />
+       <v-cell title="系统设置" link="/mine/set" />
+      <v-cell title="我的钱包" link="/mine/wallet" />
       <v-cell title="我的粉丝" link="/mine/fans" />
       <v-cell title="我的收藏" link="/mine/collects" />
       <div @click="shareToOther">

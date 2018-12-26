@@ -33,7 +33,9 @@ const ajaxUrl = {
   payOrder: urlHost + 'orderform/payOrder',//微信支付订单
   payOrderList: urlHost + 'orderform/applist',//查看订单列表
   orderformInfo: urlHost + 'orderform/info/',//{orderNumber} 订单号查询订单详情
+  loginOut:  urlHost + 'user/logout',//退出登录
 
+  
 
   getShareQr: ajaxHost + '/wx/p/user/get_share_qrcode_by_user_id.json', // 根据用户id生成二维码
   getShareArgs: ajaxHost + '/wx/p/user/share_to_friend.json', // 获取微信分享所需的参数

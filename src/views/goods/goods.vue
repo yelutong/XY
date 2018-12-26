@@ -9,7 +9,7 @@
       <div class="price-weight">
         <span class="price" v-text="'￥'+goodsMainData.price"></span>
       </div>
-      <div class="salebuy norms h45">
+      <div class="salebuy norms h45"  v-if="!vGoods">
         <i class="fs-14">购买:</i>
         <div class="standards">
           <div class="minus" @click="changeNum('minus')">-</div>
@@ -85,6 +85,7 @@ export default {
   data() {
     return {
       id: this.getUrlParam("id"),
+      vGoods:this.getUrlParam('vGoods')||'',
       urlPic:this.api.urlPic,
       num: 1,
       sellerStoreId: '',
@@ -261,7 +262,7 @@ export default {
     // 立即购买
     pageToBuy(id) {
       // 判断是否绑定了手机号
-      if (!this.userId) {
+     /* if (!this.userId) {
         MessageBox({
           title: "绑定提示",
           message:
@@ -272,9 +273,40 @@ export default {
             this.$router.push("/mine/bind");
           }
         });
-      } else {
-        this.$router.push({ path: "/cart", query: { id: id } });
-      }
+      }*/
+      let ajaxData ={
+        'goodsCount':this.num,
+        'goodsId': id,
+        'storeId': this.sellerStoreId,
+        'directBuy': 1
+      };
+      this.$axios
+      .post(
+        this.api.AddGoodsCart,
+        JSON.stringify(ajaxData),
+        {
+           headers: {"Authorization": this.token , "content-type": "application/json"}
+        }
+      )
+      .then(res => {
+        const resData = res.data;
+        if (resData.code !== 1) {
+          this.showTip("网络错误，请重试");
+          return;
+        }
+        ajaxData.id = resData.content;
+        ajaxData.img = this.detailPicList[0];
+        ajaxData.name = this.goodsMainData.name;
+        ajaxData.price = this.goodsMainData.price;
+        ajaxData.num = this.num;
+        console.log(ajaxData);
+        let selectArr = [];
+        selectArr.push(ajaxData);
+        this.$router.push({name:'cart', params: { selectArr: selectArr}});
+      })
+      .catch(res => {
+        this.showTip("网络错误，请重试");
+      });
     }
   }
 };
