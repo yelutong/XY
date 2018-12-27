@@ -1,19 +1,15 @@
 <template>
   <div class="wrapper page-wallet">
-    <vHeader title="设置" to="/mine" />
+    <vHeader title="修改用户名" />
     <div class="mt50">
-       <v-cell class="about" title="修改信息" link="/mine/updateInfo" />
-       <v-cell class="about" title="修改密码" link="/mine/updatePwd" />
-       <v-cell class="about" title="修改用户名" link="/mine/updatePhone" />
-      <div class="loginOutBtn">
-        <button class="btn-submit mt50 full-screen" @click="loginOut">退出登录</button>
-      </div>
+       
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { XButton } from 'vux';
 import vCell from "@/components/v-cell";
 import vHeader from "@/components/v-header";
 export default {
@@ -25,6 +21,7 @@ export default {
   },
   components: {
     "v-cell": vCell,
+    "x-button": XButton,
     vHeader
   },
   computed: {
@@ -72,5 +69,8 @@ export default {
 </script>
 
 <style lang="stylus">
-
+.loginOutBtn {
+  width:90%!important;
+  margin: auto;
+}
 </style>

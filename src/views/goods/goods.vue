@@ -249,7 +249,12 @@ export default {
           .then(res => {
             const resData = res.data;
             if (resData.code !== 1) {
-              this.showTip("加入失败，请重试");
+              if(resData.code == 403){
+                this.showTip("登录超时，请重新登录");
+                window.location.hash= '/mine/login?url='+window.location.href;
+              }else{
+                this.showTip("网络错误，请重试");
+              }
               return;
             }
             this.showTip("加入购物车成功");
@@ -291,7 +296,12 @@ export default {
       .then(res => {
         const resData = res.data;
         if (resData.code !== 1) {
-          this.showTip("网络错误，请重试");
+          if(resData.code == 403){
+            this.showTip("登录超时，请重新登录");
+            window.location.hash= '/mine/login?url='+window.location.href;
+          }else{
+            this.showTip("网络错误，请重试");
+          }
           return;
         }
         ajaxData.id = resData.content;

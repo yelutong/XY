@@ -41,8 +41,14 @@ const connectMe = () =>
 // 我的 -------------------------------
 const mine = () =>
   import ('@/views/mine/mine'); // 个人中心
+const updateInfo = () =>
+import ('@/views/mine/updateInfo'); // 修改信息
+const updatePhone = () =>
+import ('@/views/mine/updatePhone'); // 修改手机号
+const updatePwd = () =>
+import ('@/views/mine/updatePwd'); // 修改密码
 const set = () =>
-  import ('@/views/mine/set'); // 设置
+import ('@/views/mine/set'); // 设置
 const wallet = () =>
   import ('@/views/mine/wallet'); // 我的钱包
 const mycard = () =>
@@ -163,6 +169,18 @@ const router = new Router({
       component: set
     },
     {
+      path: '/mine/updateInfo',
+      component: updateInfo
+    },
+    {
+      path: '/mine/updatePhone',
+      component: updatePhone
+    },
+    {
+      path: '/mine/updatePwd',
+      component: updatePwd
+    },
+    {
       path: '/mine/wallet',
       component: wallet
     },
@@ -224,6 +242,7 @@ const router = new Router({
     },
     {
       path: '/mine/login',
+      name:'login',
       component: login
     },
     {

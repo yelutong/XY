@@ -1,6 +1,6 @@
 <template>
   <div id="vGoods" class="wrapper page-index">
-   <vHeader title="小V专区" to="/index"/>
+    <mt-header fixed title="小V专区" class="txt-black bg-white"></mt-header>
    <div class="white vGoods">
         <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
         <div class="box2">
@@ -30,7 +30,7 @@
 import { Scroller, Spinner,Flexbox, FlexboxItem  } from 'vux';
 import vFooter from "@/components/v-footer";
 const qs = require("qs");
-import vHeader from "@/components/v-header";
+import { Header } from "mint-ui";
 export default {
   data() {
     return {
@@ -50,8 +50,7 @@ export default {
     Scroller,
     Spinner,
     Flexbox, 
-    FlexboxItem,
-    vHeader
+    FlexboxItem
   },
   beforeCreate() {
     document.title = "新银众商";

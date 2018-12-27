@@ -2,7 +2,8 @@
   <div class="wrapper page-buy">
   
   <mt-header title="购物车" fixed class="txt-black bg-white">
-    <mt-button class="txt-black fs-14 txt-edit" slot="right">编辑</mt-button>
+    <mt-button @click="changeStatus('1')" class="txt-black fs-14 txt-edit" slot="right" v-if="canEdit&&isShowList">编辑</mt-button>
+    <mt-button @click="changeStatus('0')" class="txt-black fs-14 txt-edit" slot="right" v-if="!canEdit">取消</mt-button>
   </mt-header>
 
     <div class="lay-goods pb42 mt50" v-if="isShowList">
@@ -32,15 +33,16 @@
       </div>
     </div>
 
-    <div class="lay-action fix-btom pay-act-btom fix-b50" v-if="isShowList">
+    <div class="lay-action fix-btom pay-act-btom fix-b50 justify-content-space-between" v-if="isShowList">
       <div class="relative h40 pdl40">
         <input type="checkbox" class="ml15 check goods-check shopCheck" v-model="allSelect" @click="totalSelect"/>全选
         </div>
-      <div class="price-info flex1">
+      <div class="price-info flex1" v-if="canEdit">
         <span class="tag">合计：</span>
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
       </div>
-      <button class="btn-submit per40" @click="makeOrder">去结算</button>
+      <button v-if="canEdit" class="btn-submit per30" @click="makeOrder">去结算</button>
+      <button v-if="!canEdit" class="btn-submit per30" @click="deleteCart">删除</button>
     </div>
     <v-nodata v-if="!isShowList" bgcolor="grey" text="- 购物车空空如也 -" />
     <v-footer active="goodsCart"/>
@@ -57,6 +59,7 @@ const qs = require("qs");
 export default {
   data() {
     return {
+      canEdit: true,
       list: [],
       checkall: false,
       allSelect: false,
@@ -111,6 +114,39 @@ export default {
     this.getCartList();
   },
   methods: {
+    deleteCart(){
+      if(this.checked.length == 0){
+        this.showTip("请选择商品");
+      }else{
+        console.log(this.checked.join(','));
+        this.$axios
+        .get(this.api.deleteGoods+this.checked.join(','),{
+          headers: {"Authorization": this.token , "content-type": "application/json"}
+        })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("未获取到商品信息");
+            return;
+          }else{
+            this.showTip("删除成功");
+            this.goodsArr = [];
+            this.getCartList();
+          }
+        })
+        .catch(res => {
+         // this.showTip("未获取到商品信息");
+        });
+      }
+    },
+    changeStatus(obj){
+      console.log(0);
+      if(obj=='1'){
+        this.canEdit = false;
+      }else{
+        this.canEdit = true;
+      }
+    },
     totalSelect(){
       console.log(this.allSelect)
       if(this.allSelect){
@@ -157,7 +193,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("未获取到商品信息");
+            // this.showTip("未获取到商品信息");
             return;
           }else{
             console.log(resData);

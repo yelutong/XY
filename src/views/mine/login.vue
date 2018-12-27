@@ -74,10 +74,15 @@ export default {
           	console.log(resData.content);
           	this.atnToken(resData.content);
           	this.showTip('登录成功');
-            let _this = this;
-            setTimeout(function(){ 
-              _this.$router.push('/mine'); 
-            }, 1000);
+        
+            if(this.getUrlParam("url")){
+              window.location.href=this.getUrlParam("url");
+            }else{
+              let _this = this;
+              setTimeout(function(){ 
+                _this.$router.push('/mine'); 
+              }, 1000);
+            }
           }else{
           	this.showTip(resData.msg);
           }

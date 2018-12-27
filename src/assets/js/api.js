@@ -33,7 +33,9 @@ const ajaxUrl = {
   payOrder: urlHost + 'orderform/payOrder',//微信支付订单
   payOrderList: urlHost + 'orderform/applist',//查看订单列表
   orderformInfo: urlHost + 'orderform/info/',//{orderNumber} 订单号查询订单详情
-  loginOut:  urlHost + 'user/logout',//退出登录
+  loginOut: urlHost + 'user/logout',//退出登录
+  deleteGoods: urlHost + 'goodscart/delete/',//{ids} 批量删除购物车
+  uploadPhoto: urlHost + 'upload/userPhoto',//上传用户头像
 
   
 
