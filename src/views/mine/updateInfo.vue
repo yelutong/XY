@@ -3,8 +3,15 @@
     <vHeader title="修改信息" />
     <div class="mt50">
 
-      <vue-core-image-upload class="up-load" :crop="false" text="" inputAccept="image/*" @imageuploaded="chooseImage" :credentials="false"
-      :max-file-size="10485760" :multiple="false" inputOfFile="Filedata" :url="this.api.uploadPhoto" :headers="{'Authorization':this.token}" >
+      <vue-core-image-upload 
+      class="up-load" 
+      :crop="false" text="" inputAccept="image/*" 
+      @imageuploaded="chooseImage" 
+      :credentials="false"
+      :max-file-size="10485760" 
+      :multiple="false" inputOfFile="Filedata" 
+      :url="this.api.uploadPhoto" 
+      :headers="{'Authorization':this.token}" >
       <img width="150" :src="license" />
     </vue-core-image-upload>
        <v-cell class="share" title="头像" type="btn" />

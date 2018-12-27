@@ -1,6 +1,7 @@
 // 域名
 const urlHost = 'http://api.xy999888.cn/api/';//接口请求域名
 const ajaxHost = 'https://mg.xjjxsd.cn/api/mp';
+const uploadPic = 'http://api.xy999888.com/'; //上传图片请求域名
 // 接口
 const ajaxUrl = {
   urlPic: 'http://pic.xy999888.com/', //图片请求域名
@@ -35,7 +36,7 @@ const ajaxUrl = {
   orderformInfo: urlHost + 'orderform/info/',//{orderNumber} 订单号查询订单详情
   loginOut: urlHost + 'user/logout',//退出登录
   deleteGoods: urlHost + 'goodscart/delete/',//{ids} 批量删除购物车
-  uploadPhoto: urlHost + 'upload/userPhoto',//上传用户头像
+  uploadPhoto: uploadPic + 'upload/userPhoto',//上传用户头像
 
   
 
