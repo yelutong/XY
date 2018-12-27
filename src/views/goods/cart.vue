@@ -105,8 +105,15 @@ export default {
           }else{
             console.log(resData);
             if(orderPrice.goodsChannel == 2){
-              this.payPrice = resData.content.exchange.salePrice;
-              this.goodsIntegral = resData.content.exchange.goodsIntegral;
+              if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
+                this.payPrice = resData.content.exchange.salePrice;
+                this.goodsIntegral = resData.content.exchange.goodsIntegral;
+              }else{
+                this.showTip("兑换积分不足");
+                this.isUseIntegral = '0';
+                this.goodsIntegral = '';
+                this.payPrice = resData.content.payPrice;
+              }
             }else{
               this.goodsIntegral = '';
               this.payPrice = resData.content.payPrice;
@@ -131,13 +138,15 @@ export default {
     const choseAddress = this.choseAddress;
     if (choseAddress) {
       this.showAddress = choseAddress;
+      this.userAddressId = this.showAddress.id;
+      this.areaId = this.showAddress.areaId;
     } else if (autoAddress) {
       this.showAddress = autoAddress;
+      this.userAddressId = this.showAddress.id;
+      this.areaId = this.showAddress.areaId;
     } else {
       this.getAutoAddress();
     }
-    this.userAddressId = this.showAddress.id;
-    this.areaId = this.showAddress.areaId;
   },
   methods: {
     getCartList(){

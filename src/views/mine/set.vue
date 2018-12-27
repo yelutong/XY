@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper page-wallet">
-    
-    <x-button @click.native="loginOut">退出登录</x-button>
+    <vHeader title="个人设置"/>
+    <div class="mt50">
+      <x-button @click.native="loginOut">退出登录</x-button>
+    </div>
     <v-nodata v-if="noWallet" bgcolor="grey" text="- 暂无明细数据 -" />
   </div>
 </template>
@@ -9,7 +11,8 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import vNodata from "@/components/v-nodata";
-import { XButton } from 'vux'
+import { XButton } from 'vux';
+import vHeader from "@/components/v-header";
 export default {
   data() {
     return {
@@ -19,7 +22,8 @@ export default {
   },
   components: {
     "v-nodata": vNodata,
-    "x-button": XButton
+    "x-button": XButton,
+    vHeader
   },
   computed: {
     ...mapState(["token"])

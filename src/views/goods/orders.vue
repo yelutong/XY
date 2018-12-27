@@ -2,7 +2,7 @@
   <div class="wrapper page-orders">
     <vHeader title="我的订单"/>
     <div class="tab-nav">
-      <div class="item" :class="{active:index === choseDex}" v-for="(item, index) in orderNav" :key="index" @click="tabOrderStatus(item, index)">
+      <div class="item" :class="{active:index == choseDex}" v-for="(item, index) in orderNav" :key="index" @click="tabOrderStatus(item, index)">
         {{ item.title }}
       </div>
     </div>
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="goods-action">
-          <div>合计：<span class="price">￥{{ item.totalPrice }}</span></div>
+          <div>合计：<span class="price">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
           <div>
           <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="choseDex==0">取消订单</button>
           <button class="btn-act" @click="onPayOrder(item.orderNo, index)" v-if="choseDex==0">继续支付</button>
@@ -55,7 +55,7 @@ export default {
       currentPage: 0,
       //status: [10],
       status: this.getUrlParam("status"),
-      choseDex: 0,
+      choseDex: this.getUrlParam("choseDex")||null,
       orderNav: [
         {
           title: "待付款",
@@ -99,7 +99,6 @@ export default {
   },
   created() {
     // 读取订单状态
-    this.choseDex = '';
     this.clearData();
     this.getOrdersList();
   },
@@ -204,6 +203,7 @@ export default {
               status: this.getStatusTxt(val.status),
               statusNum: val.status,
               totalPrice: val.totalPrice,
+              deductedPrice: val.deductedPrice||null,
               imgList: this.getArrImg(val.items),
               orderNo: val.orderNumberStr,
               orderId: val.id,

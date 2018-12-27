@@ -17,18 +17,21 @@
     <div class="lay-action">
       <v-cell v-if="!!serveLink" title="服务订单" :link="serveLink" />
        <v-cell title="系统设置" link="/mine/set" />
-      <v-cell title="我的钱包" link="/mine/wallet" />
+      <!-- <v-cell title="我的钱包" link="/mine/wallet" />
       <v-cell title="我的粉丝" link="/mine/fans" />
-      <v-cell title="我的收藏" link="/mine/collects" />
+      <v-cell title="我的收藏" link="/mine/collects" /> -->
       <div @click="shareToOther">
         <v-cell class="share" title="转发推荐" type="btn" />
       </div>
       <v-cell title="地址管理" link="/mine/addresses" />
-      <v-cell class="join" v-if="!serveLink" title="入驻" :link="joinLink" />
+      <!-- <v-cell class="join" v-if="!serveLink" title="入驻" :link="joinLink" />-->
       <v-cell class="about" title="关于我们" link="/mine/about" />
+      <v-cell class="about" title="帮助中心" link="/goods/connectMe" />
+      <!--
       <div @click="callHelp">
-        <v-cell class="help" title="帮助中心" type="btn" />
+        <v-cell class="help" title="帮助中心" type="btn"  />
       </div>
+      -->
     </div>
     <v-footer active="mine" />
     <v-wechatshare :friendShare="weChatShare" />
@@ -49,31 +52,31 @@
             title: "待付款",
             size: 19.5,
             icon: require("../../assets/images/order-pay.png"),
-            link: "/goods/orders?status=0"
+            link: "/goods/orders?status=[10]&choseDex=0"
           },
           {
             title: "待发货",
             size: 19.5,
             icon: require("../../assets/images/order-send.png"),
-            link: "/goods/orders?status=1"
+            link: "/goods/orders?status=[20]&choseDex=1"
           },
           {
             title: "待收货",
             size: 19.5,
             icon: require("../../assets/images/order-receive.png"),
-            link: "/goods/orders?status=2"
+            link: "/goods/orders?status=[30]&choseDex=2"
           },
           {
             title: "待评价",
             size: 19.5,
             icon: require("../../assets/images/order-eva.png"),
-            link: "/goods/orders?status=3"
+            link: "/goods/orders?status=[40]&choseDex=3"
           },
           {
             title: "已完成",
             size: 19.5,
             icon: require("../../assets/images/order-done.png"),
-            link: "/goods/orders?status=4"
+            link: "/goods/orders?status=[50]&choseDex=4"
           }
         ],
         joinLink: "/mine/join",
@@ -100,6 +103,8 @@
       isLogin() {
         if(!this.token){
           this.$router.push('/mine/login');
+        }else{
+          this.$router.push('/mine/set');
         }
       },
       //获取个人中心信息
