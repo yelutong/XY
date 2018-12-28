@@ -58,6 +58,10 @@ export default {
       choseDex: this.getUrlParam("choseDex")||null,
       orderNav: [
         {
+          title: "全部",
+          status: [10,20,30,40,50]
+        },
+        {
           title: "待付款",
           status: [10]
         },
@@ -70,12 +74,8 @@ export default {
           status: [30]
         },
         {
-          title: "待评价",
-          status: [40]
-        },
-        {
           title: "已完成",
-          status: [50]
+          status: [40,50]
         }
       ],
       orderList: [],

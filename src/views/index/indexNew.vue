@@ -28,13 +28,13 @@
 
     <div class="newListData pd15 bg-white" v-if="newListData">
        <router-link class="relative item pdtb15 justify-content-space-between" :to="{path:'/goods', query:{id:item.id}}" v-for="(item, index) in newListData" :key="index">
-          <div class="flexg1"><img class="img" :src="urlPic+item.goodsMainPhoto.split(',')[0]" /></div>
+          <div><img class="img" :src="urlPic+item.goodsMainPhoto.split(',')[0]" /></div>
           <div class="flexg2 listRight">
             <p class="goodsName txt-black-real" v-text="item.goodsName"></p> 
             <div class="rightBtm justify-content-space-between">
             <div>
             <p class="fs-18 mb5 txt-orange" v-text="'¥'+item.salePrice"></p>
-            <p class="txt-gray1 center-line fs-10" v-text="'原价：¥'+item.salePrice"></p>
+            <p class="txt-gray1 fs-10" v-text="'销量'+item.saleCount"></p>
             </div>
             <div><mt-button size="small" type="primary" class="goodsDetail">立即抢购</mt-button></div>
             </div>

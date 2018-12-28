@@ -8,7 +8,7 @@
     </div>
     <div class="lay-order">
       <div class="head">
-        <v-cell title="订单详情" value="查看全部订单" align="right" ricon="blue" link="/goods/orders?status=[10,20,30,40,50]"></v-cell>
+        <v-cell title="商城订单" value="查看全部订单" align="right" ricon="blue" link="/goods/orders?status=[10,20,30,40,50]&choseDex=0"></v-cell>
       </div>
       <div class="list">
         <v-flexrow :flexrow-data="orderNav"></v-flexrow>
@@ -51,32 +51,30 @@
         orderNav: [{
             title: "待付款",
             size: 19.5,
+            num:0,
             icon: require("../../assets/images/order-pay.png"),
-            link: "/goods/orders?status=[10]&choseDex=0"
+            link: "/goods/orders?status=[10]&choseDex=1"
           },
           {
             title: "待发货",
             size: 19.5,
+            num:0,
             icon: require("../../assets/images/order-send.png"),
-            link: "/goods/orders?status=[20]&choseDex=1"
+            link: "/goods/orders?status=[20]&choseDex=2"
           },
           {
             title: "待收货",
             size: 19.5,
+            num:0,
             icon: require("../../assets/images/order-receive.png"),
-            link: "/goods/orders?status=[30]&choseDex=2"
-          },
-          {
-            title: "待评价",
-            size: 19.5,
-            icon: require("../../assets/images/order-eva.png"),
-            link: "/goods/orders?status=[40]&choseDex=3"
+            link: "/goods/orders?status=[30]&choseDex=3"
           },
           {
             title: "已完成",
             size: 19.5,
+            num:0,
             icon: require("../../assets/images/order-done.png"),
-            link: "/goods/orders?status=[50]&choseDex=4"
+            link: "/goods/orders?status=[40,50]&choseDex=4"
           }
         ],
         joinLink: "/mine/join",
@@ -95,7 +93,8 @@
       document.title = "个人中心";
     },
     created() {
-      this.getUserData();
+      this.getUserData();//获取个人信息数据
+      this.getOrderCount();//获取订单数量
       console.log(this.token);
     },
     methods: {
@@ -106,6 +105,44 @@
         }else{
           this.$router.push('/mine/set');
         }
+      },
+      //获取订单数量
+      getOrderCount(){
+        this.$axios
+        .get(this.api.orderCount,{
+          headers: {"Authorization": this.token }
+         })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip(resData.msg);
+            return;
+          }else{
+            this.orderNav.forEach( (item,i) => {    
+              switch (i)
+              {
+                case 0: 
+                item.num = resData.content.orderWaitPay;
+                break;
+                case 1: 
+                item.num = resData.content.orderAlreadyPay;
+                break;
+                case 2: 
+                item.num = resData.content.orderAlreadySend
+                break;
+                default:
+                item.num = resData.content.orderConfirmReceipt
+              }
+             } 
+            )
+          }
+          console.log(resData);
+          // this.ifUserBind();// 进来判断是否绑定了手机号
+        })
+        .catch(res => {
+          console.log(res);
+          //this.showTip("获取信息失败，请稍后重试");
+        }); 
       },
       //获取个人中心信息
       getUserData(){
