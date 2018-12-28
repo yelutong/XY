@@ -26,12 +26,12 @@
         <div class="goods-action">
           <div>合计：<span class="price">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
           <div>
-          <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="choseDex==0">取消订单</button>
-          <button class="btn-act" @click="onPayOrder(item.orderNo, index)" v-if="choseDex==0">继续支付</button>
-          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="choseDex==1">退款</button>
-          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="choseDex==2">确认收货</button>
-          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="choseDex==2">查看物流</button>
-          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="choseDex==3">立即评价</button>
+          <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="choseDex==1">取消订单</button>
+          <button class="btn-act" @click="onPayOrder(item.orderNo, index)" v-if="choseDex==1">继续支付</button>
+          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="choseDex==2">退款</button>
+          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="choseDex==3">确认收货</button>
+          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="choseDex==3">查看物流</button>
+          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="choseDex==4">立即评价</button>
           <button class="btn-act" @click="callHelp(item.orderNo)" v-if="choseDex==4">申请售后</button>
           </div>
         </div>
@@ -148,6 +148,7 @@ export default {
     tabOrderStatus(item, index) {
       console.log(item)
       if (this.choseDex !== index) {
+        this.orderList = [];
         this.choseDex = index;
         this.clearData();
         this.status = '['+item.status+']';
@@ -163,7 +164,8 @@ export default {
     },
     // 获取订单数据
     getOrdersList(first) {
-      this.$axios
+      if(this.currentPage<=this.totalPage){
+         this.$axios
         .post(this.api.payOrderList, 
         JSON.stringify({
             status: JSON.parse(this.status),
@@ -189,6 +191,10 @@ export default {
           }
           let objData = resData.content,
             arrData = objData.list;
+
+          this.currentPage = objData.currPage+1;
+          this.totalPage = objData.totalPage;
+
           if (arrData.length === 0) {
             this.orderList = [];
             this.noOrders = true;
@@ -210,7 +216,7 @@ export default {
               arrGood: []
             };
             // 如果是待评价，把待评价的子商品循环出来
-            if (this.choseDex === 2 || this.choseDex === 3) {
+            if (this.choseDex === 4) {
               val.orderDetails.forEach(vl => {
                 obj.arrGood.push({
                   id: vl.productId,
@@ -241,6 +247,7 @@ export default {
             this.loading = false;
           }
         });
+      }
     },
     goodsCount(items){
       let count = 0;
