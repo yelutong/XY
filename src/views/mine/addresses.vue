@@ -4,8 +4,8 @@
     <div class="lay-adres mgt50">
       <div class="item" v-for="(item, index) in addressesList" :key="index">
         <div class="info" @click="selectAddress(item)">
-          <div class="adres">{{ item.areaInfo }} {{ item.address }}</div>
-          <div class="name-phone">{{ item.userName }} {{ item.phone }}</div>
+          <div class="name-phone txt-black fs-14">{{ item.userName }} {{ item.phone }}</div>
+          <div class="adres txt-gray mt5 fs-12">{{ item.areaInfo }} {{ item.address }}</div>
         </div>
         <div class="acts">
           <div class="act" @click="setAutoAddress(item)">

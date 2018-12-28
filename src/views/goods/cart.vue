@@ -5,8 +5,8 @@
       <i class="ico i-map"></i>
       <div class="adress">
         <template v-if="showAddress">
-          <span class="name-phone">{{ showAddress.userName }} {{ showAddress.phone }}</span>
-          <span class="adres">{{ showAddress.areaInfo }} {{showAddress.address }}</span>
+          <span class="name-phone fs-14">{{ showAddress.userName }} {{ showAddress.phone }}</span>
+          <span class="adres fs-12 txt-gray">{{ showAddress.areaInfo }} {{showAddress.address }}</span>
         </template>
         <span v-else class="chose">选择收货地址</span>
       </div>

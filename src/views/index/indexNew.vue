@@ -214,18 +214,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .newListData img{
-    width:115px;
-    height:115px;
-    margin-right:15px;
-  }
-  .listRight p.goodsName{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
   .mint-button--small{
     width:78px;
     height:24px;

@@ -8,6 +8,13 @@
       <div class="gd-name fs-15" v-text="goodsMainData.name"></div>
       <div class="price-weight">
         <span class="price" v-text="'￥'+goodsMainData.price"></span>
+        <i class="txt-gray" v-text="'销量'+goodsMainData.saleCount"></i>
+      </div>
+      <div class="salebuy norms h45"  v-if="!vGoods">
+        <b class="fs-14">购买须知:</b>
+        <div class="standards1">
+          商品预计7个工作日到达
+        </div>
       </div>
       <div class="salebuy norms h45"  v-if="!vGoods">
         <i class="fs-14">购买:</i>
@@ -17,6 +24,8 @@
           <div class="plus" @click="changeNum('plus')">+</div>
         </div>
       </div>
+
+      
 
     </div>
     <div class="lay-eva white">
@@ -48,8 +57,8 @@
       <img class="img" :src="item" v-for="(item, index) in detailPicList" :key="index" />
     </div>
     <div class="lay-action fix-btom pay-act-btom">
-      <div class="service">
 
+      <div class="service" v-if="!vGoods">
         <div class="per40 pd15 justify-content-space-around">
           <div class="item" @click="callHelp">
           <i class="ico i-call"></i>
@@ -60,7 +69,6 @@
           <p class="text">购物车</p>
           </div>
         </div>
-        
         <div class="item per30 bg-blue btn-submit" @click="pageToBuy(id)">
           立即购买
         </div>
@@ -68,6 +76,18 @@
           加入购物车
         </div>
       </div>
+      <div class="service" v-if="vGoods">
+        <div class="per30 pd15 justify-content-space-around">
+          <div class="item" @click="callHelp">
+          <i class="ico i-call"></i>
+          <p class="text">客服</p>
+          </div>
+        </div>
+        <div class="item per70 btn-submit" @click="pageToBuy(id)">
+          立即购买
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -148,7 +168,8 @@ export default {
             this.goodsMainData = {
               id: objData.id,
               name: objData.goodsName,
-              price: objData.salePrice
+              price: objData.salePrice,
+              saleCount: objData.saleCount
             };
             // 再把轮播图片存进轮播对象
             const arrPic = objData.goodsMainPhoto.split(',');

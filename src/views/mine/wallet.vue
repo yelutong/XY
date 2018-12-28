@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper page-wallet">
-    <div class="lay-action white">
+    <vHeader title="我的钱包" to="/mine" />
+    <div class="lay-action white mt50">
       <router-link class="btn-submit" to="/mine/mycard">我的银行卡</router-link>
       <router-link class="btn-submit" to="/mine/getgold">提现申请</router-link>
     </div>
@@ -23,6 +24,7 @@
 <script>
 import { mapState } from "vuex";
 import vNodata from "@/components/v-nodata";
+import vHeader from "@/components/v-header";
 export default {
   data() {
     return {
@@ -31,7 +33,8 @@ export default {
     };
   },
   components: {
-    "v-nodata": vNodata
+    "v-nodata": vNodata,
+    vHeader
   },
   computed: {
     ...mapState(["token"])
