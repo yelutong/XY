@@ -105,14 +105,21 @@ export default {
           }else{
             console.log(resData);
             if(orderPrice.goodsChannel == 2){
-              if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
+              if(resData.content.exchange){
+                if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
                 this.payPrice = resData.content.exchange.salePrice;
                 this.goodsIntegral = resData.content.exchange.goodsIntegral;
+                }else{
+                  this.showTip("兑换积分不足");
+                  this.isUseIntegral = '0';
+                  this.goodsIntegral = '';
+                  this.payPrice = resData.content.payPrice;
+                }
               }else{
-                this.showTip("兑换积分不足");
-                this.isUseIntegral = '0';
-                this.goodsIntegral = '';
-                this.payPrice = resData.content.payPrice;
+                  this.showTip("该商品暂不支持积分兑换");
+                  this.isUseIntegral = '0';
+                  this.goodsIntegral = '';
+                  this.payPrice = resData.content.payPrice;
               }
             }else{
               this.goodsIntegral = '';
