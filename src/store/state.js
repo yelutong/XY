@@ -3,6 +3,7 @@ const state = {
   token: '',
   parentId: '',
   userId: '',
+  userPhone: '',
   shareId:'',
   weChatInfo: {
     name: '新银众商',

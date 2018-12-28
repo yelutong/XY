@@ -11,6 +11,9 @@ const mutations = {
   mtnUserId(sta, val) {
     sta.userId = val;
   },
+  mtnUserPhone(sta, val) {
+    sta.userPhone = val;
+  },
   mtnShareId(sta, val) {
     sta.shareId = val;
   },

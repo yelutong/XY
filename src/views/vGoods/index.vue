@@ -5,11 +5,11 @@
         <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
         <div class="box2">
            <flexbox :gutter="0" wrap="wrap">
-            <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index" class="mgt10">
-              <div @click="toDetail(goods.id)">
+            <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index">
+              <div @click="toDetail(goods.id)" class="mgt10">
               <p class="boxPic"><img :src="urlPic+goods.goodsMainPhoto.split(',')[0]"></p>
-              <p v-text="goods.goodsName" class="tabGoodsName center fs-12"></p>
-              <p class="center"><b class="fs-15 txt-orange rt5" v-text="'¥'+goods.salePrice"></b><i class="center-line" v-text="'¥'+goods.marketPrice"></i></p>
+              <p v-text="goods.goodsName" class="vGoodsName fs-12"></p>
+              <p class=""><b class="fs-15 txt-orange rt5" v-text="'¥'+goods.salePrice"></b><i class="center-line" v-text="'¥'+goods.marketPrice"></i></p>
              </div>
             </flexbox-item> 
           </flexbox>
@@ -38,6 +38,7 @@ export default {
       totalPage: 1,
       currentPage: 0,
       listData:[],
+      isLevelPackage: this.getUrlParam("isLevelPackage")||1,
       pullupEnabled: true,
       status: {
         pullupStatus: 'default',
@@ -64,7 +65,7 @@ export default {
         this.currentPage = 0;this.totalPage = 1;this.listData=[];
         if(this.currentPage< this.totalPage){
             this.currentPage= parseInt(this.currentPage) + 1;
-            this.$axios.post(this.api.getGoodsList,qs.parse({ "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+            this.$axios.post(this.api.getGoodsList,qs.parse({ "page" : this.currentPage, "limit":8 ,"isLevelPackage":this.isLevelPackage }),{headers: {"content-type": "application/json"}})
             .then(res => {
                console.log(res.data);
                this.totalPage=res.data.content.totalPage; 
@@ -87,7 +88,7 @@ export default {
       }else{
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;
-          this.$axios.post(this.api.getGoodsList,qs.parse({ "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+          this.$axios.post(this.api.getGoodsList,qs.parse({ "page" : this.currentPage, "limit": 8,"isLevelPackage":this.isLevelPackage  }),{headers: {"content-type": "application/json"}})
           .then(res => {
              console.log(res.data);
              this.totalPage=res.data.content.totalPage; 

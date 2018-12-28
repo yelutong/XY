@@ -37,8 +37,10 @@ const ajaxUrl = {
   loginOut: urlHost + 'user/logout',//退出登录
   deleteGoods: urlHost + 'goodscart/delete/',//{ids} 批量删除购物车
   uploadPhoto: uploadPic + 'upload/userPhoto',//上传用户头像
+  infoUpdate: urlHost + 'info/update',//更新用户信息
+  pwdUpdate: urlHost + 'user/updatePassword',//修改密码
+  phoneUpdate: urlHost + 'user/updateUsername',//修改用户名
 
-  
 
   getShareQr: ajaxHost + '/wx/p/user/get_share_qrcode_by_user_id.json', // 根据用户id生成二维码
   getShareArgs: ajaxHost + '/wx/p/user/share_to_friend.json', // 获取微信分享所需的参数

@@ -89,7 +89,7 @@
       "v-footer": vFooter
     },
     computed: {
-      ...mapState(["token", "userId", "weChatInfo", "weChatShare",'shareId'])
+      ...mapState(["token", "userId", "UserPhone", "weChatInfo", "weChatShare",'shareId'])
     },
     beforeCreate() {
       document.title = "个人中心";
@@ -99,7 +99,7 @@
       console.log(this.token);
     },
     methods: {
-      ...mapActions(["atnUserId"]),
+      ...mapActions(["atnUserId", "atnUserPhone"]),
       isLogin() {
         if(!this.token){
           this.$router.push('/mine/login');
@@ -121,6 +121,7 @@
           }else{
             this.userPhone = this.formatPhone(resData.content.userName);
             this.atnUserId(resData.content.id);
+            this.atnUserPhone(resData.content.userName);
             console.log(this.userId);
           }
           console.log(resData);

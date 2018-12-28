@@ -251,7 +251,7 @@ export default {
             if (resData.code !== 1) {
               if(resData.code == 403){
                 this.showTip("登录超时，请重新登录");
-                window.location.hash= '/mine/login?url='+window.location.href;
+                this.$router.push({name:'login', params: { url: window.location.href}});
               }else{
                 this.showTip("网络错误，请重试");
               }
@@ -298,7 +298,7 @@ export default {
         if (resData.code !== 1) {
           if(resData.code == 403){
             this.showTip("登录超时，请重新登录");
-            window.location.hash= '/mine/login?url='+window.location.href;
+            this.$router.push({name:'login', params: { url: window.location.href}});
           }else{
             this.showTip("网络错误，请重试");
           }

@@ -14,7 +14,7 @@
       <div class="vAreaContent pda15 bg-white">
       <div class="vArea justify-content-space-between">
         <span><img :src="vPic" /></span>
-        <span class="fs-10 txt-right"><router-link to="/vGoods">更多商品 》</router-link></span>
+        <span class="fs-10 txt-right"><router-link :to="vGoods">更多商品 》</router-link></span>
       </div>
       <div class="brand-list">
         <router-link class="item" :to="{path:'/goods', query:{id:item.id}}" v-for="(item, index) in vAreaList" :key="index">
@@ -67,6 +67,7 @@ export default {
   data() {
     return {
       vPic:require("@/assets/images/v@2x.png"),
+      vGoods:"/vGoods",
       urlPic:this.api.urlPic,
       totalPage: 1,
       currentPage: 0,
@@ -165,13 +166,18 @@ export default {
         const resData = res.data;
         if (resData.code === 1) {
           const arrData = resData.content[0].goodsLst;
+          let vgoodPath = JSON.parse(resData.content[0].paramsArray);
+          console.log(vgoodPath)
           let new2Array=[];
           arrData.map((v,i)=>{
             if(i<=2){
               new2Array.push(v)
             }
           });
-        this.vAreaList = new2Array;
+         this.vAreaList = new2Array;
+         if(vgoodPath&&vgoodPath.length>0){
+          this.vGoods = "/vGoods?"+vgoodPath[0].key+"="+vgoodPath[0].value;
+         }
         }
       });
     }

@@ -75,8 +75,8 @@ export default {
           	this.atnToken(resData.content);
           	this.showTip('登录成功');
         
-            if(this.getUrlParam("url")){
-              window.location.href=this.getUrlParam("url");
+            if(this.$route.params.url){
+              window.location.href=this.$route.params.url;
             }else{
               let _this = this;
               setTimeout(function(){ 

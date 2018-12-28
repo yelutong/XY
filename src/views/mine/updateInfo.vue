@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper updateInfo">
-    <vHeader title="修改信息" />
+    <vHeader title="修改信息" to="/mine/set" />
     <div class="mt50">
 
       <vue-core-image-upload 
@@ -18,11 +18,11 @@
        <mt-field label="昵称" placeholder="请输入昵称" v-model="nickName"></mt-field>
        <mt-field label="年龄" placeholder="请输入年龄" v-model="age"></mt-field>
         <group>
-          <popup-radio title="性别" :options="options1" v-model="option1"></popup-radio>
+          <popup-radio title="性别" :options="options1" v-model="sex"></popup-radio>
         </group>
        <mt-field label="邮箱" placeholder="请输入邮箱地址" type="email" v-model="email"></mt-field>
         <div class="loginOutBtn">
-        <button class="btn-submit mt50 full-screen" @click="evaGoods">提交修改</button>
+        <button class="btn-submit mt50 full-screen" @click="infoUpdate">提交</button>
         </div>
     </div>
   </div>
@@ -43,7 +43,7 @@ export default {
       headPhoto: '',
       age: '',
       email: '',
-      option1: '男',
+      sex: '男',
       options1: ['男', '女'],
     };
   },
@@ -98,31 +98,23 @@ export default {
     evaGoods() {
        
     },
-    loginOut(){
+    infoUpdate(){
       this.$axios
-          .get(this.api.loginOut, {
-            headers: {"Authorization": this.token }
+          .post(this.api.infoUpdate, 
+            JSON.stringify({
+              'age':this.age,
+              'email':this.email,
+              'headPhoto':this.headPhoto||'999',
+              'nickName':this.nickName,
+              'sex':this.sex
+            }),{
+             headers: {"Authorization": this.token , "content-type": "application/json"}
           })
           .then(res => {
             const resData = res.data;
-            if (resData.code !== 1) {
-              this.showTip("退出登录失败");
-              return;
-            }
-            this.atnToken('');
-            console.log(0);
-            let _this = this;
-            setTimeout(() => {
-              _this.$router.push({path: "/mine/login"});
-            }, 1000);
           })
           .catch(res => {
-            this.showTip("退出登录失败");
-            this.atnToken('');
-            let _this = this;
-            setTimeout(() => {
-              _this.$router.push({path: "/mine/login"});
-            }, 1000);
+            
           });
     }
   }

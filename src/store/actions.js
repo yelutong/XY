@@ -11,6 +11,9 @@ const actions = {
   atnUserId(context, val) {
     context.commit('mtnUserId', val);
   },
+  atnUserPhone(context, val) {
+    context.commit('mtnUserPhone', val);
+  },
   atnShareId(context, val) {
     context.commit('mtnShareId', val);
   },
