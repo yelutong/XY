@@ -8,31 +8,43 @@
     </div>
     <div class="tab-con" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="100">
       <div class="order-item" v-for="(item, index) in orderList" :key="index">
-        <div class="goods-status">
+        <div class="goods-status vux-1px-b">
           <div class="date">
-            <i class="ico i-date"></i>{{ item.date}}
+            <i class="ico i-store"></i>{{ item.storeName}}
           </div>
-          <span class="status">{{ item.status }}</span>
+          <span class="status" @click="cancelOrder(item.orderNo, index)" v-if="item.statusNum==10"><div class="act"><i class="ico i-del2"></i>
+          </div></span>
         </div>
-        <div class="goods-list" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)">
-          <v-imglist :image-data="item.imgList" size="75" />
+
+        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)" v-for="con in item.conList">
+         <div class="conPic"><img :src="con.goodsPhoto" /></div>
+         <div class="flexg2 listRight">
+            <p class="goodsName txt-black-real" v-text="con.goodsName"></p> 
+            <div class="rightBtm justify-content-space-between">
+            <div class="txt-black1 flexBox">
+            <p class="per50" v-text="'实付：¥'+con.totalPrice"></p>
+
+            <p class="per50 txt-right" v-text="'数量：'+con.goodsCount"></p>
+            </div> 
+            </div>
+          </div>
         </div>
+
         <div class="goods-info">
-          <span>订单号：{{ item.orderNo }}</span>
+          <span>下单时间：{{ item.date}}</span>
           <div class="price-info">
             共{{ item.num }}件商品
           </div>
         </div>
         <div class="goods-action">
-          <div>合计：<span class="price">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
+          <div>合计：<span class="price txt-orange">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
           <div>
-          <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="item.statusTips==10">取消订单</button>
-          <button class="btn-act" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)" v-if="item.statusTips==10">继续支付</button>
-          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="item.statusTips==20">退款</button>
-          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="item.statusTips==30">确认收货</button>
-          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="item.statusTips==30">查看物流</button>
-          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusTips==40">立即评价</button>
-          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusTips==50">申请售后</button>
+          <button class="btn-act" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)" v-if="item.statusNum==10">继续支付</button>
+          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="item.statusNum==20">退款</button>
+          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="item.statusNum==30">确认收货</button>
+          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="item.statusNum==30">查看物流</button>
+          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusNum==40">立即评价</button>
+          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusNum==50">申请售后</button>
           </div>
         </div>
       </div>
@@ -45,7 +57,6 @@
 import { mapState } from "vuex";
 import { MessageBox, Toast, InfiniteScroll } from "mint-ui";
 import vNodata from "@/components/v-nodata";
-import vImglist from "@/components/v-imglist";
 import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
@@ -88,7 +99,6 @@ export default {
   },
   components: {
     "v-nodata": vNodata,
-    "v-imglist": vImglist,
     vHeader
   },
   computed: {
@@ -140,9 +150,9 @@ export default {
       }
       const arrImg = [];
       arr.forEach(val => {
-        arrImg.push(this.api.urlPic + val.goodsPhoto.split(',')[0]);
+        val.goodsPhoto = this.api.urlPic + val.goodsPhoto.split(',')[0];
       });
-      return arrImg;
+      return arr;
     },
     // 切换tab
     tabOrderStatus(item, index) {
@@ -207,11 +217,11 @@ export default {
               date: val.addTime,
               num: this.goodsCount(val.items),
               status: this.getStatusTxt(val.status),
-              statusTips: val.status,
               statusNum: val.status,
+              storeName: val.storeName,
               totalPrice: val.totalPrice,
               deductedPrice: val.deductedPrice||null,
-              imgList: this.getArrImg(val.items),
+              conList: this.getArrImg(val.items),
               orderNo: val.orderNumberStr,
               orderId: val.id,
               arrGood: []

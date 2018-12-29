@@ -229,7 +229,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("下单失败，请您稍后重试");
+            this.showTip(resData.msg);
             return;
           }
           const orderNumbers = resData.content;

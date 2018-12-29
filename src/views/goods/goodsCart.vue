@@ -130,6 +130,7 @@ export default {
             return;
           }else{
             this.showTip("删除成功");
+            this.canEdit = true;
             this.goodsArr = [];
             this.getCartList();
           }
