@@ -9,37 +9,23 @@
     <div class="head white">
       <v-swiper :swiper-data="bannerSwipe" />
     </div>
-
-    <div class="brand bg-gray1 pda15" v-if="vAreaList">
-      <div class="vAreaContent pda15 bg-white">
-      <div class="vArea justify-content-space-between">
-        <span><img :src="vPic" /></span>
-        <span class="fs-10 txt-right"><router-link :to="vGoods">更多商品 》</router-link></span>
+    
+    <div class="pdt10 bg-gray1" v-if="vAreaList">
+      <div class="brand pd15 mb10" v-for="vList in vAreaList">
+        <div class="vAreaContent pda15 bg-white">
+        <div class="vArea justify-content-space-between">
+          <span><img :src="vList.vPic" /></span>
+          <span class="fs-10 txt-right"><router-link :to="vList.vGoods">更多商品 》</router-link></span>
+        </div>
+        <div class="brand-list">
+          <router-link class="item" :to="{path:'/goods', query:{id:item.id}}" v-for="(item, index) in vList.arrList" :key="index">
+            <p class="vPicClass"><img class="img" :src="urlPic+item.goodsMainPhoto.split(',')[0]" /></p>
+            <p class="pdlr5 mt5" v-text="item.goodsName"></p> 
+            <div class="center txt-orange fs-13 pdb10 mt5" v-text="'¥'+item.salePrice"></div>
+          </router-link>
+        </div>
+       </div>
       </div>
-      <div class="brand-list">
-        <router-link class="item" :to="{path:'/goods', query:{id:item.id}}" v-for="(item, index) in vAreaList" :key="index">
-          <p class="vPicClass"><img class="img" :src="urlPic+item.goodsMainPhoto.split(',')[0]" /></p>
-          <p class="pdlr5" v-text="item.goodsName"></p> 
-          <div class="center txt-orange fs-13 pdb10" v-text="'¥'+item.salePrice"></div>
-        </router-link>
-      </div>
-     </div>
-    </div>
-
-    <div class="brand bg-gray1 pda15" v-if="vTwoList">
-      <div class="vAreaContent pda15 bg-white">
-      <div class="vArea justify-content-space-between">
-        <span><img :src="vPic" /></span>
-        <span class="fs-10 txt-right"><router-link :to="vTwoGoods">更多商品 》</router-link></span>
-      </div>
-      <div class="brand-list">
-        <router-link class="item" :to="{path:'/goods', query:{id:item.id}}" v-for="(item, index) in vTwoList" :key="index">
-          <p class="vPicClass"><img class="img" :src="urlPic+item.goodsMainPhoto.split(',')[0]" /></p>
-          <p class="pdlr5" v-text="item.goodsName"></p> 
-          <div class="center txt-orange fs-13 pdb10" v-text="'¥'+item.salePrice"></div>
-        </router-link>
-      </div>
-     </div>
     </div>
 
     <div class="newListData pd15 bg-white" v-if="newListData">
@@ -82,13 +68,11 @@ export default {
   },
   data() {
     return {
-      vPic:require("@/assets/images/v@2x.png"),
-      vGoods:"/vGoods",
-      vTwoGoods:"/vGoods",
       urlPic:this.api.urlPic,
       totalPage: 1,
       currentPage: 0,
       listData:[],
+      newListData:[],
       pullup:true,
       status: {
         pullupStatus: 'default'
@@ -103,9 +87,7 @@ export default {
       }, 
       newsTag: require("@/assets/images/news-tag.png"),
       activityTag: require("@/assets/images/act-tag.png"),
-      vAreaList: [],
-      vTwoList:[],
-      newListData: []
+      vAreaList: []
     };
   },
   components: {
@@ -182,39 +164,35 @@ export default {
     getVdata() {
       this.$axios.get(this.api.getFloorList).then(res => {
         const resData = res.data;
+
         if (resData.code === 1) {
           if(resData.content.length>0){
-            let arrData = resData.content[0].goodsLst;
-            let vgoodPath = JSON.parse(resData.content[0].paramsArray);
-            console.log(vgoodPath)
-            let new2Array=[];
-            arrData.map((v,i)=>{
-              if(i<=2){
-                new2Array.push(v)
-              }
-            });
-           this.vAreaList = new2Array;
-           if(vgoodPath&&vgoodPath.length>0){
-            this.vGoods = "/vGoods?"+vgoodPath[0].key+"="+vgoodPath[0].value;
-           }
+            for(let arrList of resData.content){
+                const arrData = arrList.goodsLst;
+                const vgoodPath = JSON.parse(arrList.paramsArray);
+                console.log(vgoodPath);
+                const vAreaList={},new2Array=[];
+                if(arrData.length>=3){
+                  arrData.map((v,i)=>{
+                    if(i<=2){
+                      new2Array.push(v)
+                    }
+                 });
+                }
+                if(vgoodPath&&vgoodPath.length>0){
+                vAreaList.vGoods = "/vGoods?"+vgoodPath[0].key+"="+vgoodPath[0].value;
+                }else{
+                  vAreaList.vGoods = "/vGoods";
+                }
+                
+                vAreaList.vPic = require("@/assets/images/v@2x.png");
+                vAreaList.arrList = new2Array;
+                this.vAreaList.push(vAreaList);
+            }
+             console.log(this.vAreaList); 
           }
-          if(resData.content.length>1){
-            let arrData2 = resData.content[1].goodsLst;
-            let vgoodPath2 = JSON.parse(resData.content[1].paramsArray);
-            console.log(vgoodPath2)
-            let new3Array=[];
-            arrData2.map((v,i)=>{
-              if(i<=2){
-                new3Array.push(v)
-              }
-            });
-           this.vTwoList = new3Array;
-           if(vgoodPath2&&vgoodPath2.length>0){
-            this.vTwoGoods = "/vGoods?"+vgoodPath2[0].key+"="+vgoodPath2[0].value;
-           }
-          }
-
         }
+
       });
     }
   }
@@ -244,7 +222,6 @@ export default {
   .brand-list p {
     text-align: center;
     font-size: 12px;
-    margin: 5px 0 5px 0;
     overflow: hidden;
     color: #8C8C8C;
     text-overflow: ellipsis;

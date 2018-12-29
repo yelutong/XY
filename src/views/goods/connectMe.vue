@@ -18,7 +18,7 @@
       	</a>	
       	</i>
       </div>
-      <p class="center kef_gzh"><img src="https://m.mcyou.net/images/buyer/qrcode_share.png"></p> 
+      <p class="center kef_gzh"><img src="@/assets/images/qrcode_share.png"></p> 
       <p class="center kef_gzh_ms">扫描关注公众号</p>
     </div>
   </div>

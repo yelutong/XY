@@ -26,13 +26,13 @@
         <div class="goods-action">
           <div>合计：<span class="price">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
           <div>
-          <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="choseDex==1">取消订单</button>
-          <button class="btn-act" @click="onPayOrder(item.orderNo, index)" v-if="choseDex==1">继续支付</button>
-          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="choseDex==2">退款</button>
-          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="choseDex==3">确认收货</button>
-          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="choseDex==3">查看物流</button>
-          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="choseDex==4">立即评价</button>
-          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="choseDex==4">申请售后</button>
+          <button class="btn-act" @click="cancelOrder(item.orderNo, index)" v-if="item.statusTips==10">取消订单</button>
+          <button class="btn-act" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)" v-if="item.statusTips==10">继续支付</button>
+          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="item.statusTips==20">退款</button>
+          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="item.statusTips==30">确认收货</button>
+          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="item.statusTips==30">查看物流</button>
+          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusTips==40">立即评价</button>
+          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusTips==50">申请售后</button>
           </div>
         </div>
       </div>
@@ -207,6 +207,7 @@ export default {
               date: val.addTime,
               num: this.goodsCount(val.items),
               status: this.getStatusTxt(val.status),
+              statusTips: val.status,
               statusNum: val.status,
               totalPrice: val.totalPrice,
               deductedPrice: val.deductedPrice||null,

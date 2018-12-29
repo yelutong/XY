@@ -121,7 +121,7 @@ export default {
         auto: 3000,
         showIndicators: true,
         continuous: true,
-        link: "/goods/goodsinfo",
+        link: "",
         arrData: []
       },
       detailPicList: [],

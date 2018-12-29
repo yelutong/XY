@@ -41,6 +41,8 @@ const ajaxUrl = {
   pwdUpdate: urlHost + 'user/updatePassword',//修改密码
   phoneUpdate: urlHost + 'user/updateUsername',//修改用户名
   orderCount: urlHost + 'orderform/orderCount',//获取个人订单歌状态数量
+  userWallet: urlHost + 'userwallet/info',//查看钱包
+
 
   getShareQr: ajaxHost + '/wx/p/user/get_share_qrcode_by_user_id.json', // 根据用户id生成二维码
   getShareArgs: ajaxHost + '/wx/p/user/share_to_friend.json', // 获取微信分享所需的参数

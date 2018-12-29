@@ -135,9 +135,7 @@ export default {
 </script>
 <style lang="stylus">
 #vGoods{
-  .vux-flex-row{
-    
-  }
+  background:#e9edf0;
   .vGoods{
     margin:50px 0;
     padding:0 5px;
