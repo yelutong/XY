@@ -27,6 +27,8 @@ const pay = () =>
   import ('@/views/goods/pay'); // 支付
 const orders = () =>
   import ('@/views/goods/orders'); // 商品订单列表
+const orderDetail = () =>
+  import ('@/views/goods/orderDetail'); // 商品订单详情 
 const ordercenter = () =>
   import ('@/views/goods/ordercenter'); // 商品订单中心
 const evagoods = () =>
@@ -142,6 +144,10 @@ const router = new Router({
     {
       path: '/goods/orders',
       component: orders
+    },
+    {
+      path: '/goods/orderDetail',
+      component: orderDetail
     },
     {
       path: '/goods/ordercenter',
