@@ -16,7 +16,7 @@
           </div></span>
         </div>
 
-        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToDtail(item.orderNo)" v-for="con in item.conList">
+        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToDtail(item.orderNo,item.statusNum)" v-for="con in item.conList">
          <div class="conPic"><img :src="con.goodsPhoto" /></div>
          <div class="flexg2 listRight">
             <p class="goodsName txt-black-real" v-text="con.goodsName"></p> 
@@ -113,8 +113,8 @@ export default {
     this.getOrdersList();
   },
   methods: {
-    pageToDtail(orderNo){
-      this.$router.push('/goods/orderDetail?orderNo='+orderNo);
+    pageToDtail(orderNo,status){
+      this.$router.push('/goods/orderDetail?orderNo='+orderNo+'&status='+status);
     },
     // 清空状态函数（本来想做成5组翻页数据的，但是考虑时间紧迫，就简化成切换从头加载吧）
     clearData() {
