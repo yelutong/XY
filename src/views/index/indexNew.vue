@@ -106,8 +106,21 @@ export default {
     this.getBannerData();
     this.getVdata();
     this.loadMore();
+    this.getOpenid();
   },
   methods: {
+    getOpenid() {
+        let code = this.getUrlParam("code");
+        //推荐用户id，这个每次分享都必有的
+        let proUserId = this.getUrlParam("state");
+        alert("推荐用户id:" + proUserId)
+        this.$axios.get(this.api.getOpenid + '/' +  code).then(res => {
+        const resData = res.data;
+        //如果返回了token，则表示改用户是已经绑定过的用户，此操作相当于已经登录了
+        //如果没有返回token，那么保存返回的openid和相关信息，在需要验证token的地址走绑定流程，绑定成功后，返回登录后的token
+        alert(JSON.stringify(resData.content));
+      });
+    },
     loadMore (index) {
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;

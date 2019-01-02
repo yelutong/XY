@@ -42,6 +42,7 @@ const ajaxUrl = {
   phoneUpdate: urlHost + 'user/updateUsername',//修改用户名
   orderCount: urlHost + 'orderform/orderCount',//获取个人订单歌状态数量
   userWallet: urlHost + 'userwallet/info',//查看钱包
+  getOpenid: urlHost + 'user/wxOpenid', //获取openid
 
 
   getShareQr: ajaxHost + '/wx/p/user/get_share_qrcode_by_user_id.json', // 根据用户id生成二维码
