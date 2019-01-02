@@ -18,15 +18,15 @@
       <v-cell v-if="!!serveLink" title="服务订单" :link="serveLink" />
       <v-cell title="系统设置" link="/mine/set" />
       <v-cell title="我的钱包" link="/mine/wallet" />
-      <!-- <v-cell title="我的粉丝" link="/mine/fans" />
+      <!--<v-cell title="我的粉丝" link="/mine/fans" />
       <v-cell title="我的收藏" link="/mine/collects" /> -->
-      <div @click="shareToOther">
+      <!--<div @click="shareToOther">
         <v-cell class="share" title="转发推荐" type="btn" />
-      </div>
+      </div>-->
       <v-cell title="地址管理" link="/mine/addresses" />
       <!-- <v-cell class="join" v-if="!serveLink" title="入驻" :link="joinLink" />-->
       <v-cell class="about" title="关于我们" link="/mine/about" />
-      <v-cell class="about" title="帮助中心" link="/goods/connectMe" />
+     <!--  <v-cell class="about" title="帮助中心" link="/goods/connectMe" />-->
       <v-cell class="about" title="APP下载" link="" />
       <!--
       <div @click="callHelp">

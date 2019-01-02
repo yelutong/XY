@@ -5,6 +5,7 @@ const state = {
   userId: '',
   userPhone: '',
   shareId:'',
+  proUserId:'',
   weChatInfo: {
     name: '新银众商',
     avatar: require("../assets/images/avatar.png")

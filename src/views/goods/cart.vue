@@ -28,9 +28,27 @@
         </div>
       </div>
     </div>
-    <group class="mb10">
-    <x-switch title="使用兑换积分" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
+    
+
+    <group>
+      <div @click="showTips">
+      <cell :title="'可抵用兑换积分'+exchange.discountedPrice+'.00'" is-link>
+        <img slot="icon" style="display:block;margin-right:5px;width:25px;height:25px" :src="exchangePic">
+      </cell>
+     </div>
     </group>
+    
+      <div class="picker-new">
+          <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
+           <div :class="show ?'picker-panel show':'picker-panel'">
+            <div class="h45 vux-1px-b relative titleEx">兑换积分<i class="txt-gray" @click="closePickerBox">×</i></div>
+            <group class="mb10">
+             <x-switch :title="'可使用兑换积分'+exchange.exchange.goodsIntegral*exchange.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
+            </group>
+          </div>
+        </div> 
+
+
     <div class="lay-tips white" v-if="isShowList">
       <textarea class="txa" placeholder="请填写备注" v-model="goodsTips" maxlength="200"></textarea>
     </div>
@@ -51,13 +69,14 @@
 // 购物车
 import { mapState } from "vuex";
 import { Toast } from "mint-ui";
-import { XSwitch, Group } from 'vux';
+import { XSwitch, Group, Cell } from 'vux';
 import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
   data() {
     return {
+      show: false,
       userAddressId:'',
       areaId:'',
       isShowList: false,
@@ -65,8 +84,10 @@ export default {
       payPrice: 0,
       userCouponIds: [],
       goodsChannel: 1,
-      goodsIntegral:'',
+      goodsIntegral: '',
       isUseIntegral:0,
+      exchange: '',
+      exchangePic: require("../../assets/images/dui@2x.png"),
       num: '',
       showAddress: null,
       goodsBuyInfo: [],
@@ -77,6 +98,7 @@ export default {
   components: { 
     "x-switch": XSwitch,
     "group": Group,
+    "cell": Cell,
     "v-nodata": vNodata,
     vHeader
   },
@@ -107,7 +129,7 @@ export default {
             if(orderPrice.goodsChannel == 2){
               if(resData.content.exchange){
                 if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
-                this.payPrice = resData.content.exchange.salePrice;
+                this.payPrice = resData.content.payPrice;
                 this.goodsIntegral = resData.content.exchange.goodsIntegral;
                 }else{
                   this.showTip("兑换积分不足");
@@ -134,10 +156,11 @@ export default {
     }
   },
   beforeCreate(){
-    document.title = '填写订单';
+    document.title = '结算';
   },
   created() {
     this.getCartList();
+    this.exchangeData();
     // 取要购买的商品信息
     //this.getBuyInfo(this.id);
     // 读取用户默认地址 和 手选的地址（从选择地址那边返回来）
@@ -156,6 +179,41 @@ export default {
     }
   },
   methods: {
+    closePickerBox(){
+      this.show = false;
+    },
+    showTips(){
+      this.show = true;
+    },
+    exchangeData(){
+      let orderPrice = {
+        'goodsCarts': this.goodsCarts,
+        'goodsChannel':  2,
+        'isUseIntegral': 1,
+        'userCouponIds': this.userCouponIds
+      }
+      this.$axios
+        .post(this.api.orderPriceNew,
+        JSON.stringify(orderPrice),
+        {
+          headers: {"Authorization": this.token , "content-type": "application/json"}
+        })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("未获取到价格信息");
+            return;
+          }else{
+            console.log(resData);
+              if(resData.content.exchange){
+                this.exchange = resData.content;
+              }
+          }
+        })
+        .catch(res => {
+         // this.showTip("未获取到商品信息");
+        });
+    },
     getCartList(){
       let resData = [];
       if(this.$route.params.selectArr){

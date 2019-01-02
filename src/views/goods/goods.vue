@@ -1,7 +1,6 @@
 <template> 
   <div class="wrapper page-goods">
-    <vHeader :title="goodsMainData.name"/>
-    <div class="lay-swiper white mt40">
+    <div class="lay-swiper white">
       <v-swiper :swiper-data="picSwipe" />
     </div>
     <div class="lay-goods white" v-if="goodsMainData">

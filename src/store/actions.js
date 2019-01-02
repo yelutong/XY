@@ -5,6 +5,9 @@ const actions = {
   atnToken(context, val) {//存储token
     context.commit('mtnToken', val);
   },
+  atnProUserId(context, val) {//存储ProUserId
+    context.commit('mtnProUserId', val);
+  },
   atnParentId(context, val) {
     context.commit('mtnParentId', val);
   },

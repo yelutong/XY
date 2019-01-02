@@ -18,10 +18,10 @@
               <div @click="toDetail(goods.id)" class="mgt10 justify-content-space-between">
               <p><img :src="urlPic+goods.goodsMainPhoto.split(',')[0]"></p>
               <div class="flexg2 listRight">
-                <p class="goodsName txt-black-real" v-text="goods.goodsName"></p> 
+                <p class="goodsName txt-black2 fs-14" v-text="goods.goodsName"></p> 
                 <div class="rightBtm justify-content-space-between">
                 <div>
-                <p class="fs-18 mb5 txt-orange" v-text="'¥'+goods.salePrice"></p>
+                <p class="fs-18 mb5 txt-orange bold" v-text="'¥'+goods.salePrice"></p>
                 <p class="txt-gray1 fs-10" v-text="'销量'+goods.saleCount"></p>
                 </div>
                 <div><mt-button size="small" type="primary" class="goodsDetail">立即抢购</mt-button></div>
