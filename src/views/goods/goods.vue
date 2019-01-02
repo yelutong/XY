@@ -164,6 +164,7 @@ export default {
           this.sellerStoreId = objData.sellerStoreId;
           console.log(objData);
           if(objData){
+            document.title = objData.goodsName;
             // 成功后赋值商品对象
             this.goodsMainData = {
               id: objData.id,
