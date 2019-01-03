@@ -52,11 +52,19 @@ export default {
     document.title = "收货地址";
   },
   created() {
-    // 加载收货地址列表
-    this.getAddressesList();
+    this.verToken();
   },
   methods: {
     ...mapActions(["atnAutoAddress", "atnChoseAddress"]),
+    verToken(){
+     if(!this.token){
+      this.showTip("登录超时，请重新登录");
+      this.$router.push({path: "/mine/login"});
+     }else{
+      // 加载收货地址列表
+      this.getAddressesList();
+     }
+    },
     // 获取所有地址
     getAddressesList() {
       this.$axios

@@ -5,9 +5,12 @@
     </div>
     <div class="lay-goods white" v-if="goodsMainData">
       <div class="gd-name fs-15" v-text="goodsMainData.name"></div>
-      <div class="price-weight">
-        <span class="price" v-text="'￥'+goodsMainData.price"></span>
-        <i class="txt-gray" v-text="'销量'+goodsMainData.saleCount"></i>
+      <div class="price-weight pdtb15 vux-1px-b">
+        <div>
+          <span class="price mr5" v-text="'￥'+goodsMainData.price"></span>
+          <span class="center-line fs-16 txt-gray1" v-text="'￥'+goodsMainData.marketPrice"></span>
+        </div>
+        <i class="txt-gray1" v-text="'销量'+goodsMainData.saleCount"></i>
       </div>
       <div class="salebuy norms h45"  v-if="!vGoods">
         <b class="fs-14">购买须知:</b>
@@ -63,8 +66,9 @@
           <i class="ico i-call"></i>
           <p class="text">客服</p>
           </div>
-          <div class="item" @click="toCart">
-          <i class="ico i-cart"></i>
+          <div class="item cartNum relative" @click="toCart">
+          <mt-badge size="normal" color="#FF4F00" v-text="cartNum" v-if="cartNum"></mt-badge>
+          <i class="ico i-cart1"></i>
           <p class="text">购物车</p>
           </div>
         </div>
@@ -93,7 +97,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { MessageBox } from "mint-ui";
+import { MessageBox, Badge } from "mint-ui";
 import vSwiper from "@/components/v-swiper";
 import vCell from "@/components/v-cell";
 import vNodata from "@/components/v-nodata";
@@ -107,6 +111,7 @@ export default {
       vGoods:this.getUrlParam('vGoods')||'',
       urlPic:this.api.urlPic,
       num: 1,
+      cartNum: '',
       sellerStoreId: '',
       goodsMainData: {
         id: null,
@@ -137,18 +142,35 @@ export default {
     vHeader
   },
   computed: {
-    ...mapState(["token", "userId"])
+    ...mapState(["token", "openId", "userId"])
   },
   beforeCreate() {
     document.title = "商品详情";
   },
   created() {
+    this.verToken();
     // 取得商品id
     const id = this.id;
     this.getGoodsMainData(id);
     this.getGoodsEva(id);
   },
   methods: {
+    verToken(){
+     if(this.token){
+      this.$axios
+        .get(this.api.getCartNum, {
+          headers: { "Authorization": this.token }
+        })
+        .then(res => {
+          if(res.data.content){
+            this.cartNum = res.data.content;
+          }
+        })
+        .catch(res => {
+          this.showTip("获取购物车数量失败");
+        });
+     }
+    },
     // 获取商品主体信息
     getGoodsMainData(id) {
       this.$axios
@@ -169,6 +191,7 @@ export default {
               id: objData.id,
               name: objData.goodsName,
               price: objData.salePrice,
+              marketPrice: objData.marketPrice,
               saleCount: objData.saleCount
             };
             // 再把轮播图片存进轮播对象
@@ -254,6 +277,16 @@ export default {
     },
     // 加入购物车
     addToCart(id) {
+      let openId = localStorage.getItem("openId");
+      if(openId && !this.token){
+        this.showTip("微信绑定流程");
+        return;
+      } 
+      else if(!openId && !this.token){
+        this.showTip("中间页流程");
+        return;
+      }
+
       let ajaxData ={
         'goodsCount':this.num,
         'goodsId': id,
@@ -279,6 +312,7 @@ export default {
               return;
             }
             this.showTip("加入购物车成功");
+            this.verToken();
             // this.$router.push({ path: "/cart", query: { id: id } });
           })
           .catch(res => {
@@ -300,6 +334,17 @@ export default {
           }
         });
       }*/
+
+      let openId = localStorage.getItem("openId");
+      if(openId && !this.token){
+        this.showTip("微信绑定流程");
+        return;
+      } 
+      else if(!openId && !this.token){
+        this.showTip("中间页流程");
+        return;
+      }
+
       let ajaxData ={
         'goodsCount':this.num,
         'goodsId': id,

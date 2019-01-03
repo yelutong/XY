@@ -32,18 +32,18 @@
 
     <group>
       <div @click="showTips">
-      <cell :title="'可抵用兑换积分'+exchange.discountedPrice+'.00'" is-link>
+      <cell :title="(exchangeObj&&exchangeObj.discountedPrice)?('可使用兑换积分'+exchangeObj.discountedPrice+'.00'):'可使用兑换积分0.00'" is-link>
         <img slot="icon" style="display:block;margin-right:5px;width:25px;height:25px" :src="exchangePic">
       </cell>
      </div>
     </group>
     
-      <div class="picker-new">
+      <div class="picker-new" v-if="exchangeObj">
           <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
            <div :class="show ?'picker-panel show':'picker-panel'">
             <div class="h45 vux-1px-b relative titleEx">兑换积分<i class="txt-gray" @click="closePickerBox">×</i></div>
             <group class="mb10">
-             <x-switch :title="'可使用兑换积分'+exchange.exchange.goodsIntegral*exchange.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
+             <x-switch :title="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
             </group>
           </div>
         </div> 
@@ -86,7 +86,7 @@ export default {
       goodsChannel: 1,
       goodsIntegral: '',
       isUseIntegral:0,
-      exchange: '',
+      exchangeObj: '',
       exchangePic: require("../../assets/images/dui@2x.png"),
       num: '',
       showAddress: null,
@@ -112,7 +112,6 @@ export default {
         'isUseIntegral': this.isUseIntegral,
         'userCouponIds': this.userCouponIds
       }
-      console.log(orderPrice);
       this.$axios
         .post(this.api.orderPriceNew,
         JSON.stringify(orderPrice),
@@ -125,7 +124,6 @@ export default {
             this.showTip("未获取到价格信息");
             return;
           }else{
-            console.log(resData);
             if(orderPrice.goodsChannel == 2){
               if(resData.content.exchange){
                 if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
@@ -204,9 +202,8 @@ export default {
             this.showTip("未获取到价格信息");
             return;
           }else{
-            console.log(resData);
               if(resData.content.exchange){
-                this.exchange = resData.content;
+                this.exchangeObj = resData.content;
               }
           }
         })
@@ -222,7 +219,6 @@ export default {
       }else{
         resData = JSON.parse(sessionStorage.getItem("selectArr"));
       }
-      console.log(resData)
         // 成功后赋值商品对象，并存进数组
         if(resData.length>0){
           this.isShowList = true;
@@ -231,8 +227,6 @@ export default {
             this.uuid=this.uuid+""+i.id;
             this.goodsCarts.push({'id':i.id});
           }
-          console.log(this.uuid);
-          console.log(this.goodsBuyInfo);
         }else{
           this.isShowList = false;
         }
@@ -244,7 +238,7 @@ export default {
         .get(this.api.getDefAddrData, { headers: { "Authorization": this.token } })
         .then(res => {
           const resData = res.data;
-          if (resData.code === 1) {
+          if (resData.content && resData.content.id) {
             this.showAddress = resData.content;
             this.areaId = this.showAddress.areaId;
             this.userAddressId = this.showAddress.id;

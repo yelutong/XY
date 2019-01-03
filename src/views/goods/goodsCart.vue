@@ -238,6 +238,10 @@ export default {
         item.num += 1;
       } else if (item.num >= 2) {
         item.num -= 1;
+      }else{
+        item.num = 1;
+        this.showTip("亲，不能再减少了哦");
+        return;
       }
       this.$axios
         .post(

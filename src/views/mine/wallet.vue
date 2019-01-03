@@ -43,10 +43,18 @@ export default {
     ...mapState(["token"])
   },
   created() {
-    // 获取我的钱包数据
-    this.getWalletInfo();
+    this.verToken();
   },
   methods: {
+    verToken(){
+     if(!this.token){
+      this.showTip("登录超时，请重新登录");
+      this.$router.push({path: "/mine/login"});
+     }else{
+      // 获取我的钱包数据
+      this.getWalletInfo();
+     }
+    },
     // 获取我的钱包数据
     getWalletInfo() {
       this.$axios

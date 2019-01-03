@@ -31,14 +31,15 @@ export default {
     ...mapState(["token"])
   },
   created() {
-    // 获取我的钱包数据
-    this.getWalletInfo();
+    this.verToken();
   },
   methods: {
     ...mapActions(["atnToken"]),
-    // 获取我的钱包数据
-    getWalletInfo() {
-     
+    verToken(){
+     if(!this.token){
+      this.showTip("登录超时，请重新登录");
+      this.$router.push({path: "/mine/login"});
+     }
     },
     loginOut(){
       this.$axios

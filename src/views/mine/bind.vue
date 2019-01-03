@@ -52,10 +52,7 @@ export default {
         return;
       }
       this.$axios
-        .get(this.api.getMobileCode, {
-          headers: { "Authorization": this.token },
-          params: { mobile: bindInfo.phone }
-        })
+        .get(this.api.getRegCode+bindInfo.phone)
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {

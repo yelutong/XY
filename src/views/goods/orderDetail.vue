@@ -21,7 +21,7 @@
       <mt-cell v-if="goodsBuyInfo.deductedPrice" title="使用兑换积分" :value="goodsBuyInfo.deductedPrice"></mt-cell>
     </div>
       
-    <div class="white pd15 mt10">
+    <div class="white pd15 mt10" v-if="goodsBuyInfo">
       <p class="h40">订单信息</p>
       <mt-cell title="订单号码" :value="goodsBuyInfo.orderNumber"></mt-cell>
       <mt-cell title="下单时间" :value="goodsBuyInfo.addTime"></mt-cell>
@@ -73,6 +73,16 @@ export default {
     this.getOrderData();
   },
   methods: {
+    makeOrder(){
+      // 下单成功后跳转支付页
+          this.$router.push({
+            path: "/goods/pay",
+            query: {
+              "orderNumbers": this.goodsBuyInfo.orderNumber,
+              'payPrice': this.goodsBuyInfo.totalPrice
+            }
+          });
+    },
     getOrderData(){
       this.$axios
         .get(this.api.orderformInfo+this.orderNo,{ 

@@ -108,11 +108,18 @@ export default {
     document.title = "我的订单";
   },
   created() {
+    this.verToken();
     // 读取订单状态
     this.clearData();
     this.getOrdersList();
   },
   methods: {
+    verToken(){
+     if(!this.token){
+      this.showTip("登录超时，请重新登录");
+      this.$router.push({path: "/mine/login"});
+     }
+    },
     pageToDtail(orderNo,status){
       this.$router.push('/goods/orderDetail?orderNo='+orderNo+'&status='+status);
     },

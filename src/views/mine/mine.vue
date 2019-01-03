@@ -15,8 +15,8 @@
       </div>
     </div>
     <div class="lay-action">
-      <v-cell v-if="!!serveLink" title="服务订单" :link="serveLink" />
-      <v-cell title="系统设置" link="/mine/set" />
+      <v-cell v-if="serveLink" title="服务订单" :link="serveLink" />
+      <v-cell v-if="token" title="系统设置" link="/mine/set" />
       <v-cell title="我的钱包" link="/mine/wallet" />
       <!--<v-cell title="我的粉丝" link="/mine/fans" />
       <v-cell title="我的收藏" link="/mine/collects" /> -->
@@ -25,8 +25,8 @@
       </div>-->
       <v-cell title="地址管理" link="/mine/addresses" />
       <!-- <v-cell class="join" v-if="!serveLink" title="入驻" :link="joinLink" />-->
-      <v-cell class="about" title="关于我们" link="/mine/about" />
-     <!--  <v-cell class="about" title="帮助中心" link="/goods/connectMe" />-->
+      <!--<v-cell class="about" title="关于我们" link="/mine/about" />
+       <v-cell class="about" title="帮助中心" link="/goods/connectMe" />-->
       <v-cell class="about" title="APP下载" link="" />
       <!--
       <div @click="callHelp">
@@ -35,7 +35,7 @@
       -->
     </div>
     <v-footer active="mine" />
-    <v-wechatshare :friendShare="weChatShare" />
+   <!-- <v-wechatshare :friendShare="weChatShare" /> -->
   </div>
 </template>
 
@@ -94,12 +94,26 @@
       document.title = "个人中心";
     },
     created() {
+      this.verToken();
       this.getUserData();//获取个人信息数据
       this.getOrderCount();//获取订单数量
       console.log(this.token);
     },
     methods: {
       ...mapActions(["atnUserId", "atnUserPhone"]),
+      verToken(){
+        let openId = localStorage.getItem("openId");
+        if(openId && !this.token){
+          this.showTip("微信绑定流程");
+          //this.$router.push('/mine/bind');
+          return;
+        } 
+        else if(!openId && !this.token){
+          this.showTip("中间页流程");
+          this.$router.push('/mine/bind');
+          return;
+        }
+      },
       isLogin() {
         if(!this.token){
           this.$router.push('/mine/login');
@@ -116,7 +130,9 @@
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip(resData.msg);
+            if(resData.code !== 403){
+              this.showTip(resData.msg);
+            }
             return;
           }else{
             this.orderNav.forEach( (item,i) => {    
@@ -154,7 +170,9 @@
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip(resData.msg);
+            if(resData.code !== 403){
+              this.showTip(resData.msg);
+            }
             return;
           }else{
             this.userPhone = this.formatPhone(resData.content.userName);
