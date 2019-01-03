@@ -116,17 +116,17 @@ export default {
     checked(val, oldVal){
       console.log(val, oldVal);
       this.checkallList = this.uniq(this.checkallList);
-
       for(let i of this.goodsArr){
         let num = 0;
         for(let k of i.goodsBuyInfo){
           if(val.indexOf(k.id)>-1){
+            console.log('包含:'+k.id);
              num++;
             if(num==i.goodsBuyInfo.length){
               this.checkallList.push(i.storeId);
             }
           }else{
-            console.log(k.id);
+            console.log('不包含:'+k.id);
             if(oldVal.indexOf(k.id)>-1){
               this.checkallList.splice(this.checkallList.indexOf(i.storeId),1);
             }
