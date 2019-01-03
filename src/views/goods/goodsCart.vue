@@ -122,13 +122,11 @@ export default {
         for(let k of i.goodsBuyInfo){
           if(val.indexOf(k.id)>-1){
              num++;
-             console.log(num,i.goodsBuyInfo.length);
             if(num==i.goodsBuyInfo.length){
               this.checkallList.push(i.storeId);
-            }else{
-              this.checkallList.splice(this.checkallList.indexOf(i.storeId),1);
             }
           }else{
+            console.log(k.id);
             if(oldVal.indexOf(k.id)>-1){
               this.checkallList.splice(this.checkallList.indexOf(i.storeId),1);
             }
