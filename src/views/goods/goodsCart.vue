@@ -113,6 +113,11 @@ export default {
   created() {
     this.getCartList();
   },
+  watch: {
+    checked(val, oldVal){
+      console.log(val, oldVal);
+    }
+  },
   methods: {
     deleteCart(){
       if(this.checked.length == 0){
@@ -165,6 +170,7 @@ export default {
       }
     },
     checkAll(items) {
+      this.checked = [];
       if(this.checkallList.indexOf(items.storeId)>-1){//存在
         this.checkallList.splice(this.checkallList.indexOf(items.storeId),1);
         for (let j of items.goodsBuyInfo){

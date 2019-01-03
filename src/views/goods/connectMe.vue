@@ -26,8 +26,8 @@
         <img slot="icon" style="display:block;margin-right:5px;width:18px;height:18px" :src="phonePic">
     </cell>
      <div class="pd15 weui-grids">
-      <p class="h40 txt-gray1">客服服务热线:<i class="lt5 txt-black-real">0755–28885609</i></p>
-      <p class="h40 txt-gray1">客服服务热线:<i class="lt5 txt-black-real">0755–28886165</i></p>
+      <p class="h40 txt-gray1" @click="callLine1()">客服服务热线:<i class="lt5 txt-black-real">0755–28885609</i></p>
+      <p class="h40 txt-gray1" @click="callLine2()">客服服务热线:<i class="lt5 txt-black-real">0755–28886165</i></p>
      </div>
     </div>
   </div>
@@ -53,6 +53,14 @@ export default {
  beforeCreate() {
   document.title = "帮助中心";
  },
+ methods: {
+  callLine1(){
+    window.location.href="tel:075528885609";
+  },
+  callLine2(){
+    window.location.href="tel:075528886165";
+  }
+ }
 }
 </script>
 <style lang="stylus">

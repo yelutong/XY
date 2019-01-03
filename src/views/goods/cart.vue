@@ -42,9 +42,12 @@
           <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
            <div :class="show ?'picker-panel show':'picker-panel'">
             <div class="h45 vux-1px-b relative titleEx">兑换积分<i class="txt-gray" @click="closePickerBox">×</i></div>
-            <group class="mb10">
-             <x-switch :title="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>
-            </group>
+            <div class="groupEx mb10 justify-content-space-between pda15">
+
+            <!-- <x-switch :title="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>-->
+             <span class="left" v-text="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount"></span>
+             <input type="checkbox" class="check goods-check goodsCheck" v-model="isUseIntegral"/>
+            </div>
           </div>
         </div> 
 
@@ -56,8 +59,7 @@
       <div class="price-info flex1">
         <span class="tag">合计：</span>
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
-        <span class="tip" v-if="goodsIntegral">(抵扣积分{{goodsIntegral}})</span>
-        <span v-else class="tip"> (含运费)</span>
+        <span class="tip"> (含运费)</span>
       </div>
       <button class="btn-submit per40" @click="makeOrder">支付订单</button>
     </div>
@@ -85,7 +87,7 @@ export default {
       userCouponIds: [],
       goodsChannel: 1,
       goodsIntegral: '',
-      isUseIntegral:0,
+      isUseIntegral:false,
       exchangeObj: '',
       exchangePic: require("../../assets/images/dui@2x.png"),
       num: '',
@@ -108,7 +110,7 @@ export default {
     totalPrice() {
       const orderPrice = {
         'goodsCarts': this.goodsCarts,
-        'goodsChannel': this.isUseIntegral == '1'? 2: 1,
+        'goodsChannel': this.isUseIntegral == true? 2: 1,
         'isUseIntegral': this.isUseIntegral,
         'userCouponIds': this.userCouponIds
       }

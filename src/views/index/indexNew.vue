@@ -196,10 +196,9 @@ export default {
         if (resData.code === 1) {
           if(resData.content.length>0){
             for(let arrList of resData.content){
-                const arrData = arrList.goodsLst;
-                const vgoodPath = JSON.parse(arrList.paramsArray);
-                console.log(vgoodPath);
-                const vAreaList={},new2Array=[];
+              const arrData = arrList.goodsLst;
+              const vgoodPath = arrList.paramsArray?JSON.parse(arrList.paramsArray):'';
+              const vAreaList={},new2Array=[];
                 if(arrData.length>=3){
                   arrData.map((v,i)=>{
                     if(i<=2){
@@ -217,6 +216,7 @@ export default {
                 vAreaList.arrList = new2Array;
                 this.vAreaList.push(vAreaList);
             }
+             console.log('d21');
              console.log(this.vAreaList); 
           }
         }
