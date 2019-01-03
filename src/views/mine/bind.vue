@@ -26,7 +26,11 @@ export default {
         code: "",
         time: 60,
         hasSend: false
-      }
+      },
+      headimgurl:'',//微信头像地址
+      nickname:'',//微信昵称
+      proUserId:'',//推荐人id
+      sex:'',//微信性别
     };
   },
   components: {
@@ -86,7 +90,6 @@ export default {
     },
     // 注册绑定手机号
     bindPhone() {
-      const parentId = this.parentId || "";
       const bindInfo = this.bindInfo;
       if (bindInfo.phone.length !== 11) {
         this.showTip("手机号码格式不正确");
@@ -102,16 +105,17 @@ export default {
         duration: 30000
       });
       const ajaxData = {
-        parent_id: parentId,
-        mobile: bindInfo.phone,
-        auth_code: bindInfo.code
+        proUserId: this.proUserId,
+        username: bindInfo.phone,
+        smsCode: bindInfo.code,
+        headimgurl: this.headimgurl,
+        sex: this.sex,
       };
       this.$axios
-        .post(this.api.bindNewUser, qs.stringify(ajaxData), {
-          headers: {
-            "content-type": "application/x-www-form-urlencoded",
-            "Authorization": this.token
-          }
+        .get(this.api.wxBind,
+        { 
+          headers: { "Authorization": this.token },
+          params: ajaxData
         })
         .then(res => {
           loading.close();

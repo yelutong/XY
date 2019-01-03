@@ -110,7 +110,7 @@
         } 
         else if(!openId && !this.token){
           this.showTip("中间页流程");
-          this.$router.push('/mine/bind');
+          //this.$router.push('/mine/bind');
           return;
         }
       },

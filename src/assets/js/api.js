@@ -44,6 +44,7 @@ const ajaxUrl = {
   orderCount: urlHost + 'orderform/orderCount',//获取个人订单歌状态数量
   userWallet: urlHost + 'userwallet/info',//查看钱包
   getOpenid: urlHost + 'user/wxOpenid/', //获取openid
+  wxBind: urlHost + 'user/wxBind/', //{code}微信绑定
 }
 // 返回模块
 export default ajaxUrl;
