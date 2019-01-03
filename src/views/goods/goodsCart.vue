@@ -61,7 +61,6 @@ export default {
     return {
       canEdit: true,
       list: [],
-      checkall: false,
       allSelect: false,
       checkallList: [],
       checked: [],
@@ -116,6 +115,33 @@ export default {
   watch: {
     checked(val, oldVal){
       console.log(val, oldVal);
+      this.checkallList = this.uniq(this.checkallList);
+
+      for(let i of this.goodsArr){
+        let num = 0;
+        for(let k of i.goodsBuyInfo){
+          if(val.indexOf(k.id)>-1){
+             num++;
+             console.log(num,i.goodsBuyInfo.length);
+            if(num==i.goodsBuyInfo.length){
+              this.checkallList.push(i.storeId);
+            }else{
+              this.checkallList.splice(this.checkallList.indexOf(i.storeId),1);
+            }
+          }else{
+            if(oldVal.indexOf(k.id)>-1){
+              this.checkallList.splice(this.checkallList.indexOf(i.storeId),1);
+            }
+          }
+        }
+      }
+      
+      if(this.uniq(this.checkallList).length==this.goodsArr.length){
+        this.allSelect = true
+      }else{
+        this.allSelect = false
+      }
+
     }
   },
   methods: {
@@ -170,7 +196,8 @@ export default {
       }
     },
     checkAll(items) {
-      this.checked = [];
+      this.checkallList = this.uniq(this.checkallList);
+
       if(this.checkallList.indexOf(items.storeId)>-1){//存在
         this.checkallList.splice(this.checkallList.indexOf(items.storeId),1);
         for (let j of items.goodsBuyInfo){
@@ -184,13 +211,12 @@ export default {
           this.checked.push(k.id);
         }
       }
-
-      if(this.checkallList.length === this.goodsArr.length) {
-        this.allSelect = true
+      
+      if (this.checkallList.length == this.goodsArr.length) {
+        this.allSelect = true;
       }else{
-        this.allSelect = false
+        this.allSelect = false;
       }
-
     },
     getCartList(){
       this.$axios
@@ -228,7 +254,8 @@ export default {
                 }
                this.goodsArr.push(itemInfo)
               }
-              console.log(this.goodsArr)
+              console.log('21');
+              console.log(this.goodsArr);
             }else{
               this.isShowList = false;
             }
