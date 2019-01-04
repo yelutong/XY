@@ -8,6 +8,7 @@
     </div>
     <div class="tab-con" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="100">
       <div class="order-item" v-for="(item, index) in orderList" :key="index">
+
         <div class="goods-status vux-1px-b">
           <div class="date">
             <i class="ico i-store"></i>{{ item.storeName}}
@@ -16,15 +17,18 @@
           </div></span>
         </div>
 
-        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToDtail(item.orderNo,item.statusNum)" v-for="con in item.conList">
+        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToDtail(item.orderNo,item.statusNum)" v-for="(con,index2) in item.conList">
          <div class="conPic"><img :src="con.goodsPhoto" /></div>
          <div class="flexg2 listRight">
             <p class="goodsName txt-black-real" v-text="con.goodsName"></p> 
-            <div class="rightBtm justify-content-space-between">
-            <div class="txt-black1 flexBox">
-            <p class="per50" v-text="'实付：¥'+con.totalPrice"></p>
-
-            <p class="per50 txt-right" v-text="'数量：'+con.goodsCount"></p>
+            <div class="rightBtm">
+            <div class="txt-black1 flexBox  justify-content-space-between">
+            <p class="per50"><i v-text="'实付：¥'+con.totalPrice"></i><i class="ml5 txt-gray1" v-if="item.conList.length>1&&(item.statusNum==40||item.statusNum==50)" v-text="'数量：'+con.goodsCount"></i></p>
+            <p :name="item.statusNum" v-if="item.conList.length==1||(item.statusNum!=40&item.statusNum!=50)" class="per50 txt-right" v-text="'数量：'+con.goodsCount"></p>
+            <div v-else class="">
+              <button class="btn-act" @click.stop="pageToCenter('eva',index,index2)" v-if="item.statusNum==40">立即评价</button>
+              <button class="btn-act" @click.stop="callHelp(item.orderNo)" v-if="item.statusNum==50">申请售后</button>
+            </div>
             </div> 
             </div>
           </div>
@@ -43,8 +47,8 @@
           <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="item.statusNum==20">退款</button>
           <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="item.statusNum==30">确认收货</button>
           <button class="btn-act" @click="pageToCenter('exp',index)" v-if="item.statusNum==30">查看物流</button>
-          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusNum==40">立即评价</button>
-          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusNum==50">申请售后</button>
+          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusNum==40&&item.conList.length==1">立即评价</button>
+          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusNum==50&&item.conList.length==1">申请售后</button>
           </div>
         </div>
       </div>
@@ -113,7 +117,7 @@ export default {
     this.clearData();
     this.getOrdersList();
   },
-  methods: {
+  methods: { 
     verToken(){
      if(!this.token){
       this.showTip("登录超时，请重新登录");
@@ -196,7 +200,7 @@ export default {
           headers: {  
             "content-type": "application/json",
             "Authorization": this.token 
-            }
+          }
         })
         .then(res => {
           const resData = res.data;
@@ -224,20 +228,21 @@ export default {
           // 重组下数据，需要把里面的商品循环出来
           arrData.forEach(val => {
             let obj = {
+              goodsId: val.goodsId,
               date: val.addTime,
               num: this.goodsCount(val.items),
               status: this.getStatusTxt(val.status),
               statusNum: val.status,
               storeName: val.storeName,
+              storeId: val.storeId,
               totalPrice: val.totalPrice,
               deductedPrice: val.deductedPrice||null,
               conList: this.getArrImg(val.items),
               orderNo: val.orderNumberStr,
-              orderId: val.id,
-              arrGood: []
+              orderId: val.id
             };
             // 如果是待评价，把待评价的子商品循环出来
-            if (this.choseDex === 4) {
+            /*if (this.choseDex == 40) {
               val.orderDetails.forEach(vl => {
                 obj.arrGood.push({
                   id: vl.productId,
@@ -250,8 +255,9 @@ export default {
                   date: vl.createDate
                 });
               });
-            }
+            }*/
             this.orderList.push(obj);
+            console.log(this.orderList);
           });
           if (pageCount <= this.ordersPageNo) {
             this.loading = true;
@@ -278,7 +284,8 @@ export default {
       return count
     },
     // 查看物流或是立即评价
-    pageToCenter(type, index) {
+    pageToCenter(type, index, index2) {
+      index2 = index2?index2:0;
       const orderList = this.orderList;
       let objType = {};
       switch (type) {
@@ -294,22 +301,20 @@ export default {
           break;
       }
       // 判断跳转
-      if (
-        orderList.length === 0 ||
-        !orderList[index].arrGood ||
-        orderList[index].arrGood.length === 0
-      ) {
+      if (orderList.length == 0) {
         this.showTip(objType.tip);
         return;
       }
       // 存到本地存储（转换成字符串）
-      window.localStorage.setItem(objType.key, JSON.stringify(orderList[index].arrGood));
+      orderList[index].conList = orderList[index].conList[index2];
+      sessionStorage.setItem(objType.key, JSON.stringify(orderList[index]));
+      console.log(JSON.parse(sessionStorage.getItem(objType.key)));
       setTimeout(() => {
         this.$router.push(objType.url);
       }, 0);
     },
     // 确认收货
-    receiptOrder(orderId, index) {
+    receiptOrder(orderNo, index) {
       MessageBox({
         title: "收货提示",
         message: "您确定收到货品了吗？",
@@ -317,11 +322,8 @@ export default {
       }).then(action => {
         if (action === "confirm") {
           this.$axios
-            .post(this.api.receiptGoods, qs.stringify({ order_id: orderId }), {
-              headers: {
-                "content-type": "application/x-www-form-urlencoded",
-                "Authorization": this.token
-              }
+            .get(this.api.receptGoods+orderNo,{
+              headers: { "Authorization": this.token }
             })
             .then(res => {
               const resData = res.data;

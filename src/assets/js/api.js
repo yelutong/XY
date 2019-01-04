@@ -45,6 +45,7 @@ const ajaxUrl = {
   userWallet: urlHost + 'userwallet/info',//查看钱包
   getOpenid: urlHost + 'user/wxOpenid/', //获取openid
   wxBind: urlHost + 'user/wxBind/', //{code}微信绑定
+  receptGoods: urlHost + 'orderform/receipt/user/', //{orderNumber}用户确认收货
 }
 // 返回模块
 export default ajaxUrl;
