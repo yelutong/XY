@@ -2,7 +2,6 @@
   <div class="wrapper updateInfo">
     <vHeader title="修改信息" to="/mine/set" />
     <div class="mt50">
-
       <vue-core-image-upload 
       class="up-load" 
       :crop="false" text="" inputAccept="image/*" 
@@ -10,9 +9,8 @@
       :credentials="false"
       :max-file-size="10485760" 
       :multiple="false" inputOfFile="Filedata" 
-      :url="this.api.uploadPhoto" 
-      :headers="{'Authorization':this.token}" >
-      <img width="150" :src="license" />
+      :url="this.api.uploadPhoto"   >
+      <img width="150" v-if="license" :src="license" />
     </vue-core-image-upload>
        <v-cell class="share" title="头像" type="btn" />
        <mt-field label="昵称" placeholder="请输入昵称" v-model="nickName"></mt-field>
@@ -58,15 +56,36 @@ export default {
     ...mapState(["token"])
   },
   created() {
-    // 获取我的钱包数据
-    this.getWalletInfo();
+    this.getUserData();
   },
   methods: {
-    ...mapActions(["atnToken"]),
-    // 获取我的钱包数据
-    getWalletInfo() {
-     
-    },
+    ...mapActions(["atnToken"]), 
+    //获取个人中心信息
+      getUserData(){
+        this.$axios
+        .get(this.api.getUserData,{
+          headers: {"Authorization": this.token }
+         })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            if(resData.code !== 403){
+              this.showTip(resData.msg);
+            }
+            return;
+          }else{
+            let info = resData.content;
+            this.age = info.age;
+            this.email = info.email||'';
+            this.license = info.headPhoto;
+            this.nickName = info.nickName;
+            this.sex = info.sex;
+          }
+        })
+        .catch(res => {
+          console.log(res);
+        }); 
+      },
     // 接收子组件传来的点击图片事件
     imageAction(index) {
         this.imgList.splice(index, 1);
@@ -75,36 +94,18 @@ export default {
     // 上传之后的事件
     chooseImage(res) {
          console.log(res)
-         if(res.code == 0){
-           this.license = res.url;
+         if(res.code == 1){
+           this.license = this.api.urlPic+res.content[0].path+'/'+res.content[0].name;
          }
-        /*
-        const imgList = this.imgList;
-
-        if (imgList.length >= 8) {
-          this.showTip("最多只能上传8张图片");
-          return;
-        }
-        if (data.code !== 1 || !data.data || data.data.length === 0) {
-          this.showTip("上传失败，请重试");
-          return;
-        }
-        const arrData = data.data;
-        this.imgList.push(arrData[0].imagePath);
-        this.arrImgId.push(arrData[0].imgId);
-        */
-    },
-    // 点击发表评价
-    evaGoods() {
-       
     },
     infoUpdate(){
+      console.log(this.age,this.email,this.license,this.nickName,this.sex);
       this.$axios
           .post(this.api.infoUpdate, 
             JSON.stringify({
               'age':this.age,
               'email':this.email,
-              'headPhoto':this.headPhoto||'999',
+              'headPhoto':this.license,
               'nickName':this.nickName,
               'sex':this.sex
             }),{
@@ -112,6 +113,14 @@ export default {
           })
           .then(res => {
             const resData = res.data;
+            if (resData.code !== 1) {
+            this.showTip("提交信息失败");
+            return;
+            }
+            this.showTip('提交成功', 1500, 'ok');
+            setTimeout(() => {
+              this.$router.go(-1);
+            }, 1500);
           })
           .catch(res => {
             
@@ -124,12 +133,22 @@ export default {
 <style lang="stylus">
 .updateInfo{
   .loginOutBtn {
-  width:90%!important;
-  margin: auto;
+   width:90%!important;
+   margin: auto;
   }
   .up-load{
-    position:relative;
     height:40px;
+    background: transparent;
+    z-index: 99999;
+    right: 0;
+    position: absolute;
+    width:80%;
+    text-align: right;
+  }
+  .up-load img{
+    width:40px;
+    height:40px;
+    margin-right:25px;
   }
 }
 </style>

@@ -1,11 +1,12 @@
 // 域名
 const urlHost = 'http://api.xy999888.cn/api/';//接口请求域名
 const ajaxHost = 'https://mg.xjjxsd.cn/api/mp';
-const uploadPic = 'http://api.xy999888.com/'; //上传图片请求域名
+const uploadPic = 'http://api.xy999888.com/api/'; //上传图片请求域名
 // 接口
 const ajaxUrl = {
   urlPic: 'http://pic.xy999888.com/', //图片请求域名
-  uploadGoodsPic: uploadPic + 'api/upload/goods',//上传商品图片
+  uploadGoodsPic: uploadPic + 'upload/goods',//上传商品图片
+  uploadPhoto: uploadPic + 'upload/userPhoto',//上传用户头像
   getBanners: urlHost + 'appadvertmanagement/carouselPic', //获取首页banner
   getFloorList: urlHost + 'appfloormanagement/listFloor', // 获取两大品牌
   getGoodsList: urlHost + 'goods/querygoodslist', // 获取商品列表
@@ -39,7 +40,7 @@ const ajaxUrl = {
   loginOut: urlHost + 'user/logout',//退出登录
   deleteGoods: urlHost + 'goodscart/delete/',//{ids} 批量删除购物车
   uploadPhoto: uploadPic + 'upload/userPhoto',//上传用户头像
-  infoUpdate: urlHost + 'info/update',//更新用户信息
+  infoUpdate: urlHost + 'user/info/update',//更新用户信息
   pwdUpdate: urlHost + 'user/updatePassword',//修改密码
   phoneUpdate: urlHost + 'user/updateUsername',//修改用户名
   orderCount: urlHost + 'orderform/orderCount',//获取个人订单歌状态数量
@@ -49,6 +50,7 @@ const ajaxUrl = {
   receptGoods: urlHost + 'orderform/receipt/user/', //{orderNumber}用户确认收货
   saveGoodsComment: urlHost + 'orderformcomment/saveGoodsComment',//保存商品评论
   goodsCommentList: urlHost + 'orderformcomment/goodsCommentList',//商品评论列表
+  wxShareSign: urlHost + "user/wxShareSign", //获取微信分享签名
 }
 // 返回模块
 export default ajaxUrl;

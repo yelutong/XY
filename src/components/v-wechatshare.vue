@@ -27,7 +27,7 @@
       // 从后台拿到微信签名等数据
       getWeixinData() {
         this.$axios
-          .get(this.api.getShareArgs)
+          .get(this.api.wxShareSign)
           .then(res => {
             const resData = res.data;
             if (resData.code !== 1 || !resData.content) {

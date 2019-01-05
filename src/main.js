@@ -4,7 +4,7 @@ import router from './router';
 import store from './store/index';
 import ajaxApi from './assets/js/api';
 import axios from 'axios';
-import tool from './assets/js/tool';
+import tool from './assets/js/tool'; 
 import MintUI from 'mint-ui';
 import 'mint-ui/lib/style.css';
 import {
@@ -13,7 +13,7 @@ import {
 import weChatShare from './components/v-wechatshare';
 
 Vue.use(MintUI);
-Vue.use(tool);
+Vue.use(tool); 
 Vue.component('v-wechatshare', weChatShare);
 
 Vue.prototype.$axios = axios;

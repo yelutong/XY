@@ -2,9 +2,9 @@
   <div class="wrapper page-mine">
     <div class="lay-avatar" @click="isLogin">
       <div class="avatar">
-        <img class="img" :src="weChatInfo.avatar" />
+        <img class="img" :src="info.headPhoto?info.headPhoto:weChatInfo.avatar" />
       </div>
-      <div class="name">{{ userPhone?userPhone:weChatInfo.name}}</div>
+      <div class="name">{{ info.nickName?info.nickName:(userPhone?userPhone:weChatInfo.name)}}</div>
     </div>
     <div class="lay-order">
       <div class="head">
@@ -49,6 +49,7 @@
     data() {
       return {
         userPhone:'',
+        info:'',
         orderNav: [{
             title: "待付款",
             size: 19.5,
@@ -175,6 +176,7 @@
             }
             return;
           }else{
+            this.info = resData.content;
             this.userPhone = this.formatPhone(resData.content.userName);
             this.atnUserId(resData.content.id);
             this.atnUserPhone(resData.content.userName);
