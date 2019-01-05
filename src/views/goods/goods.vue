@@ -110,6 +110,7 @@ export default {
       id: this.getUrlParam("id"),
       vGoods:this.getUrlParam('vGoods')||'',
       urlPic:this.api.urlPic,
+      avatar: require('../../assets/images/avatar.png'),
       num: 1,
       cartNum: '',
       sellerStoreId: '',
@@ -216,14 +217,14 @@ export default {
     },
     // 获取商品评价列表
     getGoodsEva(id) {
-      this.$axios
-        .get(this.api.getGoodsEva, qs.stringify({
-          params: {
-            product_id: id,
-            page_no: 1,
-            page_size: 2
-          }
-        }))
+      this.$axios.post(this.api.goodsCommentList, 
+        JSON.stringify({
+          goodsId: id,
+          limit: 80,
+          page: 1
+        }), {
+          headers: {"content-type": "application/json"}
+        })
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
@@ -231,32 +232,34 @@ export default {
             this.noEvas = true;
             return;
           }
-          const objData = resData.content,
-            arrData = objData.records || [];
-          if (arrData.length === 0) {
+          const objData = resData.content;
+          if (objData.totalCount == 0) {
             this.noEvas = true;
           } else {
             this.noEvas = false;
           }
-          this.evasNum = objData.total;
+          this.evasNum = objData.totalCount;
+          console.log(objData);
           // 重组下数据
           let newArr = [];
-          arrData.forEach(val => {
+          console.log(objData.list);
+          objData.list.forEach(val => {
             newArr.push({
-              avatar: val.user.photoAvatarUrl,
-              name: val.user.fullName || val.user.nickName || "匿名",
+              avatar: val.photoAvatarUrl||this.avatar,
+              name: this.formatPhone(val.userName) || "匿名",
               star: val.starNum,
-              content: val.content,
-              date: this.dateFormat(val.createDate, "YYYY-MM-DD hh:mm"),
-              title: val.product.name,
-              imgList: val.imagePath
+              content: val.context,
+              date: val.addTime,
+              title: val.goodsName,
+              imgList: val.photoURLs.split(',')
             });
           });
           this.goodsEvaList = newArr;
+          console.log(this.goodsEvaList);
         })
         .catch(res => {
-          this.goodsEvaList = [];
-          this.noEvas = true;
+          //this.goodsEvaList = [];
+          //this.noEvas = true;
         });
     }, 
     // 弹出电话

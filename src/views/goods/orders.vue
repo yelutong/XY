@@ -26,8 +26,8 @@
             <p class="per50"><i v-text="'实付：¥'+con.totalPrice"></i><i class="ml5 txt-gray1" v-if="item.conList.length>1&&(item.statusNum==40||item.statusNum==50)" v-text="'数量：'+con.goodsCount"></i></p>
             <p :name="item.statusNum" v-if="item.conList.length==1||(item.statusNum!=40&item.statusNum!=50)" class="per50 txt-right" v-text="'数量：'+con.goodsCount"></p>
             <div v-else class="">
-              <button class="btn-act" @click.stop="pageToCenter('eva',index,index2)" v-if="item.statusNum==40">立即评价</button>
-              <button class="btn-act" @click.stop="callHelp(item.orderNo)" v-if="item.statusNum==50">申请售后</button>
+              <button class="btn-act" @click.stop="pageToCenter('eva',index,index2)" v-if="!con.isComment">立即评价</button>
+              <button class="btn-act" @click.stop="callHelp(item.orderNo)" v-if="item.statusNum==50||con.isComment">申请售后</button>
             </div>
             </div> 
             </div>
@@ -228,7 +228,6 @@ export default {
           // 重组下数据，需要把里面的商品循环出来
           arrData.forEach(val => {
             let obj = {
-              goodsId: val.goodsId,
               date: val.addTime,
               num: this.goodsCount(val.items),
               status: this.getStatusTxt(val.status),
@@ -238,8 +237,7 @@ export default {
               totalPrice: val.totalPrice,
               deductedPrice: val.deductedPrice||null,
               conList: this.getArrImg(val.items),
-              orderNo: val.orderNumberStr,
-              orderId: val.id
+              orderNo: val.orderNumberStr
             };
             // 如果是待评价，把待评价的子商品循环出来
             /*if (this.choseDex == 40) {

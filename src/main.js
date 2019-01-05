@@ -29,7 +29,7 @@ Vue.prototype.showTip = function (msg, time, type) {
   Toast(obj);
 }
 Vue.prototype.callService = (msg) => {
-  window.location.href = 'tel:400-811-0851';
+  window.location.href = 'tel:0755–28885609';
 };
 
 Vue.config.productionTip = false;

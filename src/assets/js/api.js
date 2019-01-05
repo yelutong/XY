@@ -5,6 +5,7 @@ const uploadPic = 'http://api.xy999888.com/'; //上传图片请求域名
 // 接口
 const ajaxUrl = {
   urlPic: 'http://pic.xy999888.com/', //图片请求域名
+  uploadGoodsPic: uploadPic + 'api/upload/goods',//上传商品图片
   getBanners: urlHost + 'appadvertmanagement/carouselPic', //获取首页banner
   getFloorList: urlHost + 'appfloormanagement/listFloor', // 获取两大品牌
   getGoodsList: urlHost + 'goods/querygoodslist', // 获取商品列表
@@ -46,6 +47,8 @@ const ajaxUrl = {
   getOpenid: urlHost + 'user/wxOpenid/', //获取openid
   wxBind: urlHost + 'user/wxBind/', //{code}微信绑定
   receptGoods: urlHost + 'orderform/receipt/user/', //{orderNumber}用户确认收货
+  saveGoodsComment: urlHost + 'orderformcomment/saveGoodsComment',//保存商品评论
+  goodsCommentList: urlHost + 'orderformcomment/goodsCommentList',//商品评论列表
 }
 // 返回模块
 export default ajaxUrl;
