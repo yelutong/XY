@@ -92,8 +92,7 @@
       </div>
 
     </div>
-
-    <v-wechatshare :friendShare="weChatShare" />
+ 
   </div>
 </template>
 
@@ -105,7 +104,7 @@ import vCell from "@/components/v-cell";
 import vNodata from "@/components/v-nodata";
 import vImglist from "@/components/v-imglist";
 import vHeader from "@/components/v-header";
-import VWechatshare from "@/components/v-wechatshare";
+const wx = require("weixin-js-sdk");
 const qs = require("qs");
 export default {
   data() {
@@ -117,6 +116,7 @@ export default {
       num: 1,
       cartNum: '',
       sellerStoreId: '',
+      photoUrl:'',//分享图片
       goodsMainData: {
         id: null,
         name: null,
@@ -142,7 +142,6 @@ export default {
     "v-swiper": vSwiper,
     "v-cell": vCell,
     "v-nodata": vNodata,
-    "v-wechatshare": VWechatshare,
     "v-imglist": vImglist,
     vHeader
   },
@@ -158,6 +157,7 @@ export default {
     const id = this.id;
     this.getGoodsMainData(id);
     this.getGoodsEva(id);
+    this.getWeixinData();
   },
   methods: {
     verToken(){
@@ -196,6 +196,7 @@ export default {
               id: objData.id,
               name: objData.goodsName,
               price: objData.salePrice,
+              saleSpots: objData.saleSpots,
               marketPrice: objData.marketPrice,
               saleCount: objData.saleCount
             };
@@ -209,6 +210,8 @@ export default {
               });
             });
             let detailPicList = objData.goodsDetailPhoto.split(',');
+            this.photoUrl = this.picSwipe.arrData[0].photoUrl; 
+
             detailPicList.forEach(val => {
               val?this.detailPicList.push(this.urlPic+val):'';
             });
@@ -410,20 +413,18 @@ export default {
             this.wakeWeiXin(resData.content);
           })
           .catch(res => {
-            this.showTip('获取微信分享参数失败');
+           // this.showTip('获取微信分享参数失败');
           });
       },
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
         const vue = this;
-        const friendShare = this.friendShare;
         wx.config({
-          debug: false, 
+          debug: true, 
           appId: objData.appId,
           timestamp: objData.timestamp,
           nonceStr: objData.nonceStr,
           signature: objData.signature,
-          url:objData.url,
           jsApiList: [
             "hideMenuItems",
             "onMenuShareTimeline",
@@ -447,9 +448,9 @@ export default {
           });
           // 分享到朋友圈
           wx.onMenuShareTimeline({
-            title: friendShare.friends.title,
-            link: friendShare.friends.link + '?userId=' + vue.shareId,
-            imgUrl: friendShare.friends.imgUrl,
+            title: vue.goodsMainData.name,
+            link: objData.url + '&userId=' + vue.shareId,
+            imgUrl: this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
@@ -459,10 +460,10 @@ export default {
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
-            title: friendShare.friend.title,
-            desc: friendShare.friend.desc,
-            link: friendShare.friend.link + '?userId=' + vue.shareId,
-            imgUrl: friendShare.friend.imgUrl,
+            title: vue.goodsMainData.name,
+            desc: vue.goodsMainData.saleSpots,
+            link: objData.url + '&userId=' + vue.shareId,
+            imgUrl: this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
