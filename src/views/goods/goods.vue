@@ -450,7 +450,7 @@ export default {
           wx.onMenuShareTimeline({
             title: vue.goodsMainData.name,
             link: encodeURIComponent(objData.url + '&userId=' + vue.shareId),
-            imgUrl: this.photoUrl,
+            imgUrl: vue.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
@@ -463,7 +463,7 @@ export default {
             title: vue.goodsMainData.name,
             desc: vue.goodsMainData.saleSpots,
             link: encodeURIComponent(objData.url+ '&userId=' + vue.shareId),
-            imgUrl: this.photoUrl,
+            imgUrl: vue.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
