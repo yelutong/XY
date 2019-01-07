@@ -50,7 +50,6 @@
       wakeWeiXin(objData) {
         const vue = this;
         const friendShare = this.friendShare;
-        alert(encodeURIComponent(friendShare.friends.link + '&userId=' + vue.shareId));
         console.log(friendShare.friends.title,friendShare.friend.link);
         wx.config({
           debug: false, //这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
@@ -82,7 +81,7 @@
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: friendShare.friends.title,
-            link: encodeURIComponent(friendShare.friends.link + '&userId=' + vue.shareId),
+            link: friendShare.friends.link + '&userId=' + vue.shareId,
             imgUrl: friendShare.friends.imgUrl,
             success: function () {
               vue.showTip("分享成功");
@@ -95,7 +94,7 @@
           wx.onMenuShareAppMessage({
             title: friendShare.friend.title,
             desc: friendShare.friend.desc,
-            link: encodeURIComponent(friendShare.friend.link + '&userId=' + vue.shareId),
+            link: friendShare.friend.link + '&userId=' + vue.shareId,
             imgUrl: friendShare.friend.imgUrl,
             success: function () {
               vue.showTip("分享成功");

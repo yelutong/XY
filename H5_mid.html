@@ -1,0 +1,20 @@
+﻿<script>		
+	//判断是微信app的浏览器
+		var userAgent = navigator.userAgent.toLowerCase();
+		
+		if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
+			var re = getQueryString(re)
+			// window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=" + re + "?response_type=code&scope=snsapi_userinfo&state=10074#wechat_redirect";
+		}
+		else {
+			// window.location.href = "http://www.xy268.com/m";
+			console.log('中间页');
+		}
+		
+		function getQueryString(name) { 
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+			var r = window.location.search.substr(1).match(reg); 
+			if (r != null) return unescape(r[2]); return null; 
+		} 
+
+</script>

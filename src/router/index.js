@@ -92,7 +92,8 @@ const findPwd = () =>
 // 路由加载 --------------------------------------
 const router = new Router({
   // mode: "history",
-  routes: [{
+  routes: [
+    {
       path: '*',
       redirect: '/index'
     },
