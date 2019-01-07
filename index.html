@@ -22,9 +22,7 @@
 </style>
 <script type="text/javascript">
   var userAgent = navigator.userAgent.toLowerCase();
-    
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
-     
       console.log(getQueryString('from')=='singlemessage');
       if(getQueryString('from')=='singlemessage'){
         if(location.href.indexOf('goods')>-1){
@@ -34,7 +32,6 @@
           window.location.href="http://www.xy999888.com/m/#/index";
         }
       }
-
       // var re = getQueryString(re)
       // window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=" + re + "?response_type=code&scope=snsapi_userinfo&state=10074#wechat_redirect";
     }
