@@ -105,7 +105,6 @@ import vNodata from "@/components/v-nodata";
 import vImglist from "@/components/v-imglist";
 import vHeader from "@/components/v-header";
 const wx = require("weixin-js-sdk");
-const qs = require("qs");
 export default {
   data() {
     return {
