@@ -14,15 +14,16 @@ const state = {
   choseAddress: null,
   // 微信分享信息
   weChatShare: {
-    friend: {
-      title: "新银众商标题",
-      desc: "新银众商-描述描述！",
-      link: "http://www.xy999888.com/m/",
+    friend: {// 微信分享朋友
+      title: "新银众商优惠大放送，创造财富不是梦！",
+      desc: "以消费者做代言人为己任，以品牌为生命之使命，以创新为发展之生产力，新银众商等你加入！",
+      link: "http://www.xy999888.com/m/#/index",
       imgUrl: "http://www.xy999888.com/m/static/favicon.png"
     },
-    friends: {
-      title: "新银众商标题",
-      link: "http://www.xy999888.com/m/",
+    friends: {// 微信分享朋友圈
+      title: "新银众商优惠大放送，创造财富不是梦！",
+      link: "http://www.xy999888.com/m/#/index",
+      desc: "以消费者做代言人为己任，以品牌为生命之使命，以创新为发展之生产力，新银众商等你加入！", // 分享描述
       imgUrl: "http://www.xy999888.com/m/static/favicon.png"
     }
   }

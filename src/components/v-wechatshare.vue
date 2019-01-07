@@ -51,12 +51,11 @@
         const vue = this;
         const friendShare = this.friendShare;
         wx.config({
-          debug: false, 
+          debug: true, //这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
           appId: objData.appId,
           timestamp: objData.timestamp,
           nonceStr: objData.nonceStr,
           signature: objData.signature,
-          url:objData.url,
           jsApiList: [
             "hideMenuItems",
             "onMenuShareTimeline",
