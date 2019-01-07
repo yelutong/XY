@@ -27,7 +27,13 @@
       // 从后台拿到微信签名等数据
       getWeixinData() {
         this.$axios
-          .get(this.api.wxShareSign)
+          .post(this.api.wxShareSign,
+           JSON.stringify({
+            'url': window.location.href
+           }),
+           {
+               headers: { "content-type": "application/json"}
+            })
           .then(res => {
             const resData = res.data;
             if (resData.code !== 1 || !resData.content) {
@@ -46,10 +52,11 @@
         const friendShare = this.friendShare;
         wx.config({
           debug: false, 
-          appId: objData.appid,
+          appId: objData.appId,
           timestamp: objData.timestamp,
-          nonceStr: objData.noncestr,
+          nonceStr: objData.nonceStr,
           signature: objData.signature,
+          url:objData.url,
           jsApiList: [
             "hideMenuItems",
             "onMenuShareTimeline",
@@ -74,7 +81,7 @@
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: friendShare.friends.title,
-            link: friendShare.friends.link + '?user_id=' + vue.shareId,
+            link: friendShare.friends.link + '?userId=' + vue.shareId,
             imgUrl: friendShare.friends.imgUrl,
             success: function () {
               vue.showTip("分享成功");
@@ -87,7 +94,7 @@
           wx.onMenuShareAppMessage({
             title: friendShare.friend.title,
             desc: friendShare.friend.desc,
-            link: friendShare.friend.link + '?user_id=' + vue.shareId,
+            link: friendShare.friend.link + '?userId=' + vue.shareId,
             imgUrl: friendShare.friend.imgUrl,
             success: function () {
               vue.showTip("分享成功");

@@ -216,7 +216,6 @@ export default {
                 vAreaList.arrList = new2Array;
                 this.vAreaList.push(vAreaList);
             }
-             console.log('d21');
              console.log(this.vAreaList); 
           }
         }
