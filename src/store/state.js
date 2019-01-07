@@ -15,15 +15,15 @@ const state = {
   // 微信分享信息
   weChatShare: {
     friend: {
-      title: "新银众商",
+      title: "新银众商标题",
       desc: "新银众商-描述描述！",
-      link: "https://mg.xjjxsd.cn/wechat/index.html#/share",
-      imgUrl: "https://pic.xjjxsd.cn/static/applet/about/about.jpg"
+      link: "http://www.xy999888.com/m/",
+      imgUrl: "http://www.xy999888.com/m/static/favicon.png"
     },
     friends: {
-      title: "新银众商",
-      link: "https://mg.xjjxsd.cn/wechat/index.html#/share",
-      imgUrl: "https://pic.xjjxsd.cn/static/applet/about/about.jpg"
+      title: "新银众商标题",
+      link: "http://www.xy999888.com/m/",
+      imgUrl: "http://www.xy999888.com/m/static/favicon.png"
     }
   }
 };

@@ -92,6 +92,8 @@
       </div>
 
     </div>
+
+    <v-wechatshare :friendShare="weChatShare" />
   </div>
 </template>
 
@@ -103,6 +105,7 @@ import vCell from "@/components/v-cell";
 import vNodata from "@/components/v-nodata";
 import vImglist from "@/components/v-imglist";
 import vHeader from "@/components/v-header";
+import VWechatshare from "@/components/v-wechatshare";
 const qs = require("qs");
 export default {
   data() {
@@ -139,11 +142,12 @@ export default {
     "v-swiper": vSwiper,
     "v-cell": vCell,
     "v-nodata": vNodata,
+    "v-wechatshare": VWechatshare,
     "v-imglist": vImglist,
     vHeader
   },
   computed: {
-    ...mapState(["token", "openId", "userId"])
+    ...mapState(["token", "openId", "userId","weChatInfo", "weChatShare"])
   },
   beforeCreate() {
     document.title = "商品详情";
@@ -386,7 +390,99 @@ export default {
       .catch(res => {
         this.showTip("网络错误，请重试");
       });
-    }
+    },
+    // 从后台拿到微信签名等数据
+      getWeixinData() {
+        this.$axios
+          .post(this.api.wxShareSign,
+           JSON.stringify({
+            'url': window.location.href
+           }),
+           {
+               headers: { "content-type": "application/json"}
+            })
+          .then(res => {
+            const resData = res.data;
+            if (resData.code !== 1 || !resData.content) {
+              this.showTip('获取微信分享参数失败');
+              return;
+            }
+            this.wakeWeiXin(resData.content);
+          })
+          .catch(res => {
+            this.showTip('获取微信分享参数失败');
+          });
+      },
+      // 拿到数据后执行唤醒微信分享更改函数
+      wakeWeiXin(objData) {
+        const vue = this;
+        const friendShare = this.friendShare;
+        wx.config({
+          debug: false, 
+          appId: objData.appId,
+          timestamp: objData.timestamp,
+          nonceStr: objData.nonceStr,
+          signature: objData.signature,
+          url:objData.url,
+          jsApiList: [
+            "hideMenuItems",
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage"
+          ]
+        });
+        wx.ready(function () {
+          // 隐藏一些功能
+          wx.hideMenuItems({
+            menuList: [
+              "menuItem:share:qq",
+              "menuItem:share:QZone",
+              "menuItem:share:weiboApp",
+              "menuItem:share:facebook",
+              "menuItem:originPage",
+              "menuItem:copyUrl",
+              "menuItem:openWithQQBrowser",
+              "menuItem:openWithSafari",
+              "menuItem:share:email"
+            ]
+          });
+          // 分享到朋友圈
+          wx.onMenuShareTimeline({
+            title: friendShare.friends.title,
+            link: friendShare.friends.link + '?userId=' + vue.shareId,
+            imgUrl: friendShare.friends.imgUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 分享到朋友
+          wx.onMenuShareAppMessage({
+            title: friendShare.friend.title,
+            desc: friendShare.friend.desc,
+            link: friendShare.friend.link + '?userId=' + vue.shareId,
+            imgUrl: friendShare.friend.imgUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 检查微信接口是否调用成功
+          wx.checkJsApi({
+            jsApiList: [
+              "hideMenuItems",
+              "onMenuShareTimeline",
+              "onMenuShareAppMessage"
+            ],
+            success: function (res) {
+              console.log("微信接口调用成功");
+            }
+          });
+        });
+      }
   }
 };
 </script>
