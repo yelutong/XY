@@ -53,6 +53,8 @@ export default {
               return;
             }
             this.atnToken('');
+            localStorage.removeItem("openId");
+            localStorage.removeItem("token");
             console.log(0);
             let _this = this;
             setTimeout(() => {
