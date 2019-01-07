@@ -160,6 +160,7 @@ export default {
   },
   methods: {
     verToken(){
+      console.log(this.userId);
      if(this.token){
       this.$axios
         .get(this.api.getCartNum, {
@@ -448,7 +449,7 @@ export default {
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: vue.goodsMainData.name,
-            link: objData.url + '&userId=' + vue.shareId,
+            link: objData.url + '&userId=' + vue.userId,
             imgUrl: vue.photoUrl,
             success: function () {
               vue.showTip("分享成功");
@@ -461,7 +462,7 @@ export default {
           wx.onMenuShareAppMessage({
             title: vue.goodsMainData.name,
             desc: vue.goodsMainData.saleSpots,
-            link: objData.url+ '&userId=' + vue.shareId,
+            link: objData.url+ '&userId=' + vue.userId,
             imgUrl: vue.photoUrl,
             success: function () {
               vue.showTip("分享成功");

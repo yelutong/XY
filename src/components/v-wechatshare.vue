@@ -21,7 +21,7 @@
     },
     computed: {
       // 从state里拿到用户分享id
-      ...mapState(['shareId'])
+      ...mapState(['userId'])
     },
     methods: {
       // 从后台拿到微信签名等数据
@@ -81,7 +81,7 @@
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: friendShare.friends.title,
-            link: friendShare.friends.link + '&userId=' + vue.shareId,
+            link: friendShare.friends.link + '&userId=' + vue.userId,
             imgUrl: friendShare.friends.imgUrl,
             success: function () {
               vue.showTip("分享成功");
@@ -94,7 +94,7 @@
           wx.onMenuShareAppMessage({
             title: friendShare.friend.title,
             desc: friendShare.friend.desc,
-            link: friendShare.friend.link + '&userId=' + vue.shareId,
+            link: friendShare.friend.link + '&userId=' + vue.userId,
             imgUrl: friendShare.friend.imgUrl,
             success: function () {
               vue.showTip("分享成功");
