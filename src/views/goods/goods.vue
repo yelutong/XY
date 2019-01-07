@@ -462,7 +462,7 @@ export default {
           wx.onMenuShareAppMessage({
             title: vue.goodsMainData.name,
             desc: vue.goodsMainData.saleSpots,
-            link: objData.url + '&userId=' + vue.shareId,
+            link: encodeURIComponent(objData.url) + '&userId=' + vue.shareId,
             imgUrl: this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
