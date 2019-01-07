@@ -418,8 +418,9 @@ export default {
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
         const vue = this;
+        alert(encodeURIComponent(objData.url + '&userId=' + vue.shareId));
         wx.config({
-          debug: true, 
+          debug: false, 
           appId: objData.appId,
           timestamp: objData.timestamp,
           nonceStr: objData.nonceStr,
@@ -448,7 +449,7 @@ export default {
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: vue.goodsMainData.name,
-            link: objData.url + '&userId=' + vue.shareId,
+            link: encodeURIComponent(objData.url + '&userId=' + vue.shareId),
             imgUrl: this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
@@ -461,7 +462,7 @@ export default {
           wx.onMenuShareAppMessage({
             title: vue.goodsMainData.name,
             desc: vue.goodsMainData.saleSpots,
-            link: encodeURIComponent(objData.url) + '&userId=' + vue.shareId,
+            link: encodeURIComponent(objData.url+ '&userId=' + vue.shareId),
             imgUrl: this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
