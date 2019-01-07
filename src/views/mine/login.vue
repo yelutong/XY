@@ -73,6 +73,7 @@ export default {
           if (resData.code === 1) {
           	console.log(resData.content);
           	this.atnToken(resData.content);
+            localStorage.setItem("token",resData.content);
           	this.showTip('登录成功');
         
             if(this.$route.params.url){
