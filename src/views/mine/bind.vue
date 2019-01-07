@@ -104,39 +104,40 @@ export default {
         iconClass: "loading",
         duration: 30000
       });
-      const ajaxData = {
+      /*const ajaxData = {
         proUserId: this.proUserId,
         username: bindInfo.phone,
         smsCode: bindInfo.code,
         headimgurl: this.headimgurl,
         sex: this.sex,
-      };
+      };*/
+      let ajaxData = localStorage.getItem('bindInfo');
+      alert(ajaxData);
+      ajaxData = JSON.parse(ajaxData);
+      ajaxData.username = bindInfo.phone;
+      ajaxData.smsCode = bindInfo.code;
+      ajaxData.proUserId = localStorage.getItem('proUserId');
+      
       this.$axios
-        .get(this.api.wxBind,
-        { 
-          headers: { "Authorization": this.token },
-          params: ajaxData
+        .post(this.api.wxBind, JSON.stringify(ajaxData),{
+          headers: {"content-type": "application/json"}
         })
         .then(res => {
           loading.close();
           const resData = res.data;
-          if (resData.code !== 1) {
+          this.showTip(resData.content);
+          if (resData.code === 1) {
+             // 绑定成功后
+            this.setUserIdBack(resData.content)
+          }else{
             this.showTip(resData.message);
             return;
           }
-          // 绑定成功后，看是否返回了encryptionId
-          const objData = resData.content;
-          if (objData.encryptionId) {
-            // 如果存在，存好后返回
-            this.setUserIdBack(objData);
-          } else {
-            // 如果不存在，再查一遍访问接口（以防重复绑定不会返回id）
-            this.ifUserBind(this.token);
-          }
+         
         })
         .catch(res => {
           loading.close();
-          this.showTip("绑定注册失败，请稍后重试");
+          this.showTip("绑定失败，请稍后重试");
         });
     },
     // 存储userId和微信信息后返回
