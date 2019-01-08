@@ -145,7 +145,7 @@ export default {
     vHeader
   },
   computed: {
-    ...mapState(["token", "openId", "userId","weChatInfo", "weChatShare"])
+    ...mapState(["token", "openId", "userId"])
   },
   beforeCreate() {
     document.title = "商品详情";
@@ -157,10 +157,12 @@ export default {
     this.getGoodsMainData(id);
     this.getGoodsEva(id);
     this.getWeixinData();
+    this.getUserData()
   },
   methods: {
+    ...mapActions(["atnOpenId","atnToken","atnProUserId"]),
     verToken(){
-      console.log(this.userId,this.token);
+      console.log(this.userId);
      if(this.token){
       this.$axios
         .get(this.api.getCartNum, {
@@ -287,13 +289,17 @@ export default {
     },
     // 加入购物车
     addToCart(id) {
-      let openId = localStorage.getItem("openId");
-      if(openId && !this.token){
-        this.showTip("微信绑定流程");
-        return;
-      } 
-      else if(!openId && !this.token){
-        this.showTip("中间页流程");
+      if(!this.token){
+        MessageBox({
+          title: "绑定提示",
+          message:
+            "您还没有绑定手机，无法进行下单和个人操作，建议您先绑定手机~",
+          showCancelButton: true
+        }).then(action => {
+          if (action === "confirm") {
+            this.$router.push("/mine/bind");
+          }
+        });
         return;
       }
 
@@ -329,10 +335,33 @@ export default {
             this.showTip("加入失败，请重试");
           });
     },
+     getUserData(){    
+      console.log('get userId ' + this.userId);
+        this.$axios
+        .get(this.api.getUserData,{
+          headers: {"Authorization": this.token }
+         })
+        .then(res => {
+          const resData = res.data;
+          console.log(resData);
+          if (resData.code !== 1) {
+            if(resData.code !== 403){
+              this.showTip(resData.msg);
+            }
+            return;
+          }else{
+            this.atnUserId(resData.content.id);
+          }
+      
+        })
+        .catch(res => {
+          
+        }); 
+      },
     // 立即购买
     pageToBuy(id) {
       // 判断是否绑定了手机号
-     /* if (!this.userId) {
+     if (!this.token) {
         MessageBox({
           title: "绑定提示",
           message:
@@ -343,18 +372,8 @@ export default {
             this.$router.push("/mine/bind");
           }
         });
-      }*/
-
-      let openId = localStorage.getItem("openId");
-      if(openId && !this.token){
-        this.showTip("微信绑定流程");
-        return;
-      } 
-      else if(!openId && !this.token){
-        this.showTip("中间页流程");
-        return;
       }
-
+  
       let ajaxData ={
         'goodsCount':this.num,
         'goodsId': id,
@@ -385,7 +404,7 @@ export default {
         ajaxData.name = this.goodsMainData.name;
         ajaxData.price = this.goodsMainData.price;
         ajaxData.num = this.num;
-        console.log(ajaxData);
+        
         let selectArr = [];
         selectArr.push(ajaxData);
         this.$router.push({name:'cart', params: { selectArr: selectArr}});
@@ -440,7 +459,6 @@ export default {
               "menuItem:share:weiboApp",
               "menuItem:share:facebook",
               "menuItem:originPage",
-              "menuItem:copyUrl",
               "menuItem:openWithQQBrowser",
               "menuItem:openWithSafari",
               "menuItem:share:email"

@@ -1,6 +1,5 @@
 // 域名
 const urlHost = 'http://api.xy999888.cn/api/';//接口请求域名
-const ajaxHost = 'https://mg.xjjxsd.cn/api/mp';
 const uploadPic = 'http://api.xy999888.com/api/'; //上传图片请求域名
 // 接口
 const ajaxUrl = {
@@ -17,6 +16,7 @@ const ajaxUrl = {
   getClassList: urlHost + 'goods/list',//{id}根据当前分类主键获取下级分类集合
   login: urlHost + 'user/login',//登录
   getRegCode: urlHost + 'smscode/send/reg/',//{userName}获取注册验证码
+  getVerifyCode: urlHost + 'smscode/send/cash/',//{userName}获取身份验证码
   getFindPwdCode: urlHost + 'smscode/send/forget/',//{userName}获取注册验证码
   register: urlHost + 'user/register',//登录
   findPwd: urlHost + 'user/forgetPassword',//找回密码

@@ -40,11 +40,11 @@ export default {
     ...mapState(["token", "userId", "parentId"])
   },
   beforeCreate() {
-    document.title = "绑定注册";
+    document.title = "手机登录";
   },
   created() {},
   methods: {
-    ...mapActions(["atnUserId", "atnWeChatInfo"]),
+    ...mapActions(["atnOpenId","atnToken","atnProUserId"]),
     // 获取验证码
     getCode() {
       const bindInfo = this.bindInfo;
@@ -56,7 +56,7 @@ export default {
         return;
       }
       this.$axios
-        .get(this.api.getRegCode+bindInfo.phone)
+        .get(this.api.getVerifyCode+bindInfo.phone)
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
@@ -79,7 +79,7 @@ export default {
           if (this.bindInfo.time <= 0) {
             clearTimeout(count);
             this.bindInfo.hasSend = false;
-            this.bindInfo.time = 60;
+            this.bindInfo.time = 120;
           } else {
             this.bindInfo.time -= 1;
             fnCount();
@@ -104,15 +104,8 @@ export default {
         iconClass: "loading",
         duration: 30000
       });
-      /*const ajaxData = {
-        proUserId: this.proUserId,
-        username: bindInfo.phone,
-        smsCode: bindInfo.code,
-        headimgurl: this.headimgurl,
-        sex: this.sex,
-      };*/
+     
       let ajaxData = localStorage.getItem('bindInfo');
-      alert(ajaxData);
       ajaxData = JSON.parse(ajaxData);
       ajaxData.username = bindInfo.phone;
       ajaxData.smsCode = bindInfo.code;
@@ -125,7 +118,6 @@ export default {
         .then(res => {
           loading.close();
           const resData = res.data;
-          this.showTip(resData.content);
           if (resData.code === 1) {
              // 绑定成功后
             this.setUserIdBack(resData.content)
@@ -142,19 +134,15 @@ export default {
     },
     // 存储userId和微信信息后返回
     setUserIdBack(objData) {
-      this.atnUserId(objData.encryptionId);
-      this.atnWeChatInfo({
-        name: objData.nickName,
-        avatar: objData.wechatHeadImageUrl
-      });
+      this.atnToken(objData);
+      localStorage.setItem('token', objData)
       const bindOk = Toast({
         message: "绑定成功！",
         iconClass: "ok",
         duration: 2000
       });
-      setTimeout(() => {
-        this.$router.go(-1);
-      }, 2600);
+      
+      this.$router.push("/mine");
     },
     // 查询是否存在userId
     ifUserBind(token) {

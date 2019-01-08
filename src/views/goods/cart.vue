@@ -94,7 +94,6 @@ export default {
       showAddress: null,
       goodsBuyInfo: [],
       goodsTips: "",
-      uuid:''
     };
   },
   components: { 
@@ -226,7 +225,6 @@ export default {
           this.isShowList = true;
           this.goodsBuyInfo=resData;
           for (let i of resData){
-            this.uuid=this.uuid+""+i.id;
             this.goodsCarts.push({'id':i.id});
           }
         }else{
@@ -246,6 +244,12 @@ export default {
             this.userAddressId = this.showAddress.id;
           }
         });
+    },
+    guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
     },
     // 结算下单
     makeOrder() {
@@ -270,7 +274,7 @@ export default {
         'remark': this.goodsTips,
         'userAddressId': this.userAddressId,
         'userCouponIds': this.userCouponIds,
-        'uuid': 'h5'+this.uuid+""+this.areaId+""+this.userAddressId+""+this.isUseIntegral
+        'uuid': this.guid()
       }
       this.$axios
         .post(
