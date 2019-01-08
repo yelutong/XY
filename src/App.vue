@@ -68,11 +68,13 @@ export default {
             //如果没有返回token，那么保存返回的openid和相关信息，在需要验证token的地址走绑定流程，绑定成功后，返回登录后的token
             if(resData.code == 1){
               let openId = resData.content.openId;
+              alert('获得openid数据');
               this.atnOpenId(openId);
               localStorage.setItem("openId",openId);
               localStorage.setItem("bindInfo",JSON.stringify(resData.content));
               sessionStorage.removeItem('code');
               if(resData.content.token){
+                alert('获得token数据');
                 this.atnToken(resData.content.token);
                 localStorage.setItem("token",resData.content.token);
               }
