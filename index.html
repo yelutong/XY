@@ -23,30 +23,39 @@
 <script type="text/javascript">
   var userAgent = navigator.userAgent.toLowerCase();
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
-      console.log(getQueryString('from')=='singlemessage');
-      if(getQueryString('from')=='singlemessage'){
-        if(location.href.indexOf('goods')>-1){
-          var goodsId = location.href.split('goods?id=')[1];
-          window.location.href="http://www.xy999888.com/m/#/goods?id="+goodsId;
-        }else{
-          window.location.href="http://www.xy999888.com/m/#/index";
-        }
+      let token = localStorage.getItem('token')
+      let openId = localStorage.getItem('openId')
+      let userId = getQueryString('userId');
+      let code = getQueryString('code');
+      let okRedirectUrl = 'http://www.xy268.com/m/#/'
+
+      if(userId){
+        localStorage.setItem("proUserId", userId);
       }
-      // var re = getQueryString(re)
-      // window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=" + re + "?response_type=code&scope=snsapi_userinfo&state=10074#wechat_redirect";
+
+      if(code){
+        sessionStorage.setItem("code", code);
+      }
+      alert(location.href)
+      if(location.href.indexOf('goods')>-1){
+          var goodsId = location.href.split('goods?id=')[1];
+          okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId
+         
+        }else{
+          okRedirectUrl = okRedirectUrl + 'index?'
+        }
+
+      if(token == null && openId == null && sessionStorage.getItem('code') == null){
+          let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect'
+          window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
+      }
+      if(getQueryString('from')=='singlemessage' || getQueryString('from')=='timeline' || code != null){
+        window.location.href=okRedirectUrl;
+      }
+
     }
     else {
-      // window.location.href = "http://www.xy268.com/m";
-      console.log('中间页');
-     /*  console.log(getQueryString('from')=='singlemessage');
-      if(getQueryString('from')=='singlemessage'){
-        if(location.href.indexOf('goods')>-1){
-          var goodsId = location.href.split('goods?id=')[1];
-          window.location.href="http://www.xy999888.com/m/#/goods?id="+goodsId;
-        }else{
-          window.location.href="http://www.xy999888.com/m/#/index";
-        }
-      }*/
+      
     }
     
     function getQueryString(name) { 
