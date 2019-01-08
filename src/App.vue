@@ -61,6 +61,7 @@ export default {
         }
 
         let code = sessionStorage.getItem('code');
+        alert('app code:'+code);
         //推荐用户id，这个每次分享都必有的
         let proUserId = localStorage.getItem('proUserId');
         if(proUserId){
