@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { MessageBox, Badge } from "mint-ui";
 import vSwiper from "@/components/v-swiper";
 import vCell from "@/components/v-cell";
@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     verToken(){
-      console.log(this.userId);
+      console.log(this.userId,this.token);
      if(this.token){
       this.$axios
         .get(this.api.getCartNum, {
