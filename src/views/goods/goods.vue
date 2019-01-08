@@ -438,7 +438,7 @@ export default {
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
         const vue = this;
-        console.log('dd:'+vue.userId);
+        alert('分享的链接:'+objData.url + '&userId=' + vue.userId);
         wx.config({
           debug: false, 
           appId: objData.appId,
