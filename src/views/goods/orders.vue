@@ -255,7 +255,6 @@ export default {
               });
             }*/
             this.orderList.push(obj);
-            console.log(this.orderList);
           });
           if (pageCount <= this.ordersPageNo) {
             this.loading = true;
