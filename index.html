@@ -22,39 +22,44 @@
 </style>
 <script type="text/javascript">
    alert(window.location.href);
+   alert('html code:'+getQueryString('code'));
 
   var userAgent = navigator.userAgent.toLowerCase();
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
-      let token = localStorage.getItem('token')
-      let openId = localStorage.getItem('openId')
-      let userId = getQueryString('userId');
-      let code = getQueryString('code');
-      let okRedirectUrl = 'http://www.xy268.com/m/#/'
-      alert('html code:'+code);
-      if(userId){
-        localStorage.setItem("proUserId", userId);
-      }
+      if(getQueryString('from')=='singlemessage'){
+          let token = localStorage.getItem('token');
+          let openId = localStorage.getItem('openId');
+          let userId = getQueryString('userId');
+          let code = getQueryString('code');
+          let okRedirectUrl = 'http://www.xy268.com/m/#/';
+          
+          if(userId){
+            localStorage.setItem("proUserId", userId);
+          }
 
-      if(code){
-        sessionStorage.setItem("code", code);
-      }
-     
-      if(location.href.indexOf('goods')>-1){
-          var goodsId = location.href.split('goods?id=')[1];
-          okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId
+          if(code){
+            sessionStorage.setItem("code", code);
+          }
          
-        }else{
-          okRedirectUrl = okRedirectUrl + 'index?'
-        }
+          if(location.href.indexOf('goods')>-1){
+            var goodsId = location.href.split('goods?id=')[1];
+            okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
+          }else{
+            okRedirectUrl = okRedirectUrl + 'index?';
+          }
 
-      if(token == null && openId == null && sessionStorage.getItem('code') == null){
-          let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect'
-          window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
-      }
-      if(getQueryString('from')=='singlemessage' || getQueryString('from')=='timeline' || code != null){
-        window.location.href=okRedirectUrl;
-      }
-
+          if(token == null && openId == null && sessionStorage.getItem('code') == null){
+              let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect'
+             setTimeout(()=>{
+              window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
+              },0);
+          }
+          if(getQueryString('from')=='singlemessage' || getQueryString('from')=='timeline' || code != null){
+            setTimeout(()=>{
+              window.location.href=okRedirectUrl;
+            },0);
+          }
+      } 
     }
     else {
       
