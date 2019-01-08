@@ -48,11 +48,8 @@
           }
 
           if(token == null && openId == null && sessionStorage.getItem('code') == null){
-              let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect'
-             setTimeout(()=>{
-              window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
-              },0);
-             return;
+            let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
+            window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
           }
           setTimeout(()=>{
             window.location.href=okRedirectUrl;
