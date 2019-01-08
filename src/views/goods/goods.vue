@@ -157,7 +157,9 @@ export default {
     this.getGoodsMainData(id);
     this.getGoodsEva(id);
     this.getWeixinData();
-    this.getUserData()
+    setTimeout(()=>{
+     this.getUserData();
+    },0)
   },
   methods: {
     ...mapActions(["atnOpenId","atnToken","atnProUserId"]),

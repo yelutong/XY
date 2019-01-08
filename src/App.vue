@@ -25,26 +25,6 @@ export default {
   created() {
     // 通过openId拿到token
     this.getOpenid();
-    let openId = this.openId
-    let token = this.token
-    if(!token){
-      token = localStorage.getItem('token')
-      if(token){
-        this.atnToken(token)
-      }
-    }
-
-    if(!openId){
-      openId = localStorage.getItem('openId')
-      if(openId){
-        this.atnOpenId(openId);
-      }
-    }
-
-    let proUserId = localStorage.getItem('proUserId')
-    if(proUserId){
-      this.atnProUserId(proUserId);
-    }
    /*解决刷新页面时数据丢失的问题*/
    //在页面加载时读取sessionStorage里的状态信息
     if (sessionStorage.getItem("store")){
@@ -64,9 +44,25 @@ export default {
       "atnUserId",
     ]),
     getOpenid() {
-        let code = sessionStorage.getItem('code')
+        let openId = this.openId;
+        let token = this.token;
+        if(!token){
+          token = localStorage.getItem('token');
+          if(token){
+            this.atnToken(token);
+          }
+        }
+
+        if(!openId){
+          openId = localStorage.getItem('openId');
+          if(openId){
+            this.atnOpenId(openId);
+          }
+        }
+
+        let code = sessionStorage.getItem('code');
         //推荐用户id，这个每次分享都必有的
-        let proUserId = localStorage.getItem('proUserId')
+        let proUserId = localStorage.getItem('proUserId');
         if(proUserId){
           this.atnProUserId(proUserId);
         }
