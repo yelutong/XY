@@ -76,14 +76,11 @@ export default {
         let code = this.getUrlParam("code")||sessionStorage.getItem('code');
         //alert('app code:'+code);
         //推荐用户id，这个每次分享都必有的
-        let proUserId = this.getUrlParam('userId')||localStorage.getItem('proUserId');
+        let proUserId = this.getUrlParam('proUserId')||localStorage.getItem('proUserId');
         if(proUserId){
           this.atnProUserId(proUserId);
         }
       
-      
-
-        
         if(code){
           this.$axios.get(this.api.getOpenid+code).then(res => {
             const resData = res.data;
