@@ -66,10 +66,11 @@
           }
           window.location.href=okRedirectUrl;*/
     }
-    
+
     function getQueryString(name) { 
+      var url = '?'+window.location.href.replace('/#/','/').split('?')[1];
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
-      var r = window.location.search.substr(1).match(reg); 
+      var r = url.substr(1).match(reg); 
       if (r != null) return unescape(r[2]); return null; 
     } 
 </script>
