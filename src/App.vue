@@ -74,7 +74,6 @@ export default {
           this.atnOpenId(openId);
         }
         let code = this.getUrlParam("code")||sessionStorage.getItem('code');
-        //alert('app code:'+code);
         //推荐用户id，这个每次分享都必有的
         let proUserId = this.getUrlParam('proUserId')||localStorage.getItem('proUserId');
         if(proUserId){

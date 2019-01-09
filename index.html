@@ -41,7 +41,7 @@
           }
           alert('当前地址：'+location.href);
           if(location.href.indexOf('goods')>-1){
-            let goodsId = location.href.split('goods?id=')[1];
+            let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
             okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
             alert('当前地址1：'+okRedirectUrl);
           }else{
@@ -52,14 +52,22 @@
           if(token == null && openId == null && sessionStorage.getItem('code') == null){
             let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
             window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
-          }
-          setTimeout(()=>{
+          }else{
             window.location.href=okRedirectUrl;
-          },0);
+          }
       } 
     }
     else {
-      
+          let okRedirectUrl = 'http://www.xy268.com/m/#/';
+          if(location.href.indexOf('goods')>-1){
+            let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
+            okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
+            alert('当前地址1：'+okRedirectUrl);
+          }else{
+            okRedirectUrl = okRedirectUrl + 'index?';
+            alert('当前地址2：'+okRedirectUrl);
+          }
+          window.location.href=okRedirectUrl;
     }
     
     function getQueryString(name) { 
