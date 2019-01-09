@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper white page-bind">
+  <div class="wrapper white kefu">
     <vHeader title="帮助中心"/>
-    <div class="content kefu">
+    <div class="content">
      <group>
       <cell title="在线客服">
         <img slot="icon" style="display:block;margin-right:5px;width:18px;height:18px" :src="phonePic">
