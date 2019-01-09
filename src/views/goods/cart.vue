@@ -123,6 +123,9 @@ export default {
           const resData = res.data;
           if (resData.code !== 1) {
             this.showTip("未获取到价格信息");
+            setTimeout(()=>{
+              this.$router.push({path: "/index"})
+            },1500)
             return;
           }else{
             if(orderPrice.goodsChannel == 2){
