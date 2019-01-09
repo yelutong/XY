@@ -442,17 +442,17 @@ export default {
         if(!_this.userId && localStorage.getItem("userId")){
           _this.atnUserId(localStorage.getItem("userId"));
         }
-        if(objData.url.indexOf('&userId=')<0){
+        if(objData.url.indexOf('&proUserId=')<0){
           if(_this.userId){
-            link = objData.url + '&userId=' + _this.userId;
+            link = objData.url + '&proUserId=' + _this.userId;
           }else{
             link = objData.url;
           }
         }else{
           if(_this.userId){
-            link = objData.url.split('&userId=')[0]+'&userId='+_this.userId;
+            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
           }else{
-            link = objData.url.split('&userId=')[0];
+            link = objData.url.split('&proUserId=')[0];
           }
         }
         console.log('link:'+link);
