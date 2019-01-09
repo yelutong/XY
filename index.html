@@ -29,7 +29,7 @@
           let token = localStorage.getItem('token');
           let openId = localStorage.getItem('openId');
           let proUserId = getQueryStr2('proUserId');
-          let code = getQueryStr2('code');
+          let code = getQueryString('code');
           let okRedirectUrl = 'http://www.xy268.com/m/#/';
           
           if(proUserId){
@@ -51,7 +51,9 @@
             let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
             window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
           }else{
+
             window.location.href=okRedirectUrl;
+            
           }
       } 
     }else {
