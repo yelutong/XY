@@ -35,7 +35,7 @@
           if(proUserId){
             localStorage.setItem("proUserId", proUserId);
           }
-
+          alert('proUserId:'+proUserId);
           if(code){
             sessionStorage.setItem("code", code);
           }
@@ -64,9 +64,9 @@
             okRedirectUrl = okRedirectUrl + 'index';
             alert('当前地址2：'+okRedirectUrl);
           }
-          window.location.href=okRedirectUrl;*/
+          window.location.href=okRedirectUrl;
           let proUserId = getQueryString('proUserId');
-          alert(getQueryString('proUserId'));
+          alert(getQueryString('proUserId'));*/
     }
 
     function getQueryString(name) { 
