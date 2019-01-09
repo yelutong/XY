@@ -28,8 +28,8 @@
       if(getQueryString('from')=='singlemessage'|| getQueryString('from')=='timeline'){
           let token = localStorage.getItem('token');
           let openId = localStorage.getItem('openId');
-          let proUserId = getQueryString('proUserId');
-          let code = getQueryString('code');
+          let proUserId = getQueryStr2('proUserId');
+          let code = getQueryStr2('code');
           let okRedirectUrl = 'http://www.xy268.com/m/#/';
           
           if(proUserId){
@@ -69,11 +69,16 @@
           alert(getQueryString('proUserId'));*/
     }
 
-    function getQueryString(name) { 
+    function getQueryStr2(name) { 
       let url = (window.location.href.indexOf('?from')>-1)?window.location.href.replace('?from',''):window.location.href;
       let url2 = (url.indexOf('#')>-1)?('?'+url.replace('/#/','/').split('?')[1]):('?'+url.split('?')[1]);
       let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
       let r = url2.substr(1).match(reg); 
+      if (r != null) return unescape(r[2]); return null; 
+    } 
+    function getQueryString(name) { 
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+      let r = window.location.search.substr(1).match(reg); 
       if (r != null) return unescape(r[2]); return null; 
     } 
 </script>
