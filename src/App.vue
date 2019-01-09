@@ -49,7 +49,26 @@ export default {
         let openId = this.openId||localStorage.getItem('openId');
         let token = this.token||localStorage.getItem('token');
         if(token){
-          this.atnToken(token);
+            this.atnToken(token);
+            this.$axios.get(this.api.getUserData,{
+              headers: {"Authorization": token }
+             })
+            .then(res => {
+              const resData = res.data;
+              if (resData.code !== 1) {
+                if(resData.code !== 403){
+                  // this.showTip(resData.msg);
+                }
+                return;
+              }else{ 
+                this.atnUserId(resData.content.id);
+                localStorage.setItem('userId',resData.content.id); 
+              }
+            })
+            .catch(res => {
+              console.log(res);
+              //this.showTip("获取信息失败，请稍后重试");
+            }); 
         }
         if(openId){
           this.atnOpenId(openId);
@@ -61,6 +80,10 @@ export default {
         if(proUserId){
           this.atnProUserId(proUserId);
         }
+      
+      
+
+        
         if(code){
           this.$axios.get(this.api.getOpenid+code).then(res => {
             const resData = res.data;

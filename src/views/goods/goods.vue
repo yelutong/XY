@@ -162,9 +162,8 @@ export default {
     },0)
   },
   methods: {
-    ...mapActions(["atnOpenId","atnToken","atnProUserId"]),
-    verToken(){
-      console.log(this.userId);
+    ...mapActions(["atnUserId"]),
+    verToken(){ 
      if(this.token){
       this.$axios
         .get(this.api.getCartNum, {
@@ -338,7 +337,6 @@ export default {
           });
     },
      getUserData(){    
-      console.log('get userId ' + this.userId);
         this.$axios
         .get(this.api.getUserData,{
           headers: {"Authorization": this.token }
@@ -439,8 +437,25 @@ export default {
       },
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
-        const vue = this;
-        // alert('分享的链接:'+(objData.url.indexOf('&userId=')<0?(objData.url + '&userId=' + vue.userId):objData.url));
+        const _this = this;
+        let link = '';
+        if(!_this.userId && localStorage.getItem("userId")){
+          _this.atnUserId(localStorage.getItem("userId"));
+        }
+        if(objData.url.indexOf('&userId=')<0){
+          if(_this.userId){
+            link = objData.url + '&userId=' + _this.userId;
+          }else{
+            link = objData.url;
+          }
+        }else{
+          if(_this.userId){
+            link = objData.url.split('&userId=')[0]+'&userId='+_this.userId;
+          }else{
+            link = objData.url.split('&userId=')[0];
+          }
+        }
+        console.log('link:'+link);
         wx.config({
           debug: false, 
           appId: objData.appId,
@@ -469,9 +484,9 @@ export default {
           });
           // 分享到朋友圈
           wx.onMenuShareTimeline({
-            title: vue.goodsMainData.name,
-            link: objData.url.indexOf('&userId=')<0?(objData.url + '&userId=' + vue.userId):objData.url,
-            imgUrl: vue.photoUrl,
+            title: _this.goodsMainData.name,
+            link: link,
+            imgUrl: _this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
@@ -481,10 +496,10 @@ export default {
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
-            title: vue.goodsMainData.name,
-            desc: vue.goodsMainData.saleSpots,
-            link: objData.url+ '&userId=' + vue.userId,
-            imgUrl: vue.photoUrl,
+            title: _this.goodsMainData.name,
+            desc: _this.goodsMainData.saleSpots,
+            link: link,
+            imgUrl: _this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },

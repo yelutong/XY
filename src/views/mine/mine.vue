@@ -172,6 +172,7 @@
             this.info = resData.content;
             this.userPhone = this.formatPhone(resData.content.userName);
             this.atnUserId(resData.content.id);
+            localStorage.setItem('userId',resData.content.id);
             this.atnUserPhone(resData.content.userName);
             console.log(this.userId);
           }
