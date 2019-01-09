@@ -39,14 +39,12 @@
           if(code){
             sessionStorage.setItem("code", code);
           }
-          alert('当前地址：'+location.href);
+          
           if(location.href.indexOf('goods')>-1){
             let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
             okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
-            alert('当前地址1：'+okRedirectUrl);
           }else{
             okRedirectUrl = okRedirectUrl + 'index';
-            alert('当前地址2：'+okRedirectUrl);
           }
 
           if(token == null && openId == null && sessionStorage.getItem('code') == null){
