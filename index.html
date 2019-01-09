@@ -25,7 +25,7 @@
   // alert('当前html地址：'+window.location.href);
   // alert('html code:'+getQueryString('code'));
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
-      if(getQueryString('from')=='singlemessage'|| getQueryString('from')=='timeline' || code != null){
+      if(getQueryString('from')=='singlemessage'|| getQueryString('from')=='timeline'){
           let token = localStorage.getItem('token');
           let openId = localStorage.getItem('openId');
           let proUserId = getQueryString('proUserId');
@@ -65,12 +65,15 @@
             alert('当前地址2：'+okRedirectUrl);
           }
           window.location.href=okRedirectUrl;*/
+          let proUserId = getQueryString('proUserId');
+          alert(getQueryString('proUserId'));
     }
 
     function getQueryString(name) { 
-      var url = '?'+window.location.href.replace('/#/','/').split('?')[1];
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
-      var r = url.substr(1).match(reg); 
+      let url = (window.location.href.indexOf('?from')>-1)?window.location.href.replace('?from',''):window.location.href;
+      let url2 = (url.indexOf('#')>-1)?('?'+url.replace('/#/','/').split('?')[1]):('?'+url.split('?')[1]);
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+      let r = url2.substr(1).match(reg); 
       if (r != null) return unescape(r[2]); return null; 
     } 
 </script>
