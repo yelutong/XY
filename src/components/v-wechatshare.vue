@@ -53,7 +53,7 @@ export default {
       }
       const friendShare = this.friendShare;
       if(vue.userId){
-        link= friendShare.friends.link + '?userId=' + vue.userId;
+        link= friendShare.friends.link + '&userId=' + vue.userId;
       }else{
         link= friendShare.friends.link;
       }
