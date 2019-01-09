@@ -25,37 +25,35 @@
   // alert('当前html地址：'+window.location.href);
   // alert('html code:'+getQueryString('code'));
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
+      let token = localStorage.getItem('token');
+      let openId = localStorage.getItem('openId');
+      let proUserId = getQueryStr2('proUserId');
+      let code = getQueryString('code');
+      let okRedirectUrl = 'http://www.xy268.com/m/#/';
+      
+      if(proUserId){
+        localStorage.setItem("proUserId", proUserId);
+      }
+      alert('proUserId:'+proUserId);
+      if(code){
+        sessionStorage.setItem("code", code);
+      }
+      
+      if(location.href.indexOf('goods')>-1){
+        let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
+        okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
+      }else{
+        okRedirectUrl = okRedirectUrl + 'index';
+      }
+
+      if(token == null && openId == null && sessionStorage.getItem('code') == null){
+        let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
+        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
+      }
+
       if(getQueryString('from')=='singlemessage'|| getQueryString('from')=='timeline'){
-          let token = localStorage.getItem('token');
-          let openId = localStorage.getItem('openId');
-          let proUserId = getQueryStr2('proUserId');
-          let code = getQueryString('code');
-          let okRedirectUrl = 'http://www.xy268.com/m/#/';
-          
-          if(proUserId){
-            localStorage.setItem("proUserId", proUserId);
-          }
-          alert('proUserId:'+proUserId);
-          if(code){
-            sessionStorage.setItem("code", code);
-          }
-          
-          if(location.href.indexOf('goods')>-1){
-            let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
-            okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
-          }else{
-            okRedirectUrl = okRedirectUrl + 'index';
-          }
-
-          if(token == null && openId == null && sessionStorage.getItem('code') == null){
-            let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
-            window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
-          }else{
-
-            window.location.href=okRedirectUrl;
-            
-          }
-      } 
+        window.location.href=okRedirectUrl;
+      }
     }else {
          /* let okRedirectUrl = 'http://127.0.0.1:8090/#/';
           if(location.href.indexOf('goods')>-1){
