@@ -45,7 +45,7 @@
             okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
             alert('当前地址1：'+okRedirectUrl);
           }else{
-            okRedirectUrl = okRedirectUrl + 'index?';
+            okRedirectUrl = okRedirectUrl + 'index';
             alert('当前地址2：'+okRedirectUrl);
           }
 
@@ -56,18 +56,17 @@
             window.location.href=okRedirectUrl;
           }
       } 
-    }
-    else {
-          let okRedirectUrl = 'http://www.xy268.com/m/#/';
+    }else {
+         /* let okRedirectUrl = 'http://127.0.0.1:8090/#/';
           if(location.href.indexOf('goods')>-1){
             let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
             okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
             alert('当前地址1：'+okRedirectUrl);
           }else{
-            okRedirectUrl = okRedirectUrl + 'index?';
+            okRedirectUrl = okRedirectUrl + 'index';
             alert('当前地址2：'+okRedirectUrl);
           }
-          window.location.href=okRedirectUrl;
+          window.location.href=okRedirectUrl;*/
     }
     
     function getQueryString(name) { 
