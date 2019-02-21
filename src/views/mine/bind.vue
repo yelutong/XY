@@ -117,9 +117,9 @@ export default {
       ajaxData.username = bindInfo.phone;
       ajaxData.smsCode = bindInfo.code;
       ajaxData.proUserId = localStorage.getItem('proUserId');
-      
+      let code = '';
       this.$axios
-        .post(this.api.wxBind, JSON.stringify(ajaxData),{
+        .post(this.api.wxBind+code, JSON.stringify(ajaxData),{
           headers: {"content-type": "application/json"}
         })
         .then(res => {
