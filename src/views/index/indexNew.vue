@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 import vSwiper from "@/components/v-swiper";
 import vNodata from "@/components/v-nodata";
 import swiperPic from "@/assets/images/banner@2x.png";
@@ -103,42 +103,16 @@ export default {
     
   },
   computed: {
-
+    ...mapState(["token", "openId", "userId"])
   },
   created() {
     // 读取用户其他数据
     this.getBannerData();
     this.getVdata();
     this.loadMore();
-    this.getOpenid();
   },
   methods: {
     ...mapActions(["atnOpenId","atnToken","atnProUserId"]),
-    getOpenid() {
-        let code = this.getUrlParam("code");
-        //推荐用户id，这个每次分享都必有的
-        let proUserId = localStorage.getItem('proUserId');
-        if(proUserId){
-          this.atnProUserId(proUserId);
-          console.log("推荐用户id:" + proUserId);
-        }
-        if(code){
-          this.$axios.get(this.api.getOpenid+code).then(res => {
-            const resData = res.data;
-            //如果返回了token，则表示改用户是已经绑定过的用户，此操作相当于已经登录了
-            //如果没有返回token，那么保存返回的openid和相关信息，在需要验证token的地址走绑定流程，绑定成功后，返回登录后的token
-            alert(JSON.stringify(resData.content));
-            let openId = resData.content.openId;
-            this.atnOpenId(openId);
-            localStorage.setItem("openId",openId);
-            localStorage.setItem("bindInfo",JSON.stringify(resData.content));
-            if(resData.content.token){
-              this.atnToken(resData.content.token);
-              localStorage.setItem("token",resData.content.token);
-            }
-          });
-        }
-    },
     loadMore (index) {
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;
@@ -215,7 +189,8 @@ export default {
                   vAreaList.vGoods = "/vGoods";
                 }
                 
-                vAreaList.vPic = require("@/assets/images/v@2x.png");
+                vAreaList.vPic = this.urlPic+arrList.imgLogo;
+                //require("@/assets/images/v@2x.png");
                 vAreaList.arrList = new2Array;
                 this.vAreaList.push(vAreaList);
             }

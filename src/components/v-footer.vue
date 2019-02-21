@@ -14,9 +14,11 @@ export default {
   data() {
     return {
       arrNav: [
-        { title: "首页", type: "index" },
-        { title: "小V", type: "vGoods" },
+        //{ title: "首页", type: "index" },
+        //{ title: "小V", type: "vGoods" },
+        { title: "附近", type: "nearby" },
         { title: "购物车", type: "goodsCart" },
+        { title: "订单", type: "orders" },
         { title: "个人", type: "mine" }
         //{ title: "资讯", type: "news" },
       ]
@@ -40,7 +42,13 @@ export default {
             path: "/index",
           //  query: { open_id: this.openId }
           });
-        } else {
+        }
+        else if (item.type === "orders") {
+          this.$router.push({
+            path: "/goods/orders",
+            query: { status: '[10,20,30,40,50]', choseDex: 0}
+          });
+        }else {
           this.$router.push("/" + item.type);
         }
       }
@@ -93,24 +101,39 @@ export default {
       background-image: url('../assets/images/user.png');
     }
 
+    .i-nearby {
+      background-image: url('../assets/images/nearby.png');
+    }
+    .i-orders {
+      background-image: url('../assets/images/order.png');
+    }
+
     &.active {
       color: #FF4F00;
 
       .i-index {
-      background-image: url('../assets/images/index1.png');
-    }
+        background-image: url('../assets/images/index1.png');
+      }
 
-    .i-vGoods {
-      background-image: url('../assets/images/v1.png');
-    }
-    
-    .i-goodsCart {
-      background-image: url('../assets/images/cart1.png');
-    }
+      .i-vGoods {
+        background-image: url('../assets/images/v1.png');
+      }
+      
+      .i-goodsCart {
+        background-image: url('../assets/images/cart1.png');
+      }
 
-    .i-mine {
-      background-image: url('../assets/images/user1.png');
-    }
+      .i-mine {
+        background-image: url('../assets/images/user1.png');
+      }
+
+      .i-nearby {
+        background-image: url('../assets/images/nearby1.png');
+      }
+      .i-orders {
+        background-image: url('../assets/images/order1.png');
+      }
+
     }
   }
 }

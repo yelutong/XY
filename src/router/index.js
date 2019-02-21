@@ -88,6 +88,12 @@ const register = () =>
 const findPwd = () =>
   import ('@/views/mine/findPwd'); // 找回密码
 
+// 店铺 -------------------------------
+const store = () =>
+  import ('@/views/store/index'); // 店铺首页
+// 附近 -------------------------------
+const nearby = () =>
+  import ('@/views/nearby/index'); // 附近
 
 // 路由加载 --------------------------------------
 const router = new Router({
@@ -98,14 +104,28 @@ const router = new Router({
       redirect: '/index'
     },
     // 主页路由
+    // {
+    //   path: '/index',
+    //   component: index
+    // },
     {
-      path: '/index',
-      component: index
+      path: '/index', //主页路由指向附近
+      component: nearby
     },
     // 小V
     {
       path: '/vGoods',
       component: vGoods
+    },
+    // 附近
+    {
+      path: '/nearby',
+      component: nearby
+    },
+    // 店铺首页路由
+    {
+      path: '/store/index',
+      component: store
     },
     // 分享引导页
     {

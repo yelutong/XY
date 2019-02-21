@@ -22,36 +22,63 @@
 </style>
 <script type="text/javascript">
   var userAgent = navigator.userAgent.toLowerCase();
+  // alert('当前html地址：'+window.location.href);
+  // alert('html code:'+getQueryString('code'));
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
-      console.log(getQueryString('from')=='singlemessage');
-      if(getQueryString('from')=='singlemessage'){
-        if(location.href.indexOf('goods')>-1){
-          var goodsId = location.href.split('goods?id=')[1];
-          window.location.href="http://www.xy999888.com/m/#/goods?id="+goodsId;
-        }else{
-          window.location.href="http://www.xy999888.com/m/#/index";
-        }
+      let token = localStorage.getItem('token');
+      let openId = localStorage.getItem('openId');
+      let proUserId = getQueryStr2('proUserId');
+      let code = getQueryString('code');
+      let okRedirectUrl = 'http://www.xy268.com/m/#/';
+      
+      if(proUserId){
+        localStorage.setItem("proUserId", proUserId);
       }
-      // var re = getQueryString(re)
-      // window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=" + re + "?response_type=code&scope=snsapi_userinfo&state=10074#wechat_redirect";
+      alert('proUserId:'+proUserId);
+      if(code){
+        sessionStorage.setItem("code", code);
+      }
+      
+      if(location.href.indexOf('goods')>-1){
+        let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
+        okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
+      }else{
+        okRedirectUrl = okRedirectUrl + 'index';
+      }
+
+      if(token == null && openId == null && sessionStorage.getItem('code') == null){
+        let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
+        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
+      }
+
+      if(getQueryString('from')=='singlemessage'|| getQueryString('from')=='timeline'){
+        window.location.href=okRedirectUrl;
+      }
+    }else {
+         /* let okRedirectUrl = 'http://127.0.0.1:8090/#/';
+          if(location.href.indexOf('goods')>-1){
+            let goodsId = location.href.split('goods?id=')[1];//这里把推荐id也取到了
+            okRedirectUrl = okRedirectUrl + 'goods?id=' + goodsId;
+            alert('当前地址1：'+okRedirectUrl);
+          }else{
+            okRedirectUrl = okRedirectUrl + 'index';
+            alert('当前地址2：'+okRedirectUrl);
+          }
+          window.location.href=okRedirectUrl;
+          let proUserId = getQueryString('proUserId');
+          alert(getQueryString('proUserId'));*/
     }
-    else {
-      // window.location.href = "http://www.xy268.com/m";
-      console.log('中间页');
-     /*  console.log(getQueryString('from')=='singlemessage');
-      if(getQueryString('from')=='singlemessage'){
-        if(location.href.indexOf('goods')>-1){
-          var goodsId = location.href.split('goods?id=')[1];
-          window.location.href="http://www.xy999888.com/m/#/goods?id="+goodsId;
-        }else{
-          window.location.href="http://www.xy999888.com/m/#/index";
-        }
-      }*/
-    }
-    
+
+    function getQueryStr2(name) { 
+      let url = (window.location.href.indexOf('?from')>-1)?window.location.href.replace('?from',''):window.location.href;
+      let url2 = (url.indexOf('#')>-1)?('?'+url.replace('/#/','/').split('?')[1]):('?'+url.split('?')[1]);
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+      let r = url2.substr(1).match(reg); 
+      if (r != null) return unescape(r[2]); return null; 
+    } 
     function getQueryString(name) { 
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
-      var r = window.location.search.substr(1).match(reg); 
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+      let r = window.location.search.substr(1).match(reg); 
       if (r != null) return unescape(r[2]); return null; 
     } 
 </script>

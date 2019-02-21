@@ -89,7 +89,7 @@
       "v-footer": vFooter
     },
     computed: {
-      ...mapState(["token", "userId", "UserPhone", "weChatInfo", "weChatShare",'shareId'])
+      ...mapState(["token", "openId", "userId","weChatInfo", "weChatShare"])
     },
     beforeCreate() {
       document.title = "个人中心";
@@ -98,22 +98,15 @@
       this.verToken();
       this.getUserData();//获取个人信息数据
       this.getOrderCount();//获取订单数量
-      console.log(this.token);
     },
     methods: {
       ...mapActions(["atnUserId", "atnUserPhone"]),
       verToken(){
         let openId = localStorage.getItem("openId");
         if(openId && !this.token){
-          this.showTip("微信绑定流程");
-          //this.$router.push('/mine/bind');
+          this.$router.push('/mine/bind');
           return;
         } 
-        else if(!openId && !this.token){
-          this.showTip("中间页流程");
-          //this.$router.push('/mine/bind');
-          return;
-        }
       },
       isLogin() {
         if(!this.token){
@@ -179,6 +172,7 @@
             this.info = resData.content;
             this.userPhone = this.formatPhone(resData.content.userName);
             this.atnUserId(resData.content.id);
+            localStorage.setItem('userId',resData.content.id);
             this.atnUserPhone(resData.content.userName);
             console.log(this.userId);
           }

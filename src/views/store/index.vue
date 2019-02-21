@@ -1,69 +1,6 @@
 <template>
-  <div class="wrapper page-buy">
-    <vHeader title="填写订单"/>
-    <router-link class="lay-address white mb10 mt50" :to="{path:'/mine/addresses', query:{from:'goods'}}" v-if="isShowList">
-      <i class="ico i-map"></i>
-      <div class="adress">
-        <template v-if="showAddress">
-          <span class="name-phone fs-14">{{ showAddress.userName }} {{ showAddress.phone }}</span>
-          <span class="adres fs-12 txt-gray">{{ showAddress.areaInfo }} {{showAddress.address }}</span>
-        </template>
-        <span v-else class="chose">选择收货地址</span>
-      </div>
-      <i class="ico i-aow"></i>
-    </router-link>
-    <div class="lay-goods white mb10 pd15" v-if="isShowList">
-      <div class="item" v-for="(item, index) in goodsBuyInfo" :key="index">
-        <div class="img-box">
-          <img class="img" :src="item.img" />
-        </div>
-        <div class="info-box">
-          <div class="title">
-            {{ item.name }}
-          </div>
-          <div class="price-num">
-            <span class="price">￥{{ item.price }}</span>
-            <span class="fs-12">x {{ item.num }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-
-    <group>
-      <div @click="showTips">
-      <cell :title="(exchangeObj&&exchangeObj.discountedPrice)?('可使用兑换积分'+exchangeObj.discountedPrice+'.00'):'可使用兑换积分0.00'" is-link>
-        <img slot="icon" style="display:block;margin-right:5px;width:25px;height:25px" :src="exchangePic">
-      </cell>
-     </div>
-    </group>
-    
-      <div class="picker-new" v-if="exchangeObj">
-          <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
-           <div :class="show ?'picker-panel show':'picker-panel'">
-            <div class="h45 vux-1px-b relative titleEx">兑换积分<i class="txt-gray" @click="closePickerBox">×</i></div>
-            <div class="groupEx mb10 justify-content-space-between pda15">
-
-            <!-- <x-switch :title="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount" :value-map="['0', '1']" v-model="isUseIntegral"></x-switch>-->
-             <span class="left" v-text="'可使用兑换积分'+exchangeObj.exchange.goodsIntegral*exchangeObj.goodsCount"></span>
-             <input type="checkbox" class="check goods-check goodsCheck" v-model="isUseIntegral"/>
-            </div>
-          </div>
-        </div> 
-
-
-    <div class="lay-tips white" v-if="isShowList">
-      <textarea class="txa" placeholder="请填写备注" v-model="goodsTips" maxlength="200"></textarea>
-    </div>
-    <div class="lay-action fix-btom pay-act-btom" v-if="isShowList">
-      <div class="price-info flex1">
-        <span class="tag">合计：</span>
-        <span class="total" v-model="num">￥{{ totalPrice }}</span>
-        <span class="tip"> (含运费)</span>
-      </div>
-      <button class="btn-submit per40" @click="makeOrder">支付订单</button>
-    </div>
-    <v-nodata v-if="!isShowList" bgcolor="grey" text="- 暂无待支付订单 -" />
+  <div class="wrapper storeIndex">
+    <a href="androidamap://navi?sourceApplication=appname&amp;poiname=fangheng&amp;lat=36.547901&amp;lon=104.258354&amp;dev=1&amp;style=2">导航</a>
   </div>
 </template>
 
@@ -312,7 +249,5 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '../../assets/css/pay-act-btom';
-@import '../../assets/css/media';
-@import '../../assets/css/buy';
+
 </style>

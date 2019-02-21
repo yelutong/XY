@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { MessageBox, Badge } from "mint-ui";
 import vSwiper from "@/components/v-swiper";
 import vCell from "@/components/v-cell";
@@ -145,7 +145,7 @@ export default {
     vHeader
   },
   computed: {
-    ...mapState(["token", "openId", "userId","weChatInfo", "weChatShare"])
+    ...mapState(["token", "openId", "userId"])
   },
   beforeCreate() {
     document.title = "商品详情";
@@ -157,10 +157,13 @@ export default {
     this.getGoodsMainData(id);
     this.getGoodsEva(id);
     this.getWeixinData();
+    setTimeout(()=>{
+     this.getUserData();
+    },0)
   },
   methods: {
-    verToken(){
-      console.log(this.userId);
+    ...mapActions(["atnUserId"]),
+    verToken(){ 
      if(this.token){
       this.$axios
         .get(this.api.getCartNum, {
@@ -287,13 +290,17 @@ export default {
     },
     // 加入购物车
     addToCart(id) {
-      let openId = localStorage.getItem("openId");
-      if(openId && !this.token){
-        this.showTip("微信绑定流程");
-        return;
-      } 
-      else if(!openId && !this.token){
-        this.showTip("中间页流程");
+      if(!this.token){
+        MessageBox({
+          title: "绑定提示",
+          message:
+            "您还没有绑定手机，无法进行下单和个人操作，建议您先绑定手机~",
+          showCancelButton: true
+        }).then(action => {
+          if (action === "confirm") {
+            this.$router.push("/mine/bind");
+          }
+        });
         return;
       }
 
@@ -329,10 +336,32 @@ export default {
             this.showTip("加入失败，请重试");
           });
     },
+     getUserData(){    
+        this.$axios
+        .get(this.api.getUserData,{
+          headers: {"Authorization": this.token }
+         })
+        .then(res => {
+          const resData = res.data;
+          console.log(resData);
+          if (resData.code !== 1) {
+            if(resData.code !== 403){
+              this.showTip(resData.msg);
+            }
+            return;
+          }else{
+            this.atnUserId(resData.content.id);
+          }
+      
+        })
+        .catch(res => {
+          
+        }); 
+      },
     // 立即购买
     pageToBuy(id) {
       // 判断是否绑定了手机号
-     /* if (!this.userId) {
+     if (!this.token) {
         MessageBox({
           title: "绑定提示",
           message:
@@ -343,18 +372,8 @@ export default {
             this.$router.push("/mine/bind");
           }
         });
-      }*/
-
-      let openId = localStorage.getItem("openId");
-      if(openId && !this.token){
-        this.showTip("微信绑定流程");
-        return;
-      } 
-      else if(!openId && !this.token){
-        this.showTip("中间页流程");
-        return;
       }
-
+  
       let ajaxData ={
         'goodsCount':this.num,
         'goodsId': id,
@@ -385,7 +404,7 @@ export default {
         ajaxData.name = this.goodsMainData.name;
         ajaxData.price = this.goodsMainData.price;
         ajaxData.num = this.num;
-        console.log(ajaxData);
+        
         let selectArr = [];
         selectArr.push(ajaxData);
         this.$router.push({name:'cart', params: { selectArr: selectArr}});
@@ -418,7 +437,25 @@ export default {
       },
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
-        const vue = this;
+        const _this = this;
+        let link = '';
+        if(!_this.userId && localStorage.getItem("userId")){
+          _this.atnUserId(localStorage.getItem("userId"));
+        }
+        if(objData.url.indexOf('&proUserId=')<0){
+          if(_this.userId){
+            link = objData.url + '&proUserId=' + _this.userId;
+          }else{
+            link = objData.url;
+          }
+        }else{
+          if(_this.userId){
+            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
+          }else{
+            link = objData.url.split('&proUserId=')[0];
+          }
+        }
+        console.log('link:'+link);
         wx.config({
           debug: false, 
           appId: objData.appId,
@@ -440,7 +477,6 @@ export default {
               "menuItem:share:weiboApp",
               "menuItem:share:facebook",
               "menuItem:originPage",
-              "menuItem:copyUrl",
               "menuItem:openWithQQBrowser",
               "menuItem:openWithSafari",
               "menuItem:share:email"
@@ -448,9 +484,9 @@ export default {
           });
           // 分享到朋友圈
           wx.onMenuShareTimeline({
-            title: vue.goodsMainData.name,
-            link: objData.url + '&userId=' + vue.userId,
-            imgUrl: vue.photoUrl,
+            title: _this.goodsMainData.name,
+            link: link,
+            imgUrl: _this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },
@@ -460,10 +496,10 @@ export default {
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
-            title: vue.goodsMainData.name,
-            desc: vue.goodsMainData.saleSpots,
-            link: objData.url+ '&userId=' + vue.userId,
-            imgUrl: vue.photoUrl,
+            title: _this.goodsMainData.name,
+            desc: _this.goodsMainData.saleSpots,
+            link: link,
+            imgUrl: _this.photoUrl,
             success: function () {
               vue.showTip("分享成功");
             },

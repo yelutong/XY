@@ -54,6 +54,7 @@
       </div>
       <v-nodata v-if="noOrders" bgcolor="grey" text="- 暂无相关订单 -" />
     </div>
+     <v-footer active="orders" />
   </div>
 </template>
 
@@ -62,6 +63,7 @@ import { mapState } from "vuex";
 import { MessageBox, Toast, InfiniteScroll } from "mint-ui";
 import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
+import vFooter from "@/components/v-footer";
 const qs = require("qs");
 export default {
   data() {
@@ -103,7 +105,8 @@ export default {
   },
   components: {
     "v-nodata": vNodata,
-    vHeader
+    vHeader,
+    "v-footer": vFooter
   },
   computed: {
     ...mapState(["token"])
@@ -255,7 +258,6 @@ export default {
               });
             }*/
             this.orderList.push(obj);
-            console.log(this.orderList);
           });
           if (pageCount <= this.ordersPageNo) {
             this.loading = true;
