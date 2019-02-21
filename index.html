@@ -20,8 +20,9 @@
   text-align: center;
 }
 </style>
+<!--
 <script type="text/javascript">
-  var userAgent = navigator.userAgent.toLowerCase();
+    var userAgent = navigator.userAgent.toLowerCase();
   // alert('当前html地址：'+window.location.href);
   // alert('html code:'+getQueryString('code'));
     if(userAgent.match(/MicroMessenger/i)=="micromessenger"){
@@ -82,11 +83,12 @@
       if (r != null) return unescape(r[2]); return null; 
     } 
 </script>
+-->
 </head>
-
 <body ontouchstart="" onmouseover="">
   <div id="app"></div>
 </body>
+</html>
 <script>
   // 有些机型上vue偶尔渲染失败，以此解决
   var winStorge = window.localStorage,
@@ -107,5 +109,3 @@
   }, 100);
 
 </script>
-
-</html>

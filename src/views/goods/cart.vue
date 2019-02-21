@@ -224,7 +224,7 @@ export default {
         resData = JSON.parse(sessionStorage.getItem("selectArr"));
       }
         // 成功后赋值商品对象，并存进数组
-        if(resData.length>0){
+        if(resData && resData.length>0){
           this.isShowList = true;
           this.goodsBuyInfo=resData;
           for (let i of resData){
