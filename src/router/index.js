@@ -124,7 +124,7 @@ const router = new Router({
     },
     // 店铺首页路由
     {
-      path: '/store/index',
+      path: '/store',
       component: store
     },
     // 分享引导页

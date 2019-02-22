@@ -1,6 +1,48 @@
 <template>
-  <div class="wrapper storeIndex">
-    <a href="androidamap://navi?sourceApplication=appname&amp;poiname=fangheng&amp;lat=36.547901&amp;lon=104.258354&amp;dev=1&amp;style=2">导航</a>
+  <div class="wrapper nearby">
+    <vHeader title="店铺"/>
+    <p class="white mb10 mt50">211</p>
+    <p @click="toastAddress">地址</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    <p>211</p>
+    
+    
+    <div class="picker-new">
+        <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
+         <div :class="show ?'picker-panel show':'picker-panel'">
+          <div class="h45 vux-1px-b relative titleEx">兑换积分<i class="txt-gray" @click="closePickerBox">×</i></div>
+          <div class="groupEx mb10 justify-content-space-between pda15">
+
+          <a href="https://apis.map.qq.com/uri/v1/marker?marker=coord:39.892326,116.342763;title:超好吃冰激凌;addr:手帕口桥北铁路道口&referer=myapp">腾讯地图</a><br><br>
+         <a href="http://api.map.baidu.com/marker?location=40.047669,116.313082&title=百叶路1号&content=百度奎科大厦&coord_type=bd09ll
+&output=html&src=webapp.baidu.openAPIdemo">百度地图</a><br><br>
+          <a href="https://uri.amap.com/marker?position=116.473195,39.993253&name=百叶路1号&coordinate=gaode&callnative=1&src=webapp.amap.openAPIdemo">高德地图</a>
+           
+          </div>
+        </div>
+      </div> 
+
+   
   </div>
 </template>
 
@@ -16,112 +58,26 @@ export default {
   data() {
     return {
       show: false,
-      userAddressId:'',
-      areaId:'',
-      isShowList: false,
-      goodsCarts:[],
-      payPrice: 0,
-      userCouponIds: [],
-      goodsChannel: 1,
-      goodsIntegral: '',
-      isUseIntegral:false,
-      exchangeObj: '',
-      exchangePic: require("../../assets/images/dui@2x.png"),
-      num: '',
-      showAddress: null,
-      goodsBuyInfo: [],
-      goodsTips: "",
+      
     };
   },
   components: { 
-    "x-switch": XSwitch,
-    "group": Group,
-    "cell": Cell,
-    "v-nodata": vNodata,
     vHeader
   },
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"]),
-    // 总价计算
-    totalPrice() {
-      const orderPrice = {
-        'goodsCarts': this.goodsCarts,
-        'goodsChannel': this.isUseIntegral == true? 2: 1,
-        'isUseIntegral': this.isUseIntegral,
-        'userCouponIds': this.userCouponIds
-      }
-      this.$axios
-        .post(this.api.orderPriceNew,
-        JSON.stringify(orderPrice),
-        {
-          headers: {"Authorization": this.token , "content-type": "application/json"}
-        })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到价格信息");
-            setTimeout(()=>{
-              this.$router.push({path: "/index"})
-            },1500)
-            return;
-          }else{
-            if(orderPrice.goodsChannel == 2){
-              if(resData.content.exchange){
-                if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
-                this.payPrice = resData.content.payPrice;
-                this.goodsIntegral = resData.content.exchange.goodsIntegral;
-                }else{
-                  this.showTip("兑换积分不足");
-                  this.isUseIntegral = '0';
-                  this.goodsIntegral = '';
-                  this.payPrice = resData.content.payPrice;
-                }
-              }else{
-                  this.showTip("该商品暂不支持积分兑换");
-                  this.isUseIntegral = '0';
-                  this.goodsIntegral = '';
-                  this.payPrice = resData.content.payPrice;
-              }
-            }else{
-              this.goodsIntegral = '';
-              this.payPrice = resData.content.payPrice;
-            }
-          }
-        })
-        .catch(res => {
-         // this.showTip("未获取到商品信息");
-        });
-        return this.payPrice
-    }
   },
   beforeCreate(){
-    document.title = '结算';
+    document.title = '店铺';
   },
   created() {
-    this.getCartList();
-    this.exchangeData();
-    // 取要购买的商品信息
-    //this.getBuyInfo(this.id);
-    // 读取用户默认地址 和 手选的地址（从选择地址那边返回来）
-    const autoAddress = this.autoAddress;
-    const choseAddress = this.choseAddress;
-    if (choseAddress) {
-      this.showAddress = choseAddress;
-      this.userAddressId = this.showAddress.id;
-      this.areaId = this.showAddress.areaId;
-    } else if (autoAddress) {
-      this.showAddress = autoAddress;
-      this.userAddressId = this.showAddress.id;
-      this.areaId = this.showAddress.areaId;
-    } else {
-      this.getAutoAddress();
-    }
+   
   },
   methods: {
     closePickerBox(){
       this.show = false;
     },
-    showTips(){
+    toastAddress(){
       this.show = true;
     },
     exchangeData(){
@@ -249,5 +205,5 @@ export default {
 </script>
 
 <style lang="stylus">
-
+@import '../../assets/css/nearby';
 </style>

@@ -1,3 +1,4 @@
+
 export default {
   install(Vue, options) {
     Vue.prototype.uniq = function (array) {//数组去重
@@ -8,6 +9,18 @@ export default {
           }
       }
       return temp;
+    };
+    Vue.prototype.getCity = function () {
+      let currentCity = '';//当前城市
+      function getCurrentCity(result){
+        if(result.name.substring(result.name.length-1)=='市')
+        currentCity = result.name;
+        console.log("当前定位城市:" + currentCity);
+      }
+        var myCity = new BMap.LocalCity();
+        myCity.get(getCurrentCity);
+
+      return currentCity;
     };
     Vue.prototype.isAndroid = function () {
       const u = navigator.userAgent;
@@ -152,3 +165,4 @@ export default {
     };
   }
 }
+

@@ -7,6 +7,7 @@ import axios from 'axios';
 import tool from './assets/js/tool'; 
 import MintUI from 'mint-ui';
 import 'mint-ui/lib/style.css';
+
 import {
   Toast
 } from 'mint-ui';
