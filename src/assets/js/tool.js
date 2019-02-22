@@ -13,13 +13,14 @@ export default {
     Vue.prototype.getCity = function () {
       let currentCity = '';//当前城市
       function getCurrentCity(result){
-        if(result.name.substring(result.name.length-1)=='市')
         currentCity = result.name;
+        if(currentCity.substr(currentCity.length-1)=='市'){
+          currentCity = currentCity.substr(0,currentCity.length-1);
+        }
         console.log("当前定位城市:" + currentCity);
       }
-        var myCity = new BMap.LocalCity();
-        myCity.get(getCurrentCity);
-
+      var myCity = new BMap.LocalCity();
+      myCity.get(getCurrentCity);
       return currentCity;
     };
     Vue.prototype.isAndroid = function () {

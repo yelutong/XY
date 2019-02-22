@@ -52,7 +52,7 @@ const qs = require("qs");
 export default {
   data() {
     return {
-      city:'',
+      city:'getCity',
     };
   },
   components: { 
