@@ -1,4 +1,11 @@
 .nearby{
+  .mint-header{
+   background:#FFF!important;
+   color:#333!important;
+  }
+  .arrowDown{
+    margin-top:15px;
+  }
   .groupEx{
     height:200px;
     position:relative;
@@ -70,4 +77,205 @@
       transition: all .5s ease;
       -webkit-transition: all .5s ease;
   }
+}
+.cityChoiceBox,.cityChoiceBox article,.article span,.cityChoiceBox input,.cityChoiceBox i,.cityChoiceBox div,.cityChoiceBox p,.cityChoiceBox h3 {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+.transit {
+	transition: all .4s linear 0s;
+	-moz-transition: all .4s linear 0s;
+	-webkit-transition: all .4s linear 0s;
+	-o-transition: all .4s linear 0s;
+	-ms-transition: all .4s linear 0s
+}
+
+.cityChoice {
+	text-align: center;
+	margin-top: 100px
+}
+
+.cityInput {
+	width: 60%;
+	height: 36px;
+	padding: 0 10px;
+	border: 1px solid #e1e1e1;
+	border-radius: 4px
+}
+
+.cityChoiceBox {
+	width: 100%;
+	min-height: 1000px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+	z-index: 999999
+}
+
+.cityChoiceBox .cityChoice-top {
+	position: fixed;
+	width: 100%;
+	height: 46px;
+	line-height: 46px;
+	padding: 0 15px 0 36px;
+	background-color: #FFF;
+	color: #333;
+	border-bottom:1px solid #f7f7f7;
+	z-index: 9999999
+}
+
+.cityChoiceBox .cityChoice-top span {
+	position: absolute;
+	display: inline-block;
+	left: 10px;
+	top: 0px;
+	font-size: 16px
+}
+
+.cityChoiceBox .cityChoice-top .search-input {
+	width: 100%;
+	height: 26px;
+	font-size:14px;
+	border-radius: 20px 0 26px 20px;
+	line-height: 26px;
+	padding: 0 6px 0 20px;
+	border: 0;
+	background-color: #f7f7f7
+}
+
+.cityChoiceBox .focus {
+	padding: 0 50px 0 15px
+}
+
+.cityChoiceBox .cityChoice-top .cancel {
+	position: absolute;
+	display: inline-block;
+	right: 15px;
+	top: 0
+}
+
+.cityChoiceBox .search-box {
+	position: absolute;
+	left: 0;
+	top: 56px;
+	background-color: #fff;
+	width: 100%;
+	z-index: 999999
+}
+
+.cityChoiceBox .city-Box {
+	position: relative;
+	width: 100%;
+	padding-top: 46px
+}
+
+.cityChoiceBox .city-Box h3 {
+	font-weight: 400;
+	color: #999
+}
+
+.cityChoiceBox .city-Box span {
+	display: inline-block;
+	width: 27%;
+	height: 32px;
+	margin: 6px 12px 6px 0;
+	line-height: 32px;
+	background-color: #fff;
+	text-align: center;
+	border: 1px solid #ccc
+}
+
+.cityChoiceBox .city-Box .city-sidaber {
+	position: fixed;
+	right: 10px;
+	top: 65px;
+	width: 30px;
+	line-height: 24px;
+	text-align: center;
+	font-size: 14px;
+	color: #999
+}
+
+.cityChoiceBox .host-city {
+	padding: 12px;
+	background-color: #f7f7f7
+}
+
+.cityChoiceBox .city-content h3 {
+	padding: 6px 15px;
+	background-color: #f1f3f7;
+	font-weight: 400;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc
+}
+
+.cityChoiceBox .city-content p {
+	padding-right: 80px;
+	border-bottom: 1px solid #e1e1e1;
+	margin-bottom: 0
+}
+
+.cityChoiceBox .city-content p i {
+	display: block;
+	padding: 10px 0 10px 15px
+}
+
+.cityChoiceBox .zimShow {
+	position: fixed;
+	left: 50%;
+	top: 300px;
+	margin-left: -20px;
+	width: 60px;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	background-color: rgba(0,0,0,.5);
+	border-radius: 50%;
+	font-size: 20px;
+	color: #fff
+}
+
+.cityChoiceBox .sousuo {
+	padding: 10px 15px;
+	border-bottom: 1px solid #e1e1e1;
+	margin-bottom: 0
+}
+
+.cityChoiceBox,.cityChoiceBox article,.article span,.cityChoiceBox input,.cityChoiceBox i,.cityChoiceBox div,.cityChoiceBox p,.cityChoiceBox h3 {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+@media screen and (max-width:321px) {
+	.cityChoiceBox {
+		font-size: 12px
+	}
+
+	.cityChoiceBox .city-Box .city-sidaber {
+		line-height: 20px
+	}
+}
+
+@media screen and (min-width:321px) and (max-width:400px) {
+	.cityChoiceBox {
+		font-size: 13px
+	}
+
+	.cityChoiceBox .city-Box .city-sidaber {
+		line-height: 22px
+	}
+}
+
+@media screen and (min-width:400px) {
+	.cityChoiceBox {
+		font-size: 15px
+	}
+
+	.cityChoiceBox .city-Box .city-sidaber {
+		line-height: 28px
+	}
 }
