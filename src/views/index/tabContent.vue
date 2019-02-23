@@ -2,7 +2,7 @@
 <template>
   <div id="tabContent" class="wrapper page-index">
     <div class="white mgt10 pd10">
-        <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
+        <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
           <div>
             <div class="white">
              <grid :cols="4" :show-lr-borders="false">
@@ -59,6 +59,7 @@ export default {
       currentPage: 0,
       listData:[],
       classId: 0,
+      loadMoreVal: true,
       pullupEnabled: true,
       status: {
         pullupStatus: 'default'
@@ -136,6 +137,14 @@ export default {
       });
     },
     loadMore (classId) {
+       if(this.loadMoreVal){
+        this.loadMoreVal=false;
+        setTimeout(()=>{
+         this.loadMoreVal=true;
+        },1000)
+       }else{
+         return;
+       }
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;
           this.$axios.post(this.api.getClassList,qs.parse({'goodsParentClassId':classId, "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})

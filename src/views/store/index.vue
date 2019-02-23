@@ -1,31 +1,24 @@
 <template>
-  <div class="wrapper nearby">
-    <vHeader title="店铺"/>
-    <p class="white mb10 mt50">211</p>
-    <p @click="toastAddress">地址</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    <p>211</p>
-    
+  <div :class="top==0?'nearby active':'nearby'" id="storePage">
+    <vHeader :title="storeTitle"/>
+    <div class="white mt40 blueBg w100 relative">
+      <p class="storeImgBox"><img :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
+    </div>
+    <div class="white pd10">
+      <p class="pdt40 lh-36 vux-1px-b center fs-14 txt-black-real" v-text="storeData.merchantName"></p>
+      <p v-text="storeData.merchantAddress" class="addr w100 txt-black"></p>
+      <p class="vux-1px-t center pdt5">
+        <i class="txt-gray1" v-text="'粉丝'+storeData.fansCount"></i>
+        <i class="mg5 txt-gray1" v-text="'销量0'"></i><i class="txt-gray1">评分</i>
+        <rater disabled :font-size="10" active-color="#ff4f00" :value="storeData.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(storeData.totalScore)"></i>
+      </p>
+      <p class="txt-gray1 pdt5">公告：暂无</p>
+
+      <p @click="toastAddress">地址</p>
+       <div>
+         
+       </div>
+    </div>
     
     <div class="picker-new">
         <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
@@ -50,35 +43,68 @@
 // 购物车
 import { mapState } from "vuex";
 import { Toast } from "mint-ui";
-import { XSwitch, Group, Cell } from 'vux';
+import { Rater, XSwitch, Group, Cell } from 'vux';
 import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
   data() {
     return {
+      id: this.getUrlParam("id"),
+      urlPic:this.api.urlPic,
+      top:0,
       show: false,
-      
+      storeTitle:'',
+      storeData: ''
     };
   },
   components: { 
-    vHeader
+    vHeader,
+    Rater
   },
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"]),
+  },
+  mounted() {//给window添加一个滚动滚动监听事件
+    window.addEventListener('scroll', this.handleScroll, true);
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll); 
   },
   beforeCreate(){
     document.title = '店铺';
   },
   created() {
-   
+    this.sellerstoreData();
   },
   methods: {
+   handleScroll() { //改变元素#searchBar的top值
+      let top = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
+      if(top==0){
+        this.storeTitle = "";
+        this.top = 0;
+      }else{
+        this.storeTitle = this.storeData.merchantName;
+        this.top = top;
+      }
+    },
     closePickerBox(){
       this.show = false;
     },
     toastAddress(){
       this.show = true;
+    },
+    sellerstoreData(){
+      this.$axios.get(this.api.sellerstoreData+this.id)
+      .then(res => {
+        if(res.data.code === 1){
+          let arrData = res.data.content;
+          this.storeData = arrData;
+        }
+      })
+      .catch(res => {
+       //下单失败，请您稍后重试
+      });
     },
     exchangeData(){
       let orderPrice = {

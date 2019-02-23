@@ -2,7 +2,7 @@
 <template>
   <div id="indexRouter" class="wrapper page-index">
 
-    <scroller lock-x :scrollbar-y=false height="-60" use-pullup @on-scroll-bottom="loadMore" v-model="status" ref="scroller">
+    <scroller lock-x :scrollbar-y=false height="-60" use-pullup @on-scroll-bottom="loadMore" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
     
     <div>
 
@@ -74,6 +74,7 @@ export default {
       currentPage: 0,
       listData:[],
       newListData:[],
+      loadMoreVal: true,
       pullup:true,
       status: {
         pullupStatus: 'default'
@@ -113,7 +114,15 @@ export default {
   },
   methods: {
     ...mapActions(["atnOpenId","atnToken","atnProUserId"]),
-    loadMore (index) {
+    loadMore () {
+       if(this.loadMoreVal){
+        this.loadMoreVal=false;
+        setTimeout(()=>{
+         this.loadMoreVal=true;
+        },1000)
+       }else{
+         return;
+       }
         if(this.currentPage< this.totalPage){
           this.currentPage= parseInt(this.currentPage) + 1;
           this.$axios.post(this.api.getGoodsList,qs.parse({ "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})

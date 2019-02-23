@@ -50,7 +50,11 @@ const ajaxUrl = {
   receptGoods: urlHost + 'orderform/receipt/user/', //{orderNumber}用户确认收货
   saveGoodsComment: urlHost + 'orderformcomment/saveGoodsComment',//保存商品评论
   goodsCommentList: urlHost + 'orderformcomment/goodsCommentList',//商品评论列表
-  wxShareSign: urlHost + "user/signWxUrl", //获取微信分享签名
+  wxShareSign: urlHost + 'user/signWxUrl', //获取微信分享签名
+
+  sellerstoreList: urlHost + 'sellerstore/list',//获取店铺列表 根据相关参数查询
+  storeClassList: urlHost + 'sellerstoreclass/list',//获取店铺分类
+  sellerstoreData: urlHost + 'sellerstore/info/',//{id}根据主键查询店铺信息
 }
 // 返回模块
 export default ajaxUrl;

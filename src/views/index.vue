@@ -2,7 +2,7 @@
 <template>
   <div id="index21" class="wrapper page-index">
 
-    <tab :line-width=2 :custom-bar-width="getBarWidth" :scroll-threshold=4 animated={false}  active-color='#FF4F00' v-model="index">
+    <tab :line-width=2 :custom-bar-width="getBarWidth" :scroll-threshold=1 animated={false}  active-color='#FF4F00' v-model="index">
       <tab-item class="vux-center" :selected="onTab === item.id" v-for="(item, index) in listFun" @on-item-click="onTabClick(item)" :key="index">{{item.className}}</tab-item>
     </tab>
     <swiper v-model="index" height="100%" :show-dots="false">

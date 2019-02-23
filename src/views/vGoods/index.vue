@@ -2,7 +2,7 @@
   <div id="vGoods" class="wrapper page-index">
     <mt-header fixed title="小V专区" class="txt-black bg-white"></mt-header>
    <div class="white vGoods">
-        <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
+        <scroller lock-x :scrollbar-y=false height="-60" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
         <div class="box2">
            <flexbox :gutter="0" wrap="wrap">
             <flexbox-item :span="1/2" v-for="(goods, index) in listData" :key="index">
@@ -41,6 +41,7 @@ export default {
       listData:[],
       isLevelPackage: this.getUrlParam("isLevelPackage")||1,
       pullupEnabled: true,
+      loadMoreVal:true,
       status: {
         pullupStatus: 'default',
         pulldownStatus: 'default'
@@ -62,6 +63,14 @@ export default {
   },
   methods: {
     loadMore (index) {
+      if(this.loadMoreVal){
+       this.loadMoreVal=false;
+          setTimeout(()=>{
+           this.loadMoreVal=true;
+          },1000)
+       }else{
+         return;
+       }
       if(index==1){
         this.currentPage = 0;this.totalPage = 1;this.listData=[];
         if(this.currentPage< this.totalPage){

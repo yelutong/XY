@@ -73,7 +73,6 @@
 	</transition>
 </template>
 <script>
-import Vue from 'vue';
 export default {
    data() {
       return{
@@ -88,14 +87,14 @@ export default {
 	}
   },
   methods:{
-		cityFun:function(){
+		cityFun(){
 			this.boxShow=!this.boxShow;
 		},
-		search:function(){
+		search(){
 			this.isCancel=true;
 			document.documentElement.scrollTop=0;
 		},
-	    hostCityss:function(){
+	    hostCityss(){
 	    	this.hostCitys = [
 	    	'上海|shanghai|sh',
 	    	'北京|beijing|bj',
@@ -111,16 +110,16 @@ export default {
 	    	'西安|xian|xn'
 	    	]
 		},
-		cityactive:function(index,cityss){
+		cityactive(index,cityss){
 			this.boxShow=!this.boxShow;
 			this.zimShow=false;
 			this.$emit("tochildevent",cityss[index].split('|')[0])
 		},
-		mousedownFun:function(index){
+		mousedownFun(index){
 			this.zimShow=!this.zimShow;
 			this.zimText=this.sidabers[index]
 		},
-		mouseupFun:function(index){
+		mouseupFun(index){
 			this.zimShow=!this.zimShow;
 			var cityChoiceBox=document.getElementById('cityChoiceBox');
 			var h3=cityChoiceBox.getElementsByTagName('h3');
@@ -145,125 +144,125 @@ export default {
       }
   },
   computed:{
-  	cityA:function(){
+  	cityA(){
   		return this.citys.filter(function(item){
             return item.split('|')[1].substr(0,1)=='a';
   			//return item.py.substr(0,1)=='a';
   		});
   	},
-  	cityB:function(){
+  	cityB(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='b';
   		});
   	},
-  	cityC:function(){
+  	cityC(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='c';
   		});
   	},
-  	cityD:function(){
+  	cityD(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='d';
   		});
   	},
-  	cityE:function(){
+  	cityE(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='e';
   		});
   	},
-  	cityF:function(){
+  	cityF(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='f';
   		});
   	},
-  	cityG:function(){
+  	cityG(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='g';
   		});
   	},
-  	cityH:function(){
+  	cityH(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='h';
   		});
   	},
-  	cityJ:function(){
+  	cityJ(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='j';
   		});
   	},
-  	cityK:function(){
+  	cityK(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='k';
   		});
   	},
-  	cityL:function(){
+  	cityL(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='l';
   		});
   	},
-  	cityM:function(){
+  	cityM(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='m';
   		});
   	},
-  	cityN:function(){
+  	cityN(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='n';
   		});
   	},
-  	cityP:function(){
+  	cityP(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='p';
   		});
   	},
-  	cityQ:function(){
+  	cityQ(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='q';
   		});
   	},
-  	cityR:function(){
+  	cityR(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='r';
   		});
   	},
-  	cityS:function(){
+  	cityS(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='s';
   		});
   	},
-  	cityT:function(){
+  	cityT(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='t';
   		});
   	},
-  	cityW:function(){
+  	cityW(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='w';
   		});
   	},
-  	cityX:function(){
+  	cityX(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='x';
   		});
   	},
-  	cityY:function(){
+  	cityY(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='y';
   		});
   	},
-  	cityZ:function(){
+  	cityZ(){
   		return this.citys.filter(function(item){
   			return item.split('|')[1].substr(0,1)=='z';
   		});
   	},
-  	sousuos:function(){
+  	sousuos(){
   		var ssval=this.ssval;
   		return this.citys.filter(function(item){
   			return item.split('|')[1].indexOf(ssval)!=-1||item.split('|')[0].indexOf(ssval)!=-1||item.split('|')[2].indexOf(ssval)!=-1;
   		});
   	}
   },
-  mounted:function(){
+  mounted(){
   	this.hostCityss();
   }
 };

@@ -5,6 +5,12 @@ const actions = {
   atnToken(context, val) {//存储token
     context.commit('mtnToken', val);
   },
+  atnCity(context, val) {//存储城市
+    context.commit('mtnCity', val);
+  },
+  atnLocation(context, val) {//存储经纬度
+    context.commit('mtnLocation', val);
+  },
   atnProUserId(context, val) {//存储ProUserId
     context.commit('mtnProUserId', val);
   },

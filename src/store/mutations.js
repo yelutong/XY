@@ -5,6 +5,9 @@ const mutations = {
   mtnToken(sta, val) {
     sta.token = val;
   },
+  mtnLocation(sta, val){
+    sta.location = val;
+  },
   mtnProUserId(sta, val) {
     sta.proUserId = val;
   },
@@ -28,6 +31,9 @@ const mutations = {
   },
   mtnChoseAddress(sta, val) {
     sta.choseAddress = val;
+  },
+  mtnCity(sta, val) {
+    sta.city = val;
   }
 };
 

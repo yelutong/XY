@@ -9,21 +9,20 @@ export default {
       }
       return temp;
     };
-    Vue.prototype.getCity = function () {
-        
-       getCurrentCityName().then(function(data){
-        console.log(data);
-       })
-      /*let myCity = new BMap.LocalCity();
-      myCity.get(getCurrentCity);
-      var currentCity = '';//当前城市
-      function getCurrentCity(result){
-        currentCity = result.name;
-        if(currentCity.substr(currentCity.length-1)=='市'){
-          currentCity = currentCity.substr(0,currentCity.length-1);
-        }
-      }*/
-      
+    Vue.prototype.dotFormat = function (val) {
+      let num = new Number(val);
+      let dotFormat = num.toFixed(1);
+      return dotFormat;
+    };
+    Vue.prototype.disFormat = function (val) {
+      let distance='';
+      if(val<1000){
+        distance = '距离'+val+'m';
+      }else{
+        let vals = val/1000;
+        distance = '距离'+vals.toFixed(1)+'km';
+      }
+      return distance;
     };
     Vue.prototype.isAndroid = function () {
       const u = navigator.userAgent;
