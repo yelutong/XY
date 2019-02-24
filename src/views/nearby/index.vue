@@ -194,7 +194,6 @@ export default {
           className: item.className
         }
       })
-      
     },
     getstoreClass(){
       this.$axios.get(this.api.storeClassList)

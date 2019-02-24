@@ -79,6 +79,7 @@ export default {
 			this.searchFun();
 		},
 		searchBtn(){
+		  this.listData = [];
 		  this.totalPage = 1;
 	    this.currentPage = 0;
       this.loadMore();

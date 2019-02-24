@@ -95,7 +95,9 @@ const store = () =>
 const nearby = () =>
   import ('@/views/nearby/index'); // 附近
 const nearIndex = () =>
-  import ('@/views/nearby/tabIndex'); // 附近  
+  import ('@/views/nearby/tabIndex'); // 附近店铺首页  
+const map = () =>
+  import ('@/views/nearby/map'); // 附近店铺首页  
 
 // 路由加载 --------------------------------------
 const router = new Router({
@@ -128,6 +130,11 @@ const router = new Router({
     {
       path: '/nearby/index',
       component: nearIndex
+    },
+    // 地图
+    {
+      path: '/map',
+      component: map
     },
     // 店铺首页路由
     {

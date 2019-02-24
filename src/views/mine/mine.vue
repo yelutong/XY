@@ -2,7 +2,7 @@
   <div class="wrapper page-mine">
     <div class="lay-avatar" @click="isLogin">
       <div class="avatar">
-        <img class="img" :src="info.headPhoto?info.headPhoto:weChatInfo.avatar" />
+        <img class="img" :src="info.headPhoto?urlPic+info.headPhoto:weChatInfo.avatar" />
       </div>
       <div class="name">{{ info.nickName?info.nickName:(userPhone?userPhone:weChatInfo.name)}}</div>
     </div>
@@ -50,6 +50,7 @@
       return {
         userPhone:'',
         info:'',
+        urlPic:this.api.urlPic,
         orderNav: [{
             title: "待付款",
             size: 19.5,

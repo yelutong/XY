@@ -55,6 +55,7 @@ const ajaxUrl = {
   sellerstoreList: urlHost + 'sellerstore/list',//获取店铺列表 根据相关参数查询
   storeClassList: urlHost + 'sellerstoreclass/list',//获取店铺分类
   sellerstoreData: urlHost + 'sellerstore/info/',//{id}根据主键查询店铺信息
+  otoStoreList: urlHost + 'barcodestore/listAll',//oto 根据店铺id获取商品列表
 }
 // 返回模块
 export default ajaxUrl;
