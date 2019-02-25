@@ -91,11 +91,13 @@ const findPwd = () =>
 // 店铺 -------------------------------
 const store = () =>
   import ('@/views/store/index'); // 店铺首页
+const storeGoods = () =>
+  import ('@/views/store/goods'); // 附近店铺商品列表里的详情 
 // 附近 -------------------------------
 const nearby = () =>
   import ('@/views/nearby/index'); // 附近
 const nearIndex = () =>
-  import ('@/views/nearby/tabIndex'); // 附近店铺首页  
+  import ('@/views/nearby/tabIndex'); // 附近店铺首页    
 const map = () =>
   import ('@/views/nearby/map'); // 附近店铺首页  
 
@@ -140,6 +142,11 @@ const router = new Router({
     {
       path: '/store',
       component: store
+    },
+    // 店铺首页路由
+    {
+      path: '/store/goods',
+      component: storeGoods
     },
     // 分享引导页
     {

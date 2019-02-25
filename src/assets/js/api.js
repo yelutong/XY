@@ -60,6 +60,7 @@ const ajaxUrl = {
   otoCartUpdate: urlHost +'o2ogoodscart/update',//更新数量
   otoGoodsCount: urlHost + 'o2ogoodscart/goodsCount',//获取购物车商品数量
   otoGoodsCartList: urlHost + 'o2ogoodscart/list',//获取购物车商品数量List
+  barcodestoreData: urlHost + 'barcodestore/queryGoods/',//{barcode}根据条码查询商品信息
 }
 // 返回模块
 export default ajaxUrl;

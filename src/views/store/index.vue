@@ -37,7 +37,7 @@
                 <flexbox class="pd10" orient="vertical" v-if="classDataList"> 
                   <flexbox-item v-for="(goods, index5) in classDataList" :key="index5">
                     <div class="mgt10 justify-content-space-between">
-                    <p @click="toDetail(goods.id)" ><img :src="goods.goodsImg?urlPic+goods.goodsImg.split(',')[0]:''"></p>
+                    <p @click="toDetail(goods)" ><img :src="goods.goodsImg?urlPic+goods.goodsImg.split(',')[0]:''"></p>
                     <div class="flexg2 listRight relative">
                       <p class="goodsName txt-black2 fs-14" v-text="goods.goodsName"></p> 
                       <div class="rightBtm justify-content-space-between">
@@ -270,7 +270,6 @@ export default {
               this.cartList = [...this.cartList,...k.list];
             }
             for(let item of this.cartList){
-              
                 for(let i of this.classDataList){
                    if(item.goodsId==i.id){
                       i.cartNum = item.goodsCount;
@@ -466,11 +465,17 @@ export default {
         }
       }
     },
-    toDetail (id) {
+    toDetail (item) {
       this.$router.push({//核心语句
-        path:'/goods',//跳转的路径
+        path:'/store/goods',//跳转的路径
         query:{//路由传参时push和query搭配使用 ，作用时传递参数
-          id: id 
+          goodsName: item.goodsName,
+          goodsImg: item.goodsImg,
+          description: item.goodsDescription,
+          monthSaleNum: item.currentMonthSaleCount,
+          salePrice: item.salePrice,
+          stock: item.stock,
+          id: item.id 
         }
       })
     },
