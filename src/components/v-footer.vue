@@ -48,6 +48,10 @@ export default {
             path: "/goods/orders",
             query: { status: '[10,20,30,40,50]', choseDex: 0}
           });
+        }else if (item.type === "goodsCart") {
+          this.$router.push({
+            path: "/store/otoGoodsCart"
+          });
         }else {
           this.$router.push("/" + item.type);
         }

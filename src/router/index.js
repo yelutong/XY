@@ -93,6 +93,10 @@ const store = () =>
   import ('@/views/store/index'); // 店铺首页
 const storeGoods = () =>
   import ('@/views/store/goods'); // 附近店铺商品列表里的详情 
+const otoGoodsCart = () =>
+  import ('@/views/store/otoGoodsCart'); // oto购物车列表   
+const fillOrder = () =>
+  import ('@/views/store/fillOrder'); // oto购物车列表 
 // 附近 -------------------------------
 const nearby = () =>
   import ('@/views/nearby/index'); // 附近
@@ -143,10 +147,20 @@ const router = new Router({
       path: '/store',
       component: store
     },
-    // 店铺首页路由
+    // 店铺商品详情路由
     {
       path: '/store/goods',
       component: storeGoods
+    },
+    // oto购物车列表
+    {
+      path: '/store/otoGoodsCart',
+      component: otoGoodsCart
+    },
+    // 填写订单
+    {
+      path: '/store/fillOrder',
+      component: fillOrder
     },
     // 分享引导页
     {

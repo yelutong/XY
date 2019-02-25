@@ -14,6 +14,11 @@ export default {
       let dotFormat = num.toFixed(1);
       return dotFormat;
     };
+    Vue.prototype.dotFormat2 = function (val) {
+      let num = new Number(val);
+      let dotFormat = num.toFixed(2);
+      return dotFormat;
+    };
     Vue.prototype.disFormat = function (val) {
       let distance='';
       if(val<1000){

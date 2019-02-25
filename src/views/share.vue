@@ -32,10 +32,10 @@
           if (resData.code === 1 && !!resData.content) {
             this.qrImgUrl = resData.content;
           } else {
-            this.qrImgUrl = 'https://mg.xjjxsd.cn/wechat/qrcode/qrcode.jpg';
+            this.qrImgUrl = '';
           }
         }).catch(res => {
-          this.qrImgUrl = 'https://mg.xjjxsd.cn/wechat/qrcode/qrcode.jpg';
+          this.qrImgUrl = '';
         });
       }
     }

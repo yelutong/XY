@@ -101,10 +101,10 @@
      
        <div class="lay-action fix-btom pay-act-btom vux-1px-t justify-content-space-between bg-white">
         <div class="justify-content-space-between per70 pdlr20">
-        <i class="cartIcon relative"><badge class="badge" :text="goodsCount"></badge></i>
-        <div class="price-info flex1 txt-right">
-          <p class="total fs-14 txt-orange" v-model="goodsCount" v-text="'￥'+allPrice"></p>
-          <p class="txt-gray1">配送另需配送费/可自取</p>
+        <i class="cartIcon relative" @click="goGoodsCart"><badge class="badge" :text="goodsCount"></badge></i>
+        <div class="price-info flex1 vertical-view">
+          <p class="total fs-14 w100 txt-right txt-orange" v-model="goodsCount" v-text="'￥'+dotFormat2(allPrice)"></p>
+          <p class="txt-gray1 w100 txt-right">配送另需配送费/可自取</p>
         </div>
         </div>
         <button  class="btn-submit per30" @click="makeOrder">去结算</button>
@@ -145,6 +145,7 @@ export default {
       urlPic:this.api.urlPic,
       imgLicense:[],
       imgStore:[],
+      carts:[],
       top:0,
       goodsCount:0,
       height:'',
@@ -191,7 +192,7 @@ export default {
   },
   watch:{
     goodsCount(newVal,oldVal){//监控购物车数量变化 从而来重新计算总价格
-      this.$axios
+        this.$axios
         .post(
           this.api.otoGoodsCartList,
           JSON.stringify({
@@ -212,11 +213,15 @@ export default {
           }
           if(resData.content.length>0){
             this.allPrice = 0;
+            this.carts = [];
             for(let k of resData.content){
               for(let item of k.list){
+                this.carts.push(item.id);
                 this.allPrice = this.allPrice + item.goodsCount*item.goodsPrice;
               }
             }
+          }else{
+            this.allPrice = 0;
           }
         })
         .catch(res => {
@@ -232,6 +237,11 @@ export default {
     this.height = window.screen.height-43+'px';
   },
   methods: {
+   goGoodsCart(){
+     this.$router.push({//核心语句
+        path:'/store/otoGoodsCart'
+      })
+   },
    goMap(title,item){
       this.$router.push({//核心语句
         path:'/map',//跳转的路径
@@ -623,56 +633,12 @@ export default {
     },
     // 结算下单
     makeOrder() {
-      // 组合下单数据
-      const arrItems = [];
-      const goodsBuyInfo = this.goodsBuyInfo;
-      const showAddress = this.showAddress;
-      if (goodsBuyInfo.length === 0) {
-        this.showTip("未获取到商品信息");
-        return;
-      }
-      if (!showAddress) {
-        this.showTip("请选择收货地址");
-        return;
-      }
-      
-      const orderArrData ={
-        'areaId': this.areaId,
-        'channel': 2,
-        'goodsCarts': this.goodsCarts,
-        'isUseIntegral': this.isUseIntegral,
-        'remark': this.goodsTips,
-        'userAddressId': this.userAddressId,
-        'userCouponIds': this.userCouponIds,
-        'uuid': this.guid()
-      }
-      this.$axios
-        .post(
-          this.api.getOrderForm,
-          JSON.stringify(orderArrData),
-          {
-            headers: {"Authorization": this.token , "content-type": "application/json"}
-          }
-        )
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip(resData.msg);
-            return;
-          }
-          const orderNumbers = resData.content;
-          // 下单成功后跳转支付页
-          this.$router.push({
-            path: "/goods/pay",
-            query: {
-              "orderNumbers": orderNumbers,
-              'payPrice': this.payPrice
-            }
-          });
-        })
-        .catch(res => {
-          this.showTip("下单失败，请您稍后重试");
-        });
+       this.$router.push({//核心语句
+        path:'/store/fillOrder',//跳转的路径
+        query:{//路由传参时push和query搭配使用 ，作用时传递参数
+          storeId:this.id
+        }
+      })
     }
   }
 };
