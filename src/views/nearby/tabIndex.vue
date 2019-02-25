@@ -3,14 +3,14 @@
     <vHeader :title="className"/>
     <scroller lock-x :scrollbar-y=false use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
       <div class="white mgt50">
-         <div class="box2 newListData">
+         <div class="box2 newListData pd10">
            <flexbox orient="vertical">
             <flexbox-item v-for="(store, index) in listData" :key="index">
               <div @click="toDetail(store.id)" class="mgt10 justify-content-space-between">
               <p><img :src="urlPic+store.imgLogo"></p>
               <div class="flexg2 listRight">
                 <p class="goodsName txt-black2 fs-14" v-text="store.merchantName"></p>
-                <i v-text="disFormat(store.distance)" class="distance txt-gray1"></i> 
+                <i v-if="store.distance" v-text="disFormat(store.distance)" class="distance txt-gray1"></i> 
                 <div class="rightBtm justify-content-space-between">
                 <div>
                 <p class="fs-12 mb5 txt-blue" v-text="store.sellerClassName"></p>

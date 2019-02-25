@@ -12,7 +12,7 @@
             </grid> 
             </div> 
           <vTitle :title="items" />
-        <div class="box2 newListData">
+        <div class="box2 newListData pd10">
            <flexbox orient="vertical">
             <flexbox-item v-for="(goods, index) in listData" :key="index">
               <div @click="toDetail(goods.id)" class="mgt10 justify-content-space-between">

@@ -51,11 +51,15 @@ const ajaxUrl = {
   saveGoodsComment: urlHost + 'orderformcomment/saveGoodsComment',//保存商品评论
   goodsCommentList: urlHost + 'orderformcomment/goodsCommentList',//商品评论列表
   wxShareSign: urlHost + 'user/signWxUrl', //获取微信分享签名
-
+  
   sellerstoreList: urlHost + 'sellerstore/list',//获取店铺列表 根据相关参数查询
   storeClassList: urlHost + 'sellerstoreclass/list',//获取店铺分类
   sellerstoreData: urlHost + 'sellerstore/info/',//{id}根据主键查询店铺信息
   otoStoreList: urlHost + 'barcodestore/listAll',//oto 根据店铺id获取商品列表
+  otoAddCart: urlHost + 'o2ogoodscart/save',//oto 加入购物车
+  otoCartUpdate: urlHost +'o2ogoodscart/update',//更新数量
+  otoGoodsCount: urlHost + 'o2ogoodscart/goodsCount',//获取购物车商品数量
+  otoGoodsCartList: urlHost + 'o2ogoodscart/list',//获取购物车商品数量List
 }
 // 返回模块
 export default ajaxUrl;

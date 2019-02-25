@@ -18,9 +18,9 @@
           <span class="standards1 lh-20" v-if="storeData.o2oConfig && storeData.o2oConfig.noticeContext" v-text="storeData.o2oConfig.noticeContext"></span>
         </p>
       </div>
-      <div :class="tabActive?'relative storeTab w100 active':'w100 mgt10 relative storeTab'">
+      <div :class="tabActive?'relative storeTab w100 mgt10':'w100 storeTab active'">
         <tab :line-width=2 active-color='#fc378c' v-model="index">
-          <tab-item class="vux-center" :selected="demo2 === item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
+          <tab-item class="vux-center" :selected="demo2 == item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
         </tab>
       </div>
       <swiper v-model="index" :height="height" :show-dots="false">
@@ -30,10 +30,10 @@
               <div class="box2 newListData relative">
                 <div class="navLeft">
                   <tab bar-position="top">
-                    <tab-item :selected="item.index==0" @on-item-click="onItemClick(item.index)" v-for="item in listData">{{ item.nav }}</tab-item>
+                    <tab-item :selected="item.index==0" @on-item-click="onItemClick(item.index)" v-for="(item,index) in listData" :key="index">{{ item.nav }}</tab-item>
                   </tab>
                </div>
-                <div class="navRight white pdb20">
+                <div class="navRight white pdb10">
                 <flexbox class="pd10" orient="vertical" v-if="classDataList"> 
                   <flexbox-item v-for="(goods, index5) in classDataList" :key="index5">
                     <div class="mgt10 justify-content-space-between">
@@ -42,11 +42,18 @@
                       <p class="goodsName txt-black2 fs-14" v-text="goods.goodsName"></p> 
                       <div class="rightBtm justify-content-space-between">
                       <div>
-                      <p class="fs-18 mb5 txt-orange bold" v-text="'¥'+goods.salePrice"></p>
+                      <p class="fs-15 mb5 txt-orange" v-text="'¥'+goods.salePrice"></p>
                       <p class="txt-gray1 fs-10" v-text="'月销'+goods.currentMonthSaleCount"></p>
                       </div>
                       </div>
-                      <inline-x-number class="cartNum" :value="goods.cartNum" :min="0" width="30px" button-style="round"></inline-x-number>
+                      <div class="change-num cartNum">
+                        <div class="left" v-if="goods.cartNum>0">
+                        <span class="rdu left" @click="cartUpdate('rdu', goods)"></span>
+                        <span class="num left center" v-text="goods.cartNum"></span>
+                        <span class="add left" @click="cartUpdate('add', goods)"></span>
+                       </div>
+                        <span class="add left" v-else @click="addCart('add', goods)"></span>
+                      </div>
                     </div>
                     </div>
                   </flexbox-item> 
@@ -91,6 +98,17 @@
           </div>
         </swiper-item>
       </swiper>
+     
+       <div class="lay-action fix-btom pay-act-btom vux-1px-t justify-content-space-between bg-white">
+        <div class="justify-content-space-between per70 pdlr20">
+        <i class="cartIcon relative"><badge class="badge" :text="goodsCount"></badge></i>
+        <div class="price-info flex1 txt-right">
+          <p class="total fs-14 txt-orange" v-model="goodsCount" v-text="'￥'+allPrice"></p>
+          <p class="txt-gray1">配送另需配送费/可自取</p>
+        </div>
+        </div>
+        <button  class="btn-submit per30" @click="makeOrder">去结算</button>
+      </div>
 
     </div>
     
@@ -113,7 +131,7 @@
 // 购物车
 import { mapState } from "vuex";
 import { Toast } from "mint-ui";
-import {  InlineXNumber, Swiper, SwiperItem, Tab, TabItem, Rater, Scroller, Spinner,Flexbox, FlexboxItem
+import { Badge, Swiper, SwiperItem, Tab, TabItem, Rater, Scroller, Spinner,Flexbox, FlexboxItem
  } from 'vux';
 import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
@@ -128,6 +146,7 @@ export default {
       imgLicense:[],
       imgStore:[],
       top:0,
+      goodsCount:0,
       height:'',
       show: false,
       index: 0,
@@ -136,7 +155,9 @@ export default {
       list2: list(),
       demo2: '商品',
       storeData: '',
+      allPrice:0,
       listData:[],
+      cartList:[],
       classDataList:[],
       listData2:[]
     }
@@ -152,7 +173,7 @@ export default {
     Spinner,
     Flexbox, 
     FlexboxItem,
-    InlineXNumber,
+    Badge,
     "v-imglist": vImglist,
     "v-nodata": vNodata
   },
@@ -168,9 +189,46 @@ export default {
   beforeCreate(){
     document.title = '店铺详情';
   },
+  watch:{
+    goodsCount(newVal,oldVal){//监控购物车数量变化 从而来重新计算总价格
+      this.$axios
+        .post(
+          this.api.otoGoodsCartList,
+          JSON.stringify({
+           'storeId': this.id
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+              "Authorization": this.token
+            }
+          }
+        )
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("数据错误");
+            return;
+          }
+          if(resData.content.length>0){
+            this.allPrice = 0;
+            for(let k of resData.content){
+              for(let item of k.list){
+                this.allPrice = this.allPrice + item.goodsCount*item.goodsPrice;
+              }
+            }
+          }
+        })
+        .catch(res => {
+          this.showTip("数据错误");
+        });
+    }
+  },
   created() {
     this.sellerstoreData();
     this.getGoodsList();
+    this.getGoodsCount();
+    this.getGoodsCartList();
     this.height = window.screen.height-43+'px';
   },
   methods: {
@@ -186,10 +244,173 @@ export default {
         }
       })
    },
+   getGoodsCartList(){
+     this.$axios
+        .post(
+          this.api.otoGoodsCartList,
+          JSON.stringify({
+           'storeId': this.id
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+              "Authorization": this.token
+            }
+          }
+        )
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("数据错误");
+            return;
+          }
+          if(resData.content.length>0){
+            for(let k of resData.content){
+              console.log(this.cartList);
+              this.cartList = [...this.cartList,...k.list];
+            }
+            for(let item of this.cartList){
+              
+                for(let i of this.classDataList){
+                   if(item.goodsId==i.id){
+                      i.cartNum = item.goodsCount;
+                      i.cartId = item.id;
+                   }
+                }
+            }
+          }
+        })
+        .catch(res => {
+          this.showTip("数据错误");
+        });
+   },
+   //获取购物车数量
+    getGoodsCount() {
+       this.$axios
+        .post(
+          this.api.otoGoodsCount,
+          JSON.stringify({
+           'storeId': this.id
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+              "Authorization": this.token
+            }
+          }
+        )
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("数据错误");
+            return;
+          }
+          this.goodsCount = resData.content.goodsCount;
+        })
+        .catch(res => {
+          this.showTip("数据错误");
+        });
+    },
+    //更新商品对应的购物车数量
+    cartUpdate(type, item){
+      let num = item.cartNum;
+      if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+        num += 1;
+      }else{
+        if (num >= 1) {
+          num -= 1;
+        }else{
+          num = 0;
+          this.showTip("亲，不能再减少了哦");
+          return;
+        }
+      } 
+      this.$axios
+        .post(
+          this.api.otoCartUpdate,
+          JSON.stringify({
+           'goodsCount': num,
+           'id': item.cartId
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+              "Authorization": this.token
+            }
+          }
+        )
+        .then(res => {
+          console.log(res.data);
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("修改数量失败");
+            return;
+          }
+          if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+            item.cartNum += 1;
+          }else{
+            if (item.cartNum >= 1) {
+              item.cartNum -= 1;
+            }
+          }
+          this.getGoodsCount();
+          this.showTip("修改数量成功");
+        })
+        .catch(res => {
+          this.showTip("修改数量失败");
+        });
+    },
+   // 加入购物车
+    addCart(type, item) {
+      let num = item.cartNum;
+      if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+        num += 1;
+      }
+      this.$axios
+        .post(
+          this.api.otoAddCart,
+          JSON.stringify({
+           'goodsCount': num,
+           'goodsId': item.id,
+           'storeId': item.storeId,
+           'storeName': item.goodsName
+          }),
+          {
+            headers: {
+              "content-type": "application/json",
+              "Authorization": this.token
+            }
+          }
+        )
+        .then(res => {
+          console.log(res.data);
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip("加入购物车失败");
+            return;
+          }
+          item.cartNum = resData.content.goodsCount;
+          item.cartId = resData.content.id;
+          this.getGoodsCount();
+          this.showTip("加入购物车成功");
+        })
+        .catch(res => {
+          this.showTip("加入购物车失败");
+        });
+    },
    onItemClick (index) {
       console.log('on item click:', index);
       this.classDataList = [];
       this.classDataList = this.listData2[index];
+      console.log(this.cartList);
+      for(let item of this.cartList){
+          for(let i of this.classDataList){
+             if(item.goodsId==i.id){
+                i.cartNum = item.goodsCount;
+                i.cartId = item.id;
+             }
+          }
+      }
       console.log(this.classDataList);
    },
    getGoodsList () {
@@ -202,10 +423,19 @@ export default {
             let arr = data[i].barcodeStore;
             for(let item of arr){
               item.cartNum = 0;
+              item.cartId = '';
             }
             this.listData2.push(arr);
           }
           this.classDataList = this.listData2[0];
+          for(let item of this.cartList){
+              for(let i of this.classDataList){
+                 if(item.goodsId==i.id){
+                    i.cartNum = item.goodsCount;
+                    i.cartId = item.id;
+                 }
+              }
+          }
           console.log(this.listData);
           console.log(this.listData2);
           console.log(this.classDataList);
@@ -216,7 +446,7 @@ export default {
     },
     handleScroll() { //改变元素#searchBar的top值
       let top = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
-      if(top<30){
+      if(top==0){
         this.storeTitle = "";
         this.top = 0;
         this.tabActive = false;
