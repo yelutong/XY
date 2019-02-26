@@ -45,12 +45,15 @@ export default {
         }
         else if (item.type === "orders") {
           this.$router.push({
-            path: "/goods/orders",
-            query: { status: '[10,20,30,40,50]', choseDex: 0}
+            path: "/store/orders",
+            query: {
+              //status: '[10,20,30,40,50,60]',
+              choseDex: 0
+            }
           });
         }else if (item.type === "goodsCart") {
           this.$router.push({
-            path: "/store/otoGoodsCart"
+            path: "/store/cart"
           });
         }else {
           this.$router.push("/" + item.type);

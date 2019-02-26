@@ -163,56 +163,9 @@ export default {
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"]),
     // 总价计算
-     totalPrice() {
-      /*const orderPrice = {
-        'goodsCarts': this.goodsCarts,
-        'goodsChannel': this.isUseIntegral == true? 2: 1,
-        'isUseIntegral': this.isUseIntegral,
-        'userCouponIds': this.userCouponIds
-      }
-      this.$axios
-        .post(this.api.orderPriceNew,
-        JSON.stringify(orderPrice),
-        {
-          headers: {"Authorization": this.token , "content-type": "application/json"}
-        })
-        .then(res => {
-          const resData = res.data;
-          if (resData.code !== 1) {
-            this.showTip("未获取到价格信息");
-            setTimeout(()=>{
-             // this.$router.push({path: "/index"})
-            },1500)
-            return;
-          }else{
-            if(orderPrice.goodsChannel == 2){
-              if(resData.content.exchange){
-                if(resData.content.exchange.userIntegral>=resData.content.exchange.goodsIntegral){
-                this.payPrice = resData.content.payPrice;
-                this.goodsIntegral = resData.content.exchange.goodsIntegral;
-                }else{
-                  this.showTip("兑换积分不足");
-                  this.isUseIntegral = '0';
-                  this.goodsIntegral = '';
-                  this.payPrice = resData.content.payPrice;
-                }
-              }else{
-                  this.showTip("该商品暂不支持积分兑换");
-                  this.isUseIntegral = '0';
-                  this.goodsIntegral = '';
-                  this.payPrice = resData.content.payPrice;
-              }
-            }else{
-              this.goodsIntegral = '';
-              this.payPrice = resData.content.payPrice;
-            }
-          }
-        })
-        .catch(res => {
-         // this.showTip("未获取到商品信息");
-        });*/
-        return this.dotFormat2(this.payPrice)
-    } 
+    totalPrice() {
+      return this.dotFormat2(this.payPrice)
+    }
   },
   beforeCreate(){
     document.title = '结算';
@@ -313,6 +266,7 @@ export default {
         )
         .then(res => {
           const resData = res.data;
+          console.log(resData);
           if (resData.code !== 1) {
             this.showTip("数据错误");
             return;
@@ -321,14 +275,15 @@ export default {
             this.payPrice = 0;
             this.goodsCarts = [];
             for(let k of resData.content){
+              console.log(2);
               for(let item of k.list){
-                let objGoodsData = {
+                 let objGoodsData = {
                   'id':item.id,
                   'goodsId': item.goodsId,
                   'num': item.goodsCount,
                   'name': item.goodsName,
                   'price': item.goodsPrice,
-                  'img': this.api.urlPic+item.goodsImg.split(',')[0]
+                  'img': item.goodsImg?this.api.urlPic+item.goodsImg.split(',')[0]:''
                   }
                 this.goodsBuyInfo.push(objGoodsData);
                 this.goodsCarts.push(item.id);
@@ -372,11 +327,12 @@ export default {
         this.showTip("未获取到商品信息");
         return;
       }
-      if (!showAddress) {
-        this.showTip("请选择收货地址");
-        return;
+      if(this.index==0){//如果切换到商家配送，就必须填地址
+        if (!showAddress) {
+         this.showTip("请选择收货地址");
+         return;
+        }
       }
-      
       const orderArrData ={
         'areaId': this.areaId,
         'channel': 2,
@@ -384,7 +340,7 @@ export default {
         'isUseIntegral': this.isUseIntegral,
         'remark': this.goodsTips,
         'userAddressId': this.userAddressId,
-        'sendType': this.index,
+        'sendType': this.index==0?1:4,
         'uuid': this.guid()
       }
       this.$axios
@@ -404,15 +360,15 @@ export default {
             this.showTip(resData.msg);
             return;
           }
-          const orderNumbers = resData.content;
+          const orderNumbers = resData.content.orderNumber;
           // 下单成功后跳转支付页
-         /* this.$router.push({
-            path: "/goods/pay",
+           this.$router.push({
+            path: "/store/otoPay",
             query: {
               "orderNumbers": orderNumbers,
-              'payPrice': this.payPrice
+              'payPrice': this.dotFormat2(this.payPrice)
             }
-          });*/
+          });
         })
         .catch(res => {
           this.showTip("下单失败，请您稍后重试");

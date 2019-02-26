@@ -265,20 +265,23 @@ export default {
     },
     // 改变数量
     changeNum(type, item) {
-      if (type === "add") {
-        item.num += 1;
-      } else if (item.num >= 2) {
-        item.num -= 1;
+      let num = item.num;
+      if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+        num += 1;
       }else{
-        item.num = 1;
-        this.showTip("亲，不能再减少了哦");
-        return;
-      }
+        if (num >= 2) {
+          num -= 1;
+        }else{
+          num = 1;
+          this.showTip("亲，不能再减少了哦");
+          return;
+        }
+      } 
       this.$axios
         .post(
           this.api.goodsCartUpdate,
           JSON.stringify({
-           'goodsCount': item.num,
+           'goodsCount': num,
            'goodsId': item.goodsId,
            'id': item.id
           }),
@@ -295,6 +298,11 @@ export default {
           if (resData.code !== 1) {
             this.showTip("修改数量失败");
             return;
+          }
+          if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+            item.num += 1;
+          }else{
+            item.num -= 1;
           }
           this.showTip("修改数量成功");
         })

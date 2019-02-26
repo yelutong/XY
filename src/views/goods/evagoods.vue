@@ -100,7 +100,7 @@
           loading.close();
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("评价失败，请稍后重试");
+            this.showTip(resData.msg);
             return;
           }
           // 成功后返回

@@ -62,6 +62,11 @@ const ajaxUrl = {
   otoGoodsCartList: urlHost + 'o2ogoodscart/list',//获取购物车商品数量List
   barcodestoreData: urlHost + 'barcodestore/queryGoods/',//{barcode}根据条码查询商品信息
   otoOrderform: urlHost + 'o2oorderform/save',//下单
+  otoPay: urlHost + 'o2oorderform/pay',//oto支付
+  otoBatchDelete: urlHost + 'o2ogoodscart/batchDelete/',//{ids}删除购物车商品
+  otoCommentList: urlHost + 'o2oorderform/commentList',//评论列表
+  otoOrderformList: urlHost + 'o2oorderform/buyList',//买家查看订单
+  otoOrderformDetail: urlHost + 'o2oorderform/info/',//{orderNumber}订单详情
 }
 // 返回模块
 export default ajaxUrl;

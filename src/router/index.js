@@ -94,9 +94,16 @@ const store = () =>
 const storeGoods = () =>
   import ('@/views/store/goods'); // 附近店铺商品列表里的详情 
 const otoGoodsCart = () =>
-  import ('@/views/store/otoGoodsCart'); // oto购物车列表   
+  import ('@/views/store/cart'); // oto购物车列表   
 const fillOrder = () =>
   import ('@/views/store/fillOrder'); // oto购物车列表 
+const otoPay = () =>
+  import ('@/views/store/pay'); // oto购物车列表   
+const otoOrders = () =>
+  import ('@/views/store/orders'); // oto买家订单   
+const otoOrderDetail = () =>
+  import ('@/views/store/orderDetail'); // oto买家订单   
+
 // 附近 -------------------------------
 const nearby = () =>
   import ('@/views/nearby/index'); // 附近
@@ -154,8 +161,23 @@ const router = new Router({
     },
     // oto购物车列表
     {
-      path: '/store/otoGoodsCart',
+      path: '/store/cart',
       component: otoGoodsCart
+    },
+    // oto支付
+    {
+      path: '/store/otoPay',
+      component: otoPay
+    },
+    // 获取oto买家订单
+    {
+      path: '/store/orders',
+      component: otoOrders
+    },
+    // 获取oto买家订单
+    {
+      path: '/store/orderDetail',
+      component: otoOrderDetail
     },
     // 填写订单
     {

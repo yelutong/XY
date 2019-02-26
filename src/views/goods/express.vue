@@ -63,7 +63,7 @@ export default {
           const resData = res.data;
           if (resData.code !== 1) {
             this.actionError();
-            this.showTip(resData.message);
+            this.showTip(resData.msg);
             return;
           }
           // 成功后赋值数据

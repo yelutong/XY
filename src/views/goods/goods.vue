@@ -186,7 +186,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("获取商品信息失败");
+            this.showTip(resData.msg);
             return;
           }
           const objData = resData.content;

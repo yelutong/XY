@@ -122,7 +122,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("未获取到价格信息");
+            this.showTip(resData.msg);
             setTimeout(()=>{
               this.$router.push({path: "/index"})
             },1500)
@@ -203,7 +203,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("未获取到价格信息");
+            this.showTip(resData.msg);
             return;
           }else{
               if(resData.content.exchange){

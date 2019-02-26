@@ -1,5 +1,5 @@
 <template>
-  <div :class="top==0?'nearby active':'nearby'" id="storePage">
+  <div :class="top==0?'nearby active storeIndex':'nearby storeIndex'" id="storePage" @scroll=handleScroll>
     <vHeader :title="storeTitle"/>
     <div class="white mt40 blueBg w100 relative">
       <p class="storeImgBox"><img v-if="storeData.imgLogo" :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
@@ -7,15 +7,15 @@
     <div class="">
       <div class="pd10 white">
         <p class="pdt40 lh-36 vux-1px-b center fs-14 txt-black-real" v-text="storeData.merchantName"></p>
-        <p @click="toastAddress" v-text="storeData.merchantAddress" class="addr w100 txt-black"></p>
+        <p @click="toastAddress" v-text="storeData.merchantAddress" class="addr w100 txt-black align-items-center"></p>
         <p class="vux-1px-t center pdt10">
           <i class="txt-gray1" v-text="'粉丝'+storeData.fansCount"></i>
           <i class="mg5 txt-gray1" v-text="'销量0'"></i><i class="txt-gray1">评分</i>
           <rater disabled :font-size="10" active-color="#ff4f00" :value="storeData.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(storeData.totalScore)"></i>
         </p>
         <p class="salebuy relative txt-gray1 norms21 mgt10 pdb10">
-          <b class="fs-14 lh-20">公告：</b>
-          <span class="standards1 lh-20" v-if="storeData.o2oConfig && storeData.o2oConfig.noticeContext" v-text="storeData.o2oConfig.noticeContext"></span>
+          <b class="fs-14 lh-24">公告：</b>
+          <span class="standards1 line2" v-if="storeData.o2oConfig && storeData.o2oConfig.noticeContext" v-text="storeData.o2oConfig.noticeContext"></span>
         </p>
       </div>
       <div :class="tabActive?'relative storeTab w100 mgt10':'w100 storeTab active'">
@@ -28,13 +28,13 @@
 
           <div class="tab-swiper vux-center" v-if="index==0">
               <div class="box2 newListData relative">
-                <div class="navLeft">
+                <div class="navLeft" v-if="listData">
                   <tab bar-position="top">
                     <tab-item :selected="item.index==0" @on-item-click="onItemClick(item.index)" v-for="(item,index) in listData" :key="index">{{ item.nav }}</tab-item>
                   </tab>
                </div>
-                <div class="navRight white pdb10">
-                <flexbox class="pd10" orient="vertical" v-if="classDataList"> 
+                <div class="navRight white pdb10" v-if="classDataList">
+                <flexbox class="pd10" orient="vertical"> 
                   <flexbox-item v-for="(goods, index5) in classDataList" :key="index5">
                     <div class="mgt10 justify-content-space-between">
                     <p @click="toDetail(goods)" ><img :src="goods.goodsImg?urlPic+goods.goodsImg.split(',')[0]:''"></p>
@@ -59,7 +59,7 @@
                   </flexbox-item> 
                 </flexbox>
                  </div>
-                <v-nodata v-if="listData.length==20" bgcolor="grey" text="- 店家暂无商品 -" />
+                <v-nodata v-if="listData.length==0" bgcolor="grey" text="- 店家暂无商品 -" />
               </div>
           </div>
 
@@ -87,12 +87,43 @@
                </div>
            </div>
           </div>
-          <div class="tab-swiper white vux-center" v-if="index==2">
+          <div class="tab-swiper white vux-center page-goodseva" v-if="index==2">
             <div class="pd10">
               <div class="h45 fs-14 justify-content-space-between">
-              <span>评价(0)</span>
+              <span>评价({{ totalCount }})</span>
               <span><rater disabled :font-size="10" active-color="#ff4f00" :value="storeData.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(storeData.totalScore)"></i></span>
               </div>
+             
+            <scroller lock-x height="-140" :scrollbar-y=false use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
+              <div v-if="listDataEva" class="eva-list">
+                  <div class="item" v-for="(item, index) in listDataEva" :key="index">
+                    <div class="eva-pro">
+                      <div class="pro">
+                        <div class="art-box">
+                          <img class="avatar" :src="item.headPhoto?urlPic+item.headPhoto:''" />
+                        </div>
+                        <span class="name">{{ item.nickName }}</span>
+                      </div>
+                      <div class="date">
+                        <i class="ico i-date"></i>{{ item.addTime }}
+                      </div>
+                    </div>
+                    <div class="eva-text brk-wod">{{ item.context }}</div>
+                    <div class="eva-imgs" v-if="item.photoUrls">
+                      <v-imglist :image-data="item.photoUrls.split(',')" size="80" touch="preview" />
+                    </div>
+                    <div v-if="item.replyContent" class="eva-text brk-wod bg-gray pda10" v-text="'商家回复：'+item.replyContent"></div>
+                    <div class="eva-goods">{{ item.title }}</div>
+                  </div>
+              </div>
+            <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; bottom: -20px; text-align: center;">
+                  <span v-show="status.pullupStatus === 'default'"></span>
+                  <span class="pullup-arrow" v-show="status.pullupStatus === 'up'" :class="{'rotate': status.pullupStatus === 'up'}">↑</span>
+                  <span v-show="status.pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
+                  <span v-show="status.pullupStatus === 'complete'">已加载完成</span>
+             </div>
+            </scroller>  
+
             </div>
 
           </div>
@@ -148,6 +179,7 @@ export default {
       carts:[],
       top:0,
       goodsCount:0,
+      totalCount:0,
       height:'',
       show: false,
       index: 0,
@@ -160,7 +192,15 @@ export default {
       listData:[],
       cartList:[],
       classDataList:[],
-      listData2:[]
+      listData2:[],
+      totalPage: 1,
+      currentPage: 0,
+      listDataEva:[],
+      loadMoreVal:true,
+      pullupEnabled: true,
+      status: {
+        pullupStatus: 'default'
+      }
     }
   },
   components: { 
@@ -183,9 +223,15 @@ export default {
   },
   mounted() {//给window添加一个滚动滚动监听事件
     window.addEventListener('scroll', this.handleScroll, true);
+    /*window.addEventListener('scroll', () => {
+    let scrollTop = document.documentElement.scrollTop ||
+                       document.body.scrollTop ||
+                       document.querySelector('.tab-swiper').scrollTop;
+      console.log(scrollTop);
+    }, true);*/
   },
-  destroyed() {
-    window.removeEventListener('scroll', this.handleScroll); 
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll, true);
   },
   beforeCreate(){
     document.title = '店铺详情';
@@ -208,7 +254,7 @@ export default {
         .then(res => {
           const resData = res.data;
           if (resData.code !== 1) {
-            this.showTip("数据错误");
+            this.showTip(resData.msg);
             return;
           }
           if(resData.content.length>0){
@@ -225,7 +271,7 @@ export default {
           }
         })
         .catch(res => {
-          this.showTip("数据错误");
+          //this.showTip("数据错误");
         });
     }
   },
@@ -234,12 +280,13 @@ export default {
     this.getGoodsList();
     this.getGoodsCount();
     this.getGoodsCartList();
+    this.loadMore();//获取店铺评论列表
     this.height = window.screen.height-43+'px';
   },
   methods: {
    goGoodsCart(){
      this.$router.push({//核心语句
-        path:'/store/otoGoodsCart'
+        path:'/store/cart'
       })
    },
    goMap(title,item){
@@ -253,6 +300,36 @@ export default {
           merchantName: item.merchantName
         }
       })
+   },
+   loadMore () {
+    if(this.loadMoreVal){
+       this.loadMoreVal=false;
+        setTimeout(()=>{
+         this.loadMoreVal=true;
+        },1000)
+     }else{
+       return;
+     }
+    console.log(this.location);
+    if(this.currentPage< this.totalPage){
+      this.currentPage= parseInt(this.currentPage) + 1;
+      this.$axios.post(this.api.otoCommentList,qs.parse({'storeId':this.id,"page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+      .then(res => {
+         console.log(res.data);
+         this.totalPage=res.data.content.totalPage; 
+         this.totalCount = res.data.content.totalCount;
+         this.listDataEva = [...this.listDataEva,...res.data.content.list];
+      })
+      .catch(res => {
+       //失败，请您稍后重试
+      });
+    }else{
+      this.status.pullupStatus = 'complete';
+      setTimeout(()=>{
+        this.status.pullupStatus = 'default';
+      },1000);
+      console.log('已加载完');
+    }
    },
    getGoodsCartList(){
      this.$axios
@@ -326,13 +403,7 @@ export default {
       if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
         num += 1;
       }else{
-        if (num >= 1) {
-          num -= 1;
-        }else{
-          num = 0;
-          this.showTip("亲，不能再减少了哦");
-          return;
-        }
+        num -= 1;
       } 
       this.$axios
         .post(
@@ -355,12 +426,10 @@ export default {
             this.showTip("修改数量失败");
             return;
           }
-          if (type == "add") {//因为已进入方法就加减过了，现在把数量还原回去
+          if (type == "add") {
             item.cartNum += 1;
           }else{
-            if (item.cartNum >= 1) {
-              item.cartNum -= 1;
-            }
+            item.cartNum -= 1;
           }
           this.getGoodsCount();
           this.showTip("修改数量成功");
@@ -368,7 +437,7 @@ export default {
         .catch(res => {
           this.showTip("修改数量失败");
         });
-    },
+    }, 
    // 加入购物车
     addCart(type, item) {
       let num = item.cartNum;
@@ -382,7 +451,7 @@ export default {
            'goodsCount': num,
            'goodsId': item.id,
            'storeId': item.storeId,
-           'storeName': item.goodsName
+           'storeName': this.storeData.merchantName
           }),
           {
             headers: {
@@ -407,7 +476,7 @@ export default {
           this.showTip("加入购物车失败");
         });
     },
-   onItemClick (index) {
+    onItemClick (index) {
       console.log('on item click:', index);
       this.classDataList = [];
       this.classDataList = this.listData2[index];
@@ -455,6 +524,7 @@ export default {
     },
     handleScroll() { //改变元素#searchBar的top值
       let top = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
+      //console.log(top);
       if(top==0){
         this.storeTitle = "";
         this.top = 0;
@@ -646,4 +716,5 @@ export default {
 
 <style lang="stylus">
 @import '../../assets/css/nearby';
+@import '../../assets/css/goodseva';
 </style>
