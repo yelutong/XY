@@ -19,6 +19,24 @@ export default {
       let dotFormat = num.toFixed(2);
       return dotFormat;
     };
+    Vue.prototype.limitStrFormat = function (val) {
+      let str='';
+      if(val.length>12){
+        str = val.substring(0,12) + "...";
+      }else{
+        str = val;
+      }
+      return str; 
+    };
+    Vue.prototype.limitStrFormat6 = function (val) {
+      let str='';
+      if(val.length>6){
+        str = val.substring(0,6);
+      }else{
+        str = val;
+      }
+      return str; 
+    };
     Vue.prototype.disFormat = function (val) {
       let distance='';
       if(val<1000){

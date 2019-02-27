@@ -82,9 +82,7 @@ export default {
         direction: "up",
         height: document.body.offsetWidth/7.5*0.77,
         arrData: []
-      },
-      newsTag: require("@/assets/images/news-tag.png"),
-      activityTag: require("@/assets/images/act-tag.png"),
+      }
     };
   },
   components: {

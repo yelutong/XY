@@ -87,8 +87,6 @@ export default {
         link: "/goods",
         arrData: []
       }, 
-      newsTag: require("@/assets/images/news-tag.png"),
-      activityTag: require("@/assets/images/act-tag.png"),
       vAreaList: []
     };
   },

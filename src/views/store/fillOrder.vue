@@ -103,7 +103,7 @@
     </div>
     <div class="lay-action fix-btom pay-act-btom">
       <div class="price-info flex1">
-        <span class="tag">合计：</span>
+        <span class="tag ml15">合计：</span>
         <span class="total" v-model="num">￥{{ totalPrice }}</span>
         <span class="tip"> (含运费)</span>
       </div>

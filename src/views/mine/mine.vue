@@ -8,7 +8,7 @@
     </div>
     <div class="lay-order">
       <div class="head">
-        <v-cell title="商城订单" value="查看全部订单" align="right" ricon="blue" link="/goods/orders?status=[10,20,30,40,50]&choseDex=0"></v-cell>
+        <v-cell title="商城订单" value="查看全部订单" align="right" ricon="blue" link="/store/orders?choseDex=0"></v-cell>
       </div>
       <div class="list">
         <v-flexrow :flexrow-data="orderNav"></v-flexrow>
@@ -53,31 +53,31 @@
         urlPic:this.api.urlPic,
         orderNav: [{
             title: "待付款",
-            size: 19.5,
-            num:0,
+            size: 30,
+            num:10,
             icon: require("../../assets/images/order-pay.png"),
-            link: "/goods/orders?status=[10]&choseDex=1"
+            link: "/store/orders?status=10&choseDex=1"
           },
           {
             title: "待发货",
-            size: 19.5,
-            num:0,
+            size: 30,
+            num:30,
             icon: require("../../assets/images/order-send.png"),
-            link: "/goods/orders?status=[20]&choseDex=2"
+            link: "/store/orders?status=30&choseDex=2"
           },
           {
             title: "待收货",
-            size: 19.5,
-            num:0,
+            size: 30,
+            num:40,
             icon: require("../../assets/images/order-receive.png"),
-            link: "/goods/orders?status=[30]&choseDex=3"
+            link: "/store/orders?status=40&choseDex=3"
           },
           {
-            title: "已完成",
-            size: 19.5,
-            num:0,
-            icon: require("../../assets/images/order-done.png"),
-            link: "/goods/orders?status=[40,50]&choseDex=4"
+            title: "待评价",
+            size: 30,
+            num:50,
+            icon: require("../../assets/images/order-eva.png"),
+            link: "/store/orders?status=50&choseDex=4"
           }
         ],
         joinLink: "/mine/join",
@@ -98,7 +98,7 @@
     created() {
       this.verToken();
       this.getUserData();//获取个人信息数据
-      this.getOrderCount();//获取订单数量
+      //this.getOrderCount();//获取订单数量
     },
     methods: {
       ...mapActions(["atnUserId", "atnUserPhone"]),

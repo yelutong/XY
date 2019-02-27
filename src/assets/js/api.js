@@ -67,6 +67,8 @@ const ajaxUrl = {
   otoCommentList: urlHost + 'o2oorderform/commentList',//评论列表
   otoOrderformList: urlHost + 'o2oorderform/buyList',//买家查看订单
   otoOrderformDetail: urlHost + 'o2oorderform/info/',//{orderNumber}订单详情
+  otoCancelOrder: urlHost + 'o2oorderform/cancel/user/',//{orderNumber}买家取消订单
+  otoOrderEva: urlHost + 'o2oorderform/addComment',//评价订单
 }
 // 返回模块
 export default ajaxUrl;

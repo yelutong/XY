@@ -7,7 +7,7 @@
     <div class="">
       <div class="pd10 white">
         <p class="pdt40 lh-36 vux-1px-b center fs-14 txt-black-real" v-text="storeData.merchantName"></p>
-        <p @click="toastAddress" v-text="storeData.merchantAddress" class="addr w100 txt-black align-items-center"></p>
+        <p @click="toastMap" v-text="storeData.merchantAddress" class="addr w100 txt-black align-items-center"></p>
         <p class="vux-1px-t center pdt10">
           <i class="txt-gray1" v-text="'粉丝'+storeData.fansCount"></i>
           <i class="mg5 txt-gray1" v-text="'销量0'"></i><i class="txt-gray1">评分</i>
@@ -610,7 +610,7 @@ export default {
     closePickerBox(){
       this.show = false;
     },
-    toastAddress(){
+    toastMap(){
       this.show = true;
     },
     sellerstoreData(){

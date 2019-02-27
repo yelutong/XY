@@ -1,6 +1,6 @@
 <!-- 没有数据-->
 <template>
-  <div class="v-no-data mt50" :class="bgcolor" :style="{height:height+'px'}">
+  <div class="v-no-data mt50" :style="{height:height+'px'}">
     <div class="v-img" v-if="hasimg!=='no'"></div>
     <p class="v-txt">{{ text }}</p>
   </div>
@@ -9,10 +9,6 @@
 <script>
 export default {
   props: {
-    bgcolor: {
-      type: String,
-      default: "white"
-    },
     hasimg: {
       type: String,
       default: "yes"
@@ -45,14 +41,6 @@ export default {
     text-align: center;
     font-size: 14px;
     color: #777;
-  }
-
-  &.grey {
-    background-color: #f5f5f5;
-  }
-
-  &.white {
-    background-color: #fff;
   }
 }
 </style>

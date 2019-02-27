@@ -1,58 +1,81 @@
 <template>
   <div class="wrapper page-orders">
     <vHeader title="我的订单"/>
-    <div class="tab-nav">
+    <div class="tab-nav vux-1px-b">
       <div class="item" :class="{active:index == choseDex}" v-for="(item, index) in orderNav" :key="index" @click="tabOrderStatus(item, index)">
         {{ item.title }}
       </div>
     </div>
-    <div class="tab-con mb60 page-buy">
-      <div class="order-item" v-for="(item, index) in orderList" :key="index">
-
-        <router-link class="lay-address white justify-content-space-between" :to="{path:'/mine/addresses', query:{from:'goods'}}">
+    <div class="tab-con mt43 page-buy odBoxTop">
+      <scroller lock-x height="-140" :scrollbar-y=false use-pullup @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="statusLoad" ref="scroller" v-if="orderList">
+      <div class="white pda15">
+      <div class="order-item odBox" v-for="(item, index) in orderList" :key="index" v-if="orderList">
+        
+        <router-link class="lay-address white justify-content-space-between vux-1px-b"  :to="{path:'/store/orderDetail', query:{orderNo:item.orderNo,status:item.statusNum}}">
              <div class="horizontal-view">
               <i class="ico storeHead"><img :src="item.storeLogo?item.storeLogo:''"/></i>
-              <div class="adress">
+              <div class="adress storeTip vertical-view">
                   <span class="name-phone lh-20 fs-14 bold txt-black storeTitle">{{ item.storeName }}</span>
                   <span class="adres fs-12 txt-gray">{{ item.date }}</span>
               </div>
             </div>
             <div>
-            <span class="txt-blue1">到店自取</span>
+            <span class="txt-gray1 fs-12" v-if="item.statusNum==0">订单已取消</span>
+            <span class="txt-orange fs-12" v-if="item.statusNum==10">订单未付款</span>
+            <span class="txt-blue1 fs-12" v-if="item.statusNum==20">等待商家接单</span>
+            <span class="txt-blue1 fs-12" v-if="item.sendType==4&&item.statusNum==30">到店自取</span>
+            <span class="txt-blue1 fs-12" v-if="item.sendType==1&&item.statusNum==30">等待商家配送</span>
+            <span class="txt-blue1 fs-12" v-if="item.statusNum==40">正在配送中</span>
+            <span class="txt-blue1 fs-12" v-if="item.statusNum==50">配送已完成</span>
+            <span class="txt-gray1 fs-12" v-if="item.statusNum==60">订单已完成</span>
             <i class="ico i-aow"></i>
             </div>
             </router-link>
 
-        <div class="goods-status vux-1px-b">
-          <div class="date">
-            <i class="ico i-store"></i>{{ item.storeName}}
+         <div class="flexg2 listRight pda15 justify-content-space-between">
+            <p class="txt-black-real" v-if="item.conList[0].goodsName"><span v-text="limitStrFormat(item.conList[0].goodsName)+' '"></span>等 {{ item.num }}件商品</p> 
+            <p class="fs-12 txt-black-real">￥{{ dotFormat2(item.totalPrice) }}</p>
           </div>
-          <span class="status" @click="cancelOrder(item.orderNo, index)" v-if="item.statusNum==10"><div class="act"><i class="ico i-del2"></i>
-          </div></span>
-        </div>
 
-        <div class="goods-list relative item pda15 justify-content-space-between" @click="pageToDtail(item.orderNo,item.statusNum)" v-for="(con,index2) in item.conList">
-       
-         <div class="flexg2 listRight">
-            <p class="goodsName txt-black-real" ><span v-text="con.goodsName"></span>等 {{ item.num }}件商品</p> 
-            
-          </div>
-        </div>
+        <div class="goods-action pdb10 justify-content-space-between">
+          <div @click="deleteOrder()"><i class="ico i-del2 hide"></i></div>
+          <div class="txt-right">
 
-        <div class="goods-action">
-          <div>合计：<span class="price txt-orange">￥{{ item.totalPrice }}</span><span v-if="item.deductedPrice" class="txt-gray">({{'抵扣积分'+item.deductedPrice}})</span></div>
-          <div>
+          <button @click="cancelOrder(item)" class="btn-act active" v-if="item.statusNum==10">取消订单</button>
           <button class="btn-act" @click="pageToPay(item.totalPrice, item.orderNo, item.statusNum)" v-if="item.statusNum==10">继续支付</button>
-          <button class="btn-act" @click="refundOrder(item.orderNo)" v-if="item.statusNum==20">退款</button>
-          <button class="btn-act" @click="receiptOrder(item.orderNo, index)" v-if="item.statusNum==30">确认收货</button>
-          <button class="btn-act" @click="pageToCenter('exp',index)" v-if="item.statusNum==30">查看物流</button>
-          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusNum==40&&item.conList.length==1">立即评价</button>
-          <button class="btn-act" @click="callHelp(item.orderNo)" v-if="item.statusNum==50&&item.conList.length==1">申请售后</button>
-          </div>
+          <button class="btn-act connectStore relative" @click="callService(item.storePhone)" v-if="item.statusNum==30">联系商家</button>
+          <button class="btn-act odLocation relative" @click="toastMap(item.storeId)" v-if="item.sendType==4&&item.statusNum==30">导航</button>
+          <button class="btn-act" @click="pageToCenter('eva',index)" v-if="item.statusNum==50">评论订单</button>
+         </div>
         </div>
       </div>
-      <v-nodata v-if="noOrders" bgcolor="grey" text="- 暂无相关订单 -" />
+      
+      
     </div>
+    <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; bottom: -20px; text-align: center;">
+          <span v-show="statusLoad.pullupStatus === 'default'"></span>
+          <span class="pullup-arrow" v-show="statusLoad.pullupStatus === 'up'" :class="{'rotate': statusLoad.pullupStatus === 'up'}">↑</span>
+          <span v-show="statusLoad.pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
+          <span v-show="statusLoad.pullupStatus === 'complete'">已加载完成</span>
+     </div>
+    </scroller> 
+
+      <v-nodata v-if="orderList==null" bgcolor="grey" text="- 暂无相关订单 -" />
+      <div class="picker-new">
+      <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
+       <div :class="show ?'picker-panel show':'picker-panel'">
+        <div class="h45 vux-1px-b relative titleEx">选择地图<i class="txt-gray" @click="closePickerBox">×</i></div>
+        <div class="groupEx mb10 pda15 vertical-view">
+          <span class="fs-14 h40" @click="goMap('腾讯地图',storeData)">腾讯地图</a></span>
+          <span class="fs-14 h40" @click="goMap('百度地图',storeData)">百度地图</a></span>
+          <span class="fs-14 h40" @click="goMap('高德地图',storeData)">高德地图</a></span>
+        </div>
+      </div>
+    </div> 
+
+    
+    </div>
+
      <v-footer active="orders" />
   </div>
 </template>
@@ -60,6 +83,7 @@
 <script>
 import { mapState } from "vuex";
 import { MessageBox, Toast, InfiniteScroll } from "mint-ui";
+import { Scroller, Spinner} from 'vux';
 import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
 import vFooter from "@/components/v-footer";
@@ -70,29 +94,34 @@ export default {
       totalPage: 1,
       currentPage: 1,
       urlPic:this.api.urlPic,
-      //status: [10],
+      show: false,
+      storeData: '',
+      pullupEnabled: true,
+      statusLoad:{
+        pullupStatus: 'default'
+      },
       status: this.getUrlParam("status"),
       choseDex: this.getUrlParam("choseDex")||null,
       orderNav: [
         {
           title: "全部",
-          status: [10,20,30,40,50]
+          status:''
         },
         {
           title: "待付款",
-          status: [10]
+          status: 10
         },
         {
           title: "待发货",
-          status: [20]
+          status: 30
         },
         {
           title: "待收货",
-          status: [30]
+          status: 40
         },
         {
-          title: "已完成",
-          status: [40,50]
+          title: "待评价",
+          status: 50
         }
       ],
       orderList: [],
@@ -100,13 +129,16 @@ export default {
       ordersPageSize: 10,
       moreOrders: false,
       noOrders: false,
+      loadMoreVal:true,
       loading: true
     };
   },
   components: {
     "v-nodata": vNodata,
     vHeader,
-    "v-footer": vFooter
+    "v-footer": vFooter,
+    Scroller,
+    Spinner
   },
   computed: {
     ...mapState(["token"])
@@ -121,6 +153,38 @@ export default {
     this.getOrdersList();
   },
   methods: { 
+    goMap(title,item){
+      this.$router.push({//核心语句
+        path:'/map',//跳转的路径
+        query:{//路由传参时push和query搭配使用 ，作用时传递参数
+          title:title,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          address: item.merchantAddress,
+          merchantName: item.merchantName
+        }
+      })
+    },
+    callService(phone){
+      window.location.href = 'tel:'+phone;
+    },
+    toastMap(shoreId){
+      this.storeData = '';
+      this.$axios.get(this.api.sellerstoreData+shoreId)
+      .then(res => {
+        if(res.data.code === 1){
+          let arrData = res.data.content;
+          this.storeData = arrData;
+          this.show = true;
+        }
+      })
+      .catch(res => {
+       this.showTip("网络错误");
+      });
+    },
+    closePickerBox(){
+      this.show = false;
+    },
     verToken(){
      if(!this.token){
       this.showTip("登录超时，请重新登录");
@@ -176,32 +240,57 @@ export default {
     },
     // 切换tab
     tabOrderStatus(item, index) {
-      console.log(item)
       if (this.choseDex !== index) {
         this.orderList = [];
+        this.totalPage=1;
+        this.currentPage=1;
         this.choseDex = index;
         this.clearData();
-        this.status = '['+item.status+']';
+        this.status = item.status;
         this.getOrdersList();
+        //重置scroller插件滚回顶部  xs-container 这个class的样式
+        setTimeout(()=>{
+          if(this.orderList){
+            this.$refs.scroller.$el.children[0].style.cssText='transform-origin: 0px 0px 0px; transform: translateX(0px) translateY(0px) translateZ(0px) scale(1, 1); transition: none 0s ease 0s;';
+          }
+        },0)
+        
       }
     },
     // 加载更多我的订单
     loadMore() {
-      this.loading = true;
-      this.ordersPageNo += 1;
-      this.getOrdersList();
-      console.log(' 加载');
+      if(this.loadMoreVal){
+       this.loadMoreVal=false;
+        setTimeout(()=>{
+         this.loadMoreVal=true;
+        },1000);
+        this.loading = true;
+        this.ordersPageNo += 1;
+        this.getOrdersList();
+        console.log(' 加载');
+       }else{
+         return;
+       }
     },
     // 获取订单数据
     getOrdersList(first) {
+      let obj={};
+        if(this.status){
+           obj={
+            status: this.status,
+            page: this.currentPage,
+            limit: 8
+           }
+        }else{
+           obj={
+            page: this.currentPage,
+            limit: 8
+           }
+        }
       if(this.currentPage<=this.totalPage){
          this.$axios
         .post(this.api.otoOrderformList, 
-        JSON.stringify({
-            status: JSON.parse(this.status),
-            page: this.currentPage,
-            limit: 800
-        }),
+        JSON.stringify(obj),
          {
           headers: {  
             "content-type": "application/json",
@@ -226,7 +315,7 @@ export default {
           this.totalPage = objData.totalPage;
 
           if (arrData.length === 0) {
-            this.orderList = [];
+            this.orderList = null;
             this.noOrders = true;
             this.loading = true;
             return;
@@ -239,7 +328,9 @@ export default {
               status: this.getStatusTxt(val.status),
               statusNum: val.status,
               storeName: val.storeName,
+              sendType: val.sendType,
               storeLogo: this.urlPic+val.storeLogo,
+              storePhone: val.storePhone,
               storeId: val.storeId,
               totalPrice: val.totalPrice,
               deductedPrice: val.deductedPrice||null,
@@ -278,6 +369,12 @@ export default {
             this.loading = false;
           }
         });
+      }else{
+        this.statusLoad.pullupStatus = 'complete';
+        setTimeout(()=>{
+          this.statusLoad.pullupStatus = 'default';
+        },1000);
+        console.log('已加载完');
       }
     },
     goodsCount(items){
@@ -288,20 +385,19 @@ export default {
       return count
     },
     // 查看物流或是立即评价
-    pageToCenter(type, index, index2) {
-      index2 = index2?index2:0;
+    pageToCenter(type, index) {
       const orderList = this.orderList;
       let objType = {};
       switch (type) {
         case "exp":
           objType.tip = "没有查询到物流信息";
           objType.key = "expList";
-          objType.url = "/goods/ordercenter?from=orders&type=exp";
+          objType.url = "/store/evaStore?from=orders&type=exp";
           break;
         case "eva":
           objType.tip = "没有查询到可评价的商品";
           objType.key = "evaList";
-          objType.url = "/goods/ordercenter?from=orders&type=eva";
+          objType.url = "/store/evaStore?from=orders&type=eva";
           break;
       }
       // 判断跳转
@@ -310,9 +406,8 @@ export default {
         return;
       }
       // 存到本地存储（转换成字符串）
-      orderList[index].conList = orderList[index].conList[index2];
       sessionStorage.setItem(objType.key, JSON.stringify(orderList[index]));
-      console.log(JSON.parse(sessionStorage.getItem(objType.key)));
+      console.log(orderList[index]);
       setTimeout(() => {
         this.$router.push(objType.url);
       }, 0);
@@ -350,8 +445,7 @@ export default {
       });
     },
     // 取消订单
-    cancelOrder(orderNumber, index) {
-      console.log(orderNumber);
+    cancelOrder(item) {
       MessageBox({
         title: "取消提示",
         message: "您确定要取消此订单吗？",
@@ -359,22 +453,18 @@ export default {
       }).then(action => {
         if (action === "confirm") {
           this.$axios
-            .get(this.api.cancelOrder+orderNumber, {
+            .get(this.api.otoCancelOrder+item.orderNo, {
               headers: { "Authorization": this.token }
             })
             .then(res => {
               const resData = res.data;
               if (resData.code !== 1) {
-                this.showTip("取消失败，请稍后重试");
+                this.showTip(resData.msg);
                 return;
               }
+              item.statusNum=0;
+
               this.showTip("取消订单成功");
-              this.orderList.splice(index, 1);
-              // 最后一个的话，重刷一遍
-              if (this.orderList.length === 0) {
-                this.ordersPageNo += 1;
-                this.getOrdersList();
-              }
             })
             .catch(res => {
               this.showTip("取消失败，请稍后重试");
@@ -502,5 +592,6 @@ export default {
 <style lang="stylus">
 @import '../../assets/css/media';
 @import '../../assets/css/orders';
+@import '../../assets/css/buy';
 @import '../../assets/css/nearby';
 </style>

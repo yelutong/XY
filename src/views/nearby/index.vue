@@ -2,7 +2,7 @@
   <div class="wrapper nearby">
     <header class="mint-header is-fixed">
         <div class="mint-header-button is-left" v-on:click='cityPatFun'>
-          <button class="mint-button mint-button--default mint-button--normal left" v-text="cityInputVal"></button>
+          <button class="mint-button mint-button--default mint-button--normal left" v-text="limitStrFormat6(cityInputVal)"></button>
           <x-icon type="ios-arrow-down" class="arrowDown left" size="12"></x-icon>
       </div> 
       <h1 class="mint-header-title">附近商家</h1> 

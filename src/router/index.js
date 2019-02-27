@@ -103,6 +103,8 @@ const otoOrders = () =>
   import ('@/views/store/orders'); // oto买家订单   
 const otoOrderDetail = () =>
   import ('@/views/store/orderDetail'); // oto买家订单   
+const evaStore = () =>
+  import ('@/views/store/evaStore'); // 评价订单 
 
 // 附近 -------------------------------
 const nearby = () =>
@@ -183,6 +185,11 @@ const router = new Router({
     {
       path: '/store/fillOrder',
       component: fillOrder
+    },
+    // 评价订单
+    {
+      path: '/store/evaStore',
+      component: evaStore
     },
     // 分享引导页
     {
