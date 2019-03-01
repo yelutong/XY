@@ -3,6 +3,7 @@
     <vHeader :title="mapTitle"/>
     <div class="white mt40">
      <iframe width="100%" id="iframeid" :height="height" frameborder="0" v-if="url" :src="url"></iframe>
+     <!-- iframe和主页面共享连接池，而浏览器对相同域的连接有限制，所以会影响页面的并行加载,最好动态给iframe添加src值-->
     </div>
   </div>
 </template>
