@@ -69,6 +69,7 @@ const ajaxUrl = {
   otoOrderformDetail: urlHost + 'o2oorderform/info/',//{orderNumber}订单详情
   otoCancelOrder: urlHost + 'o2oorderform/cancel/user/',//{orderNumber}买家取消订单
   otoOrderEva: urlHost + 'o2oorderform/addComment',//评价订单
+  confirmPwd: urlHost + 'user/checkPassword',//检查密码是否正确
 }
 // 返回模块
 export default ajaxUrl;

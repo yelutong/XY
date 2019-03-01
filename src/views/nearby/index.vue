@@ -115,13 +115,25 @@ export default {
    if(!this.city || !this.location){
      let _this = this;
      this.getCurrentCityName().then(function(val){
+      console.log(val);
        let data = val.name;
        if(data&&data.substr(data.length-1)=='市'){
           data = data.substr(0,data.length-1);
         }
         _this.cityInputVal = data;
         _this.atnCity(data);
-        _this.atnLocation(val.center);
+        if (navigator.geolocation){ //用浏览器获取坐标地址
+         navigator.geolocation.getCurrentPosition(function(position){
+          _this.atnLocation({
+           'lat': position.coords.latitude,
+           'lng': position.coords.longitude
+          });
+         },function(err){
+           _this.atnLocation(val.center);
+         }); 
+        }else{
+          _this.atnLocation(val.center);
+        }
       })
    }else{
      this.cityInputVal = this.city||'城市';
@@ -133,6 +145,7 @@ export default {
   created() {
     this.getstoreClass();
     this.loadMore();
+    this.getCurrentCityName();
   },
   methods: { 
     ...mapActions(["atnCity","atnLocation"]),
@@ -147,7 +160,7 @@ export default {
      }
      if(this.currentPage< this.totalPage){
       this.currentPage= parseInt(this.currentPage) + 1;
-      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':this.location.lat,'longitude':this.location.lng, "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':'22.54605355','longitude':'114.02597366', "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
       .then(res => {
          console.log(res.data);
          this.totalPage=res.data.content.totalPage; 

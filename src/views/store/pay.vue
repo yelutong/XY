@@ -19,41 +19,65 @@
             <p class="mt5 fs-12 txt-gray">亿万用户的选择，更快更安全</p>
           </span>
         </div>
-        <div><i class="ico i-cks checked mt10"></i></div>
+        <div  @click="select('wxpay')"><i :class="selectVal=='wxpay'?'ico i-cks checked mt10':'ico i-cks mt10'"></i></div>
+      </div>
+      <div class="mt20 full-screen justify-content-space-between">
+        <div class="horizontal-view orderPay">
+          <span><img :src="xy" /></span>
+          <span>
+            <p class="fs-13">剩余可用<i class="txt-orange fs-13" v-text="dotFormat2(walletInfo.currentEnableIntegral)"></i>消费券</p>
+            <p class="mt5 fs-12 txt-gray">极速 安全 新体验</p>
+          </span>
+        </div>
+        <div @click="select('xypay')"><i :class="selectVal=='xypay'?'ico i-cks checked mt10':'ico i-cks mt10'"></i></div>
       </div>
      </div>
     </div>
     <div class="lay-action fix-btom pay-act-btom">
-     
-     <!-- <div class="price-info">
-        <span class="tag">实付：</span>
-        <span class="total">￥{{ price }}</span>
-      </div>
       
-        <span class="btn-submit nordu cancel" @click="cancelOrder">取 消</span>
-      -->
-        <button class="btn-submit nordu full-screen" @click="payOrder">微信支付 <i class="fs-14">￥{{ price }}</i></button>
+        <button class="btn-submit nordu full-screen" v-if="selectVal=='wxpay'" @click="payOrder">{{ payName }} <i class="fs-14">￥{{ price }}</i></button>
+        <button class="btn-submit nordu full-screen" v-else @click="confirmPwd">{{ payName }} <i class="fs-14">￥{{ price }}</i></button>
       
     </div>
+
+      <confirm v-model="show5"
+      show-input
+      ref="confirm5"
+      title="支付密码"
+      placeholder="请输入登录密码"
+      @on-confirm="onConfirm5"
+      >
+      </confirm>
+
   </div>
 </template>
 
-<script>
+<script> 
+import { Confirm, Group} from 'vux';
 import { mapState } from "vuex";
 import { MessageBox, Toast } from "mint-ui";
 import vHeader from "@/components/v-header";
 import wx from "@/assets/images/wx@2x.png";
+import xy from "@/assets/images/xypay.png";
 const qs = require("qs");
 export default {
   data() {
     return {
+      xy: xy,
       wx: wx,
+      show5: false,
+      pwd:'',
+      walletInfo:'',
+      payName: '微信支付',
+      selectVal:'wxpay',
       price: this.getUrlParam("payPrice") || "",
       orderNo: this.getUrlParam("orderNumbers") || ""
     };
   },
   components: {
-    vHeader
+    vHeader,
+    Confirm, 
+    Group
   },
   computed: {
     ...mapState(["token"])
@@ -62,9 +86,67 @@ export default {
     document.title = "确认支付";
   },
   created() {
-   
+    this.getWalletInfo();
   },
   methods: {
+    onConfirm5 (value) {
+      console.log('input value: ' + value);
+      this.$axios
+        .post(this.api.confirmPwd,JSON.stringify({'password': value }),{
+          headers: {
+            "content-type": "application/json",
+            "Authorization": this.token
+          }
+        })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.showTip('密码错误');
+            return;
+          }
+          this.payOrder();
+        })
+        .catch(res => {
+          this.noWallet = true;
+          this.showTip("获取我的钱包数据失败");
+        });
+        
+    },
+    confirmPwd(){
+      this.$refs.confirm5.setInputValue('');
+      this.show5=true; 
+    },
+    select(obj){
+      if(obj=='wxpay'){
+        this.selectVal='wxpay';
+        this.payName='微信支付';
+      }else{
+        this.selectVal='xypay';
+        this.payName='消费券支付';
+      }
+    },
+    // 获取我的钱包数据
+    getWalletInfo() {
+      this.$axios
+        .get(this.api.userWallet, 
+        { 
+            headers: { "Authorization": this.token } 
+        })
+        .then(res => {
+          const resData = res.data;
+          if (resData.code !== 1) {
+            this.noWallet = true;
+            this.showTip(resData.message);
+            return;
+          }
+          this.walletInfo = resData.content;
+          console.log(this.walletInfo)
+        })
+        .catch(res => {
+          this.noWallet = true;
+          this.showTip("获取我的钱包数据失败");
+        });
+    },
     // 计算出订单总价（不包含运费）
     getAllPrice(arrItem) {
       let price = 0;
@@ -119,7 +201,7 @@ export default {
           JSON.stringify({
            'channel': 2,
            'orderNumber': this.orderNo,
-           'payType': 'wxpay'
+           'payType': this.selectVal
           }),
           {
             headers: {
@@ -139,7 +221,14 @@ export default {
             return;
           }
           // 返回数据成功后，拿到参数唤起微信支付
-          this.weiXinPay(resData.content);
+          if(this.selectVal=='wxpay'){
+            this.weiXinPay(resData.content);
+          }else{
+            this.showTip("支付成功");
+            setTimeout(()=>{
+              this.$router.push({path: "/mine"});
+            },2000)
+          }
         })
         .catch(res => {
           loading.close();

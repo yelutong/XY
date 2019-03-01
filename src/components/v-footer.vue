@@ -48,7 +48,6 @@ export default {
             path: "/store/orders",
             query: {
               //status: '[10,20,30,40,50,60]',
-              choseDex: 0
             }
           });
         }else if (item.type === "goodsCart") {

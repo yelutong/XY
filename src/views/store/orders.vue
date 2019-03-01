@@ -104,12 +104,12 @@ export default {
       choseDex: this.getUrlParam("choseDex")||null,
       orderNav: [
         {
-          title: "全部",
-          status:''
-        },
-        {
           title: "待付款",
           status: 10
+        },
+        {
+          title: "待接单",
+          status: 20
         },
         {
           title: "待发货",
@@ -563,7 +563,7 @@ export default {
     pageToPay(payPrice, orderNo, status) {
       // 点得不是未付款的话，全都显示已付款
       if (status === 10) {
-        let url = "/goods/pay?orderNumbers=" + orderNo + "&payPrice=" + payPrice;
+        let url = "/store/otoPay?orderNumbers=" + orderNo + "&payPrice=" + payPrice;
         this.$router.push(url);
       }else{
         vue.showTip("跳转商品详情");

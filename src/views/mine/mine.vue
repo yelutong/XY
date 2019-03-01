@@ -8,7 +8,7 @@
     </div>
     <div class="lay-order">
       <div class="head">
-        <v-cell title="商城订单" value="查看全部订单" align="right" ricon="blue" link="/store/orders?choseDex=0"></v-cell>
+        <v-cell title="商城订单" value="查看全部订单" align="right" ricon="blue" link="/store/orders"></v-cell>
       </div>
       <div class="list">
         <v-flexrow :flexrow-data="orderNav"></v-flexrow>
@@ -51,12 +51,20 @@
         userPhone:'',
         info:'',
         urlPic:this.api.urlPic,
-        orderNav: [{
+        orderNav: [
+          {
             title: "待付款",
             size: 30,
             num:10,
             icon: require("../../assets/images/order-pay.png"),
-            link: "/store/orders?status=10&choseDex=1"
+            link: "/store/orders?status=10&choseDex=0"
+          },
+          {
+            title: "待接单",
+            size: 30,
+            num: 20,
+            icon: require("../../assets/images/order-done.png"),
+            link: "/store/orders?status=20&choseDex=1"
           },
           {
             title: "待发货",
