@@ -12,7 +12,7 @@
     <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-50" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
     <div class="mt50">
       <div class="white">
-        <swiper height="210px" dots-position="center">
+        <swiper height="220px" dots-position="center">
           <swiper-item class="black" v-if="listNav1">
             <grid :cols="5" :show-lr-borders="false">
               <grid-item  class="vux-center" :label="item.className" v-for="(item,index3) in listNav1"  @on-item-click="onTabsClick(item)" :key="index3">
@@ -111,8 +111,7 @@ export default {
     ...mapState(["token","city","location"]),
   },
   mounted(){
-   console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
-   if(!this.city || !this.location){
+  if(!this.city || !this.location){
      let _this = this;
      this.getCurrentCityName().then(function(val){
       console.log(val);
@@ -122,22 +121,23 @@ export default {
         }
         _this.cityInputVal = data;
         _this.atnCity(data);
+         
         if (navigator.geolocation){ //用浏览器获取坐标地址
          navigator.geolocation.getCurrentPosition(function(position){
-          _this.atnLocation({
-           'lat': position.coords.latitude,
-           'lng': position.coords.longitude
-          });
+            _this.atnLocation({
+             'lat': position.coords.latitude,
+             'lng': position.coords.longitude
+            });
          },function(err){
            _this.atnLocation(val.center);
-         }); 
-        }else{
-          _this.atnLocation(val.center);
+         }) 
         }
       })
-   }else{
+    }else{
      this.cityInputVal = this.city||'城市';
-   }
+    }
+   console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
+    
   },
   beforeCreate(){
     document.title = '附近商家';
@@ -160,12 +160,12 @@ export default {
      }
      if(this.currentPage< this.totalPage){
       this.currentPage= parseInt(this.currentPage) + 1;
-      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':'22.54605355','longitude':'114.02597366', "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':this.location.lat,'longitude':this.location.lng, "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
       .then(res => {
-         console.log(res.data);
+         //console.log(res.data);
          this.totalPage=res.data.content.totalPage; 
          this.listData = [...this.listData,...res.data.content.list];
-         console.log(this.listData);
+         //console.log(this.listData);
       })
       .catch(res => {
        //失败，请您稍后重试
@@ -240,7 +240,7 @@ export default {
     searchPatFun(){
       this.$refs.search.searchFun();
     },
-    getCurrentCityName() {
+    getCurrentCityName() { 
       return new Promise(function (resolve, reject) {
         let myCity = new BMap.LocalCity()
         myCity.get(function (result) {
