@@ -24,7 +24,7 @@
         </tab>
       </div>
       
-      <swiper v-model="index" :class="tabActive?'active':''" :height="height" :show-dots="false">
+      <swiper v-model="index" :min-moving-distance="50" :class="tabActive?'active mb10':'mb10'" :height="height" :show-dots="false">
         <swiper-item v-for="(item, index) in list2" :key="index"> 
           <div class="tab-swiper vux-center" v-if="index==0">
               <div class="box2 newListData relative">
@@ -274,7 +274,7 @@ export default {
     window.addEventListener('scroll', this.handleScroll, true);
     let a = document.getElementsByClassName("mint-header")[0];
     let b = document.getElementsByClassName("storeTab")[0];
-    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-10+'px';
+    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-20+'px';
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll, true);
