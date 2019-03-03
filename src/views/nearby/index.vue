@@ -9,10 +9,10 @@
       <div class="mint-header-button is-right" v-on:click='searchPatFun'><button class="mint-button mint-button--default mint-button--normal"><span class="mint-button-icon"><i class="mintui mintui-search"></i></span> <label class="mint-button-text"></label></button></div>
     </header>
 
-    <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-50" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
+    <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-50" use-pullup @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
     <div class="mt50">
       <div class="white">
-        <swiper height="220px" dots-position="center">
+        <swiper :height="swHeight" dots-position="center">
           <swiper-item class="black" v-if="listNav1">
             <grid :cols="5" :show-lr-borders="false">
               <grid-item  class="vux-center" :label="item.className" v-for="(item,index3) in listNav1"  @on-item-click="onTabsClick(item)" :key="index3">
@@ -42,7 +42,7 @@
                 <div class="rightBtm justify-content-space-between">
                 <div>
                 <p class="fs-12 mb5 txt-blue" v-text="store.sellerClassName"></p>
-                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="store.totalScore.toFixed(1)"></i>
+                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml10 txt-orange" v-text="store.totalScore.toFixed(1)"></i>
                 <p class="txt-gray1 fs-10 location mt5" v-text="store.merchantAddress"></p>
                 </div>
                 </div>
@@ -84,6 +84,7 @@ export default {
       listNav1:[],
       listNav2:[],
       data3: '5',
+      swHeight:'4.1rem',
       loadMoreVal: true,
       totalPage: 1,
       currentPage: 0,

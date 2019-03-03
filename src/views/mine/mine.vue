@@ -27,7 +27,7 @@
       <!-- <v-cell class="join" v-if="!serveLink" title="入驻" :link="joinLink" />-->
       <!--<v-cell class="about" title="关于我们" link="/mine/about" />
        <v-cell class="about" title="帮助中心" link="/goods/connectMe" />-->
-      <v-cell class="about" title="APP下载" link="" />
+       <div class="v-cell-box about" @click="downLoad"><div class="lay-cell"><div class="link"><span class="title">APP下载</span> <p class="text left"></p> <i class="ico i-grey"></i></div></div></div>
       <!--
       <div @click="callHelp">
         <v-cell class="help" title="帮助中心" type="btn"  />
@@ -41,7 +41,7 @@
 
 <script>
   import { mapState, mapActions } from "vuex";
-  import { MessageBox } from "mint-ui";
+  import { Cell, MessageBox } from "mint-ui";
   import vFlexrow from "@/components/v-flexrow";
   import vCell from "@/components/v-cell";
   import vFooter from "@/components/v-footer";
@@ -95,7 +95,8 @@
     components: {
       "v-flexrow": vFlexrow,
       "v-cell": vCell,
-      "v-footer": vFooter
+      "v-footer": vFooter,
+      Cell
     },
     computed: {
       ...mapState(["token", "openId", "userId","weChatInfo", "weChatShare"])
@@ -110,6 +111,9 @@
     },
     methods: {
       ...mapActions(["atnUserId", "atnUserPhone"]),
+      downLoad(){
+        window.location.href = "https://a.app.qq.com/o/simple.jsp?pkgname=com.newly.silver"; 
+      },
       verToken(){
         let openId = localStorage.getItem("openId");
         if(openId && !this.token){

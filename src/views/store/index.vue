@@ -1,15 +1,15 @@
 <template>
   <div :class="top==0?'nearby active storeIndex':'nearby storeIndex'" id="storePage" @scroll=handleScroll>
     <vHeader :title="storeTitle"/>
-    <div class="white mt40 blueBg w100 relative">
+    <div class="white mt40 blueBg w100 relative" v-if="!tabActive">
       <p class="storeImgBox"><img v-if="storeData.imgLogo" :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
     </div>
     <div class="">
-      <div class="pd10 white">
+      <div class="pd10 white" v-if="!tabActive">
         <p class="pdt40 lh-36 vux-1px-b center fs-14 txt-black-real" v-text="storeData.merchantName"></p>
         <p @click="toastMap" v-text="storeData.merchantAddress" class="addr w100 txt-black align-items-center"></p>
         <p class="vux-1px-t center pdt10">
-          <i class="txt-gray1" v-text="'粉丝'+storeData.fansCount"></i>
+          <!--<i class="txt-gray1" v-text="'粉丝'+storeData.fansCount"></i>-->
           <i class="mg5 txt-gray1" v-text="'销量0'"></i><i class="txt-gray1">评分</i>
           <rater disabled :font-size="10" active-color="#ff4f00" :value="storeData.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(storeData.totalScore)"></i>
         </p>
@@ -18,22 +18,22 @@
           <span class="standards1 line2" v-if="storeData.o2oConfig && storeData.o2oConfig.noticeContext" v-text="storeData.o2oConfig.noticeContext"></span>
         </p>
       </div>
-      <div :class="tabActive?'relative storeTab w100 mgt10':'w100 storeTab active'">
+      <div :class="tabActive?'active storeTab w100':'w100 storeTab relative mgt10'">
         <tab :line-width=2 active-color='#fc378c' v-model="index">
           <tab-item class="vux-center" :selected="demo2 == item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
         </tab>
       </div>
-      <swiper v-model="index" :height="height" :show-dots="false">
-        <swiper-item v-for="(item, index) in list2" :key="index">
-
+      
+      <swiper v-model="index" :class="tabActive?'active':''" :height="height" :show-dots="false">
+        <swiper-item v-for="(item, index) in list2" :key="index"> 
           <div class="tab-swiper vux-center" v-if="index==0">
               <div class="box2 newListData relative">
-                <div class="navLeft" v-if="listData">
+                <div class="navLeft" v-if="listData&&listData.length>0">
                   <tab bar-position="top">
                     <tab-item :selected="item.index==0" @on-item-click="onItemClick(item.index)" v-for="(item,index) in listData" :key="index">{{ item.nav }}</tab-item>
                   </tab>
                </div>
-                <div class="navRight white pdb10" v-if="classDataList">
+                <div class="navRight white" v-if="classDataList">
                 <flexbox class="pd10" orient="vertical"> 
                   <flexbox-item v-for="(goods, index5) in classDataList" :key="index5">
                     <div class="mgt10 justify-content-space-between">
@@ -81,7 +81,7 @@
                <b class="fs-14 lh-20 txt-dark">商家地址:</b> 
                <div class="standards1 txt-black lh-20" v-text="storeData.merchantAddress"></div>
                </div>
-               <div class="salebuy norms mgt10">
+               <div class="salebuy norms mgt10 pdb10">
                <b class="fs-14 lh-20 txt-dark">商家电话:</b> 
                <div class="standards1 txt-black lh-20" v-text="storeData.merchantServicePhone"></div>
                </div>
@@ -94,7 +94,7 @@
               <span><rater disabled :font-size="10" active-color="#ff4f00" :value="storeData.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(storeData.totalScore)"></i></span>
               </div>
              
-            <scroller lock-x height="-140" :scrollbar-y=false use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
+            <scroller lock-x height="-140" :scrollbar-y=false use-pullup @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
               <div v-if="listDataEva" class="eva-list">
                   <div class="item" v-for="(item, index) in listDataEva" :key="index">
                     <div class="eva-pro">
@@ -129,10 +129,10 @@
           </div>
         </swiper-item>
       </swiper>
-     
+
        <div class="lay-action fix-btom pay-act-btom vux-1px-t justify-content-space-between bg-white">
         <div class="justify-content-space-between per70 pdlr20">
-        <i class="cartIcon relative" @click="goGoodsCart"><badge class="badge" :text="goodsCount"></badge></i>
+        <i class="cartIcon relative mt5" @click="goGoodsCart"><badge class="badge" :text="goodsCount"></badge></i>
         <div class="price-info flex1 vertical-view">
           <p class="total fs-14 w100 txt-right txt-orange" v-model="goodsCount" v-text="'￥'+dotFormat2(allPrice)"></p>
           <p class="txt-gray1 w100 txt-right">配送另需配送费/可自取</p>
@@ -159,7 +159,6 @@
 </template>
         
 <script>
-// 购物车
 import { mapState } from "vuex";
 import { Toast } from "mint-ui";
 import { Badge, Swiper, SwiperItem, Tab, TabItem, Rater, Scroller, Spinner,Flexbox, FlexboxItem
@@ -221,18 +220,7 @@ export default {
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress"]),
   },
-  mounted() {//给window添加一个滚动滚动监听事件
-    window.addEventListener('scroll', this.handleScroll, true);
-    /*window.addEventListener('scroll', () => {
-    let scrollTop = document.documentElement.scrollTop ||
-                       document.body.scrollTop ||
-                       document.querySelector('.tab-swiper').scrollTop;
-      console.log(scrollTop);
-    }, true);*/
-  },
-  destroyed () {
-    window.removeEventListener('scroll', this.handleScroll, true);
-  },
+  
   beforeCreate(){
     document.title = '店铺详情';
   },
@@ -281,7 +269,15 @@ export default {
     this.getGoodsCount();
     this.getGoodsCartList();
     this.loadMore();//获取店铺评论列表
-    this.height = window.screen.height-43+'px';
+  },
+  mounted() {//给window添加一个滚动滚动监听事件
+    window.addEventListener('scroll', this.handleScroll, true);
+    let a = document.getElementsByClassName("mint-header")[0];
+    let b = document.getElementsByClassName("storeTab")[0];
+    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-10+'px';
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll, true);
   },
   methods: {
    goGoodsCart(){
@@ -524,25 +520,21 @@ export default {
     },
     handleScroll() { //改变元素#searchBar的top值
       let top = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
-      //console.log(top);
-      if(top==0){
+      if(top<10){
         this.storeTitle = "";
         this.top = 0;
         this.tabActive = false;
-      }else{
-        this.storeTitle = this.storeData.merchantName;
-        this.top = top;
-        if(top>=200){
-          this.tabActive = true;
-          setTimeout(()=>{
-            document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = 290;
-          },3)
-        }else{
-           this.tabActive = false;
-           setTimeout(()=>{
+        setTimeout(()=>{
             document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = 0;
           },3)
-        }
+      }else{
+         this.storeTitle = this.storeData.merchantName;
+         this.top = top;
+          this.tabActive = true;
+          setTimeout(()=>{
+            document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = 10;
+          },3)
+        
       }
     },
     toDetail (item) {

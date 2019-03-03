@@ -1,7 +1,7 @@
 <template>
   <section class="near nearby">
     <vHeader :title="className"/>
-    <scroller lock-x :scrollbar-y=false use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
+    <scroller lock-x :scrollbar-y=false use-pullup  @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" @on-pullup-loading="loadMore" v-model="status" ref="scroller">
       <div class="white mgt50">
          <div class="box2 newListData pd10">
            <flexbox orient="vertical">

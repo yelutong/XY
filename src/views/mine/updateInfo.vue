@@ -1,16 +1,16 @@
 <template>
   <div class="wrapper updateInfo">
     <vHeader title="修改信息" to="/mine/set" />
-    <div class="mt50">
+    <div class="mt50 relative">
       <vue-core-image-upload 
-      class="up-load" 
+      class="up-load absolute" 
       :crop="false" text="" inputAccept="image/*" 
       @imageuploaded="chooseImage" 
       :credentials="false"
       :max-file-size="10485760" 
       :multiple="false" inputOfFile="Filedata" 
       :url="this.api.uploadPhoto"   >
-      <img width="150" v-if="license" :src="license" />
+      <img width="150" v-if="license" :src="this.api.urlPic+license" />
     </vue-core-image-upload>
        <v-cell class="share" title="头像" type="btn" />
        <mt-field label="昵称" placeholder="请输入昵称" v-model="nickName"></mt-field>
@@ -95,7 +95,7 @@ export default {
     chooseImage(res) {
          console.log(res)
          if(res.code == 1){
-           this.license = this.api.urlPic+res.content[0].path+'/'+res.content[0].name;
+           this.license = res.content[0].path+'/'+res.content[0].name;
          }
     },
     infoUpdate(){
@@ -141,6 +141,7 @@ export default {
     background: transparent;
     z-index: 99999;
     right: 0;
+    top:0;
     position: absolute;
     width:80%;
     text-align: right;
@@ -148,6 +149,7 @@ export default {
   .up-load img{
     width:40px;
     height:40px;
+    border-radius:50%;
     margin-right:25px;
   }
 }

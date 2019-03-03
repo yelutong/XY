@@ -226,7 +226,7 @@ export default {
           }else{
             this.showTip("支付成功");
             setTimeout(()=>{
-              this.$router.push({path: "/mine"});
+              this.$router.push({path: "/store/orders?status=20&choseDex=1"});
             },2000)
           }
         })

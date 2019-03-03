@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     ...mapState(["token", "openId", "userId"])
-  },
+  }, 
   beforeCreate() {
     // vue渲染成功，通知window不用刷新
     window.vueLoaded = true;

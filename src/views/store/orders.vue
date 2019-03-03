@@ -7,9 +7,10 @@
       </div>
     </div>
     <div class="tab-con mt43 page-buy odBoxTop">
-      <scroller lock-x height="-140" :scrollbar-y=false use-pullup @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="statusLoad" ref="scroller" v-if="orderList">
+      <template v-if="orderList&&orderList.length>0">
+      <scroller lock-x height="-140" :scrollbar-y=false use-pullup @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" v-model="statusLoad" ref="scroller">
       <div class="white pda15">
-      <div class="order-item odBox" v-for="(item, index) in orderList" :key="index" v-if="orderList">
+      <div class="order-item odBox " v-for="(item, index) in orderList" :key="index">
         
         <router-link class="lay-address white justify-content-space-between vux-1px-b"  :to="{path:'/store/orderDetail', query:{orderNo:item.orderNo,status:item.statusNum}}">
              <div class="horizontal-view">
@@ -59,7 +60,7 @@
           <span v-show="statusLoad.pullupStatus === 'complete'">已加载完成</span>
      </div>
     </scroller> 
-
+  </template>
       <v-nodata v-if="orderList==null" bgcolor="grey" text="- 暂无相关订单 -" />
       <div class="picker-new">
       <div :class="show ?'picker-mask show':'picker-mask'" @click="closePickerBox"></div>
@@ -250,7 +251,7 @@ export default {
         this.getOrdersList();
         //重置scroller插件滚回顶部  xs-container 这个class的样式
         setTimeout(()=>{
-          if(this.orderList){
+          if(this.orderList&&this.orderList.length>0){
             this.$refs.scroller.$el.children[0].style.cssText='transform-origin: 0px 0px 0px; transform: translateX(0px) translateY(0px) translateZ(0px) scale(1, 1); transition: none 0s ease 0s;';
           }
         },0)

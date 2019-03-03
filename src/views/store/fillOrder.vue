@@ -5,7 +5,7 @@
        <tab :line-width=0 active-color='#fc378c' v-model="index">
           <tab-item class="vux-center" :selected="demo2 === item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
         </tab>
-        <swiper v-model="index" height="110px" :show-dots="false">
+        <swiper v-model="index" :height="foHeight" :show-dots="false">
           <swiper-item v-for="(item, index) in list2" :key="index">
             <div class="tab-swiper vux-center" v-if="index==0">
              <div class="w100 white pSend mb10 justify-content-space-between">
@@ -128,6 +128,7 @@ export default {
       storeId: this.getUrlParam("storeId"),
       urlPic:this.api.urlPic,
       location: location,
+      foHeight:'2.2rem',
       show: false,
       list2: list(),
       send: send,
