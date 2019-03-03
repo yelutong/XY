@@ -35,7 +35,7 @@ export default {
   },
   created() {
     this.getMap();
-    this.height = window.screen.height;
+    this.height = document.documentElement.clientHeight;
   },
   methods: {
     getMap(){
