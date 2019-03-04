@@ -1,6 +1,5 @@
 // 通用型样式
 * {
-  box-sizing: border-box;
   padding: 0;
   margin: 0;
   -webkit-user-select: none;
@@ -12,17 +11,19 @@
   touch-action: pan-y;
 }
 html,body {
-  height: 100%;
   margin: 0;
   padding: 0;
   font-family: PingFang SC, Microsoft YaHei;
-  font-size: 1em;
+  font-size: 12px;
   margin: auto;
   color: #333333;
   background-color: #E9EDF0;
   word-wrap: break-word;
   overflow-x: hidden;
   overflow-y: scroll;
+}
+#app{
+  position:relative;
 }
 ::-webkit-scrollbar {
   display: none;
@@ -374,6 +375,9 @@ b{
 .ml5{
   margin-left: 5px!important;
 }
+.ml10{
+  margin-left: 10px!important;
+}
 .ml15{
   margin-left: 15px!important;
 }
@@ -382,6 +386,9 @@ b{
 }
 .relative{
   position: relative; 
+}
+.absolute{
+ position: absolute!important; 
 }
 /*1px 解决方案*/
 
@@ -793,7 +800,7 @@ hr {
   bottom: 50px!important;
 }
 .fix-btom {
-    position: fixed;
+    position: fixed!important;
     left: 0;
     bottom: 0;
     z-index: 10;

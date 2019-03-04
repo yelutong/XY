@@ -6,7 +6,7 @@
 			<input type="text" v-model="storeName" placeholder="请输入搜索内容" class="search-input" />
 			<i @click='searchBtn' class="searchBtn">搜索</i>
 		</article>
-		<scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-1" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
+		<scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-1" use-pullup @on-scroll-bottom="loadMore" @on-pullup-loading="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller">
       <div class="white mgt50">
          <div class="box2 newListData pd10">
            <flexbox orient="vertical">
@@ -19,7 +19,7 @@
                 <div class="rightBtm justify-content-space-between">
                 <div>
                 <p class="fs-12 mb5 txt-blue" v-text="store.sellerClassName"></p>
-                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="dotFormat(store.totalScore)"></i>
+                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml10 txt-orange" v-text="dotFormat(store.totalScore)"></i>
                 <p class="txt-gray1 fs-10 location mt5" v-text="store.merchantAddress"></p>
                 </div>
                 </div>

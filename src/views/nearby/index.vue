@@ -9,10 +9,10 @@
       <div class="mint-header-button is-right" v-on:click='searchPatFun'><button class="mint-button mint-button--default mint-button--normal"><span class="mint-button-icon"><i class="mintui mintui-search"></i></span> <label class="mint-button-text"></label></button></div>
     </header>
 
-    <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-50" use-pullup use-pulldown @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
+    <scroller lock-x :scroll-bottom-offset="10" :scrollbar-y=false height="-50" use-pullup @on-scroll-bottom="loadMore" @on-pulldown-loading="refresh" v-model="status" ref="scroller" @on-pullup-loading="loadMore">
     <div class="mt50">
       <div class="white">
-        <swiper height="210px" dots-position="center">
+        <swiper :height="swHeight" dots-position="center">
           <swiper-item class="black" v-if="listNav1">
             <grid :cols="5" :show-lr-borders="false">
               <grid-item  class="vux-center" :label="item.className" v-for="(item,index3) in listNav1"  @on-item-click="onTabsClick(item)" :key="index3">
@@ -42,7 +42,7 @@
                 <div class="rightBtm justify-content-space-between">
                 <div>
                 <p class="fs-12 mb5 txt-blue" v-text="store.sellerClassName"></p>
-                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml5 txt-orange" v-text="store.totalScore.toFixed(1)"></i>
+                <rater disabled :font-size="10" active-color="#ff4f00" :value="store.totalScore"></rater><i class="fs-12 ml10 txt-orange" v-text="store.totalScore.toFixed(1)"></i>
                 <p class="txt-gray1 fs-10 location mt5" v-text="store.merchantAddress"></p>
                 </div>
                 </div>
@@ -84,6 +84,7 @@ export default {
       listNav1:[],
       listNav2:[],
       data3: '5',
+      swHeight:'4.1rem',
       loadMoreVal: true,
       totalPage: 1,
       currentPage: 0,
@@ -111,8 +112,7 @@ export default {
     ...mapState(["token","city","location"]),
   },
   mounted(){
-   console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
-   if(!this.city || !this.location){
+  if(!this.city || !this.location){
      let _this = this;
      this.getCurrentCityName().then(function(val){
       console.log(val);
@@ -122,22 +122,23 @@ export default {
         }
         _this.cityInputVal = data;
         _this.atnCity(data);
+         
         if (navigator.geolocation){ //用浏览器获取坐标地址
          navigator.geolocation.getCurrentPosition(function(position){
-          _this.atnLocation({
-           'lat': position.coords.latitude,
-           'lng': position.coords.longitude
-          });
+            _this.atnLocation({
+             'lat': position.coords.latitude,
+             'lng': position.coords.longitude
+            });
          },function(err){
            _this.atnLocation(val.center);
-         }); 
-        }else{
-          _this.atnLocation(val.center);
+         }) 
         }
       })
-   }else{
+    }else{
      this.cityInputVal = this.city||'城市';
-   }
+    }
+   console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
+    
   },
   beforeCreate(){
     document.title = '附近商家';
@@ -160,12 +161,12 @@ export default {
      }
      if(this.currentPage< this.totalPage){
       this.currentPage= parseInt(this.currentPage) + 1;
-      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':'22.54605355','longitude':'114.02597366', "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
+      this.$axios.post(this.api.sellerstoreList,qs.parse({'latitude':this.location.lat,'longitude':this.location.lng, "page" : this.currentPage, "limit":8 }),{headers: {"content-type": "application/json"}})
       .then(res => {
-         console.log(res.data);
+         //console.log(res.data);
          this.totalPage=res.data.content.totalPage; 
          this.listData = [...this.listData,...res.data.content.list];
-         console.log(this.listData);
+         //console.log(this.listData);
       })
       .catch(res => {
        //失败，请您稍后重试
@@ -240,7 +241,7 @@ export default {
     searchPatFun(){
       this.$refs.search.searchFun();
     },
-    getCurrentCityName() {
+    getCurrentCityName() { 
       return new Promise(function (resolve, reject) {
         let myCity = new BMap.LocalCity()
         myCity.get(function (result) {

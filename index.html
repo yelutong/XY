@@ -21,6 +21,7 @@
 }
 </style>
 <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=9PxhHHXyO3FxNEu4VvAeqLge9VbdB6KM&s=1"></script>
+
 <script type="text/javascript">
     var userAgent = navigator.userAgent.toLowerCase();
   // alert('当前html地址：'+window.location.href);
@@ -35,7 +36,7 @@
       if(proUserId){
         localStorage.setItem("proUserId", proUserId);
       }
-      alert('proUserId:'+proUserId);
+      //alert('proUserId:'+proUserId);
       if(code){
         sessionStorage.setItem("code", code);
       }
@@ -89,7 +90,6 @@
   <div id="app"></div>
 </body>
 </html>
-
 <script>
   // 有些机型上vue偶尔渲染失败，以此解决-离线也会显示
   var winStorge = window.localStorage,

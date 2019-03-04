@@ -1,3 +1,8 @@
+#map{
+  box-sizing: border-content!important;
+  -moz-box-sizing: border-content!important;
+  -webkit-box-sizing: border-content!important;
+}
 .nearby.active .mintui{
 	color: #FFF!important;
 }
@@ -5,7 +10,8 @@
  background: #00a8ff !important;
 }
 .nearby .mint-header{
- background: #fff !important;
+ background: #fff;
+ background-color:#fff;
 }
 .storeHead img{
   width:40px;
@@ -122,7 +128,7 @@
   }
 	.navRight{
 		margin-left:100px;
-    margin-bottom:80px;
+    margin-bottom:90px;
 	}
  .navLeft{
    width:100px;
@@ -176,11 +182,21 @@
    .vux-slider > .vux-swiper{
     overflow-y: scroll!important;
    }
+   .storeTab.active{
+    position:fixed!important;
+    top:40px;
+    background:#FFF;
+    z-index: 99;
+    left:0;
+   }
    .storeTab.active .vux-tab-container{
     position:relative!important;
    }
    .storeTab.active .vux-tab-wrap{
     padding-top: 10px;
+   }
+   .vux-slider.active{
+     margin-top:104px;
    }
    .norms b {
      width: 65px;
@@ -309,6 +325,9 @@
 	.weui-grid__icon img {
 	  border-radius: 50%;
 	}
+  .weui-grid__label span{
+    height:24px;
+  }
   .mint-header{
    background:#FFF!important;
    color:#333!important;
