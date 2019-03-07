@@ -414,7 +414,7 @@ export default {
       });
     },
     // 从后台拿到微信签名等数据
-      getWeixinData() {
+    getWeixinData() {
         this.$axios
           .post(this.api.wxShareSign,
            JSON.stringify({

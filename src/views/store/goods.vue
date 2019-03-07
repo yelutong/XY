@@ -64,7 +64,7 @@ export default {
   },
   created() {
     this.getGoodsMainData();
-    //this.getWeixinData();
+    this.getWeixinData();
     //this.getUserData();
   },
   methods: {

@@ -112,7 +112,7 @@ export default {
     ...mapState(["token","city","location"]),
   },
   mounted(){
-  if(!this.city || !this.location){
+  //if(!this.city || !this.location){
      let _this = this;
      this.getCurrentCityName().then(function(val){
       console.log(val);
@@ -123,7 +123,7 @@ export default {
         _this.cityInputVal = data;
         _this.atnCity(data);
          
-        if (navigator.geolocation){ //用浏览器获取坐标地址
+       /* if (navigator.geolocation){ //用浏览器获取坐标地址
          navigator.geolocation.getCurrentPosition(function(position){
             _this.atnLocation({
              'lat': position.coords.latitude,
@@ -133,15 +133,49 @@ export default {
            _this.atnLocation(val.center);
          }) 
         }
+        */
       })
-    }else{
+   /* }else{
      this.cityInputVal = this.city||'城市';
-    }
+    }*/
    console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
     
   },
   beforeCreate(){
     document.title = '附近商家';
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(showPosition,showError);
+      function showPosition(position){alert(1);
+        lat=position.coords.latitude;
+        lon=position.coords.longitude;
+        alert('lat:'+lat);
+        alert('lon:'+lon);
+        this.atnLocation({
+             'lat': lat,
+             'lng': lon
+        });
+      }
+
+      function showError(error){alert(0);
+        switch(error.code)
+          {
+          case error.PERMISSION_DENIED://用户不允许地理定位
+            x.innerHTML="User denied the request for Geolocation."
+            break;
+          case error.POSITION_UNAVAILABLE://无法获取当前位置
+            x.innerHTML="Location information is unavailable."
+            break;
+          case error.TIMEOUT://操作超时
+            x.innerHTML="The request to get user location timed out."
+            break;
+          case error.UNKNOWN_ERROR://未知错误
+            x.innerHTML="An unknown error occurred."
+            break;
+          }
+        }
+    }else{
+      this.showTip("浏览器不支持定位");
+    }
   },
   created() {
     this.getstoreClass();

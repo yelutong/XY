@@ -15,7 +15,7 @@
                 </div>
                 <div><i class="ico i-cks checked"></i></div>
               </div>
-            <router-link class="lay-address white " :to="{path:'/mine/addresses', query:{from:'goods'}}">
+            <router-link class="lay-address white pda10 ma0" :to="{path:'/mine/addresses', query:{from:'goods'}}">
               <i class="ico i-map"></i>
               <div class="adress">
                 <template v-if="showAddress">

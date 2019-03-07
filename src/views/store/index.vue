@@ -1,11 +1,11 @@
 <template>
   <div :class="top==0?'nearby active storeIndex':'nearby storeIndex'" id="storePage" @scroll=handleScroll>
     <vHeader :title="storeTitle"/>
-    <div class="white mt40 blueBg w100 relative" v-if="!tabActive">
+    <div class="white mt40 blueBg w100 relative">
       <p class="storeImgBox"><img v-if="storeData.imgLogo" :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
     </div>
     <div class="">
-      <div class="pd10 white" v-if="!tabActive">
+      <div class="pd10 white">
         <p class="pdt40 lh-36 vux-1px-b center fs-14 txt-black-real" v-text="storeData.merchantName"></p>
         <p @click="toastMap" v-text="storeData.merchantAddress" class="addr w100 txt-black align-items-center"></p>
         <p class="vux-1px-t center pdt10">
@@ -18,13 +18,13 @@
           <span class="standards1 line2" v-if="storeData.o2oConfig && storeData.o2oConfig.noticeContext" v-text="storeData.o2oConfig.noticeContext"></span>
         </p>
       </div>
-      <div :class="tabActive?'active storeTab w100':'w100 storeTab relative mgt10'">
+      <div class="w100 storeTab relative mgt10">
         <tab :line-width=2 active-color='#fc378c' v-model="index">
           <tab-item class="vux-center" :selected="demo2 == item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
         </tab>
       </div>
       
-      <swiper v-model="index" :min-moving-distance="50" :class="tabActive?'active mb10':'mb10'" :height="height" :show-dots="false">
+      <swiper v-model="index" :min-moving-distance="50" class="mb10" :height="height" :show-dots="false">
         <swiper-item v-for="(item, index) in list2" :key="index"> 
           <div class="tab-swiper vux-center" v-if="index==0">
               <div class="box2 newListData relative">
@@ -182,7 +182,6 @@ export default {
       height:'',
       show: false,
       index: 0,
-      tabActive: false,
       storeTitle:'',
       list2: list(),
       demo2: '商品',
@@ -269,12 +268,13 @@ export default {
     this.getGoodsCount();
     this.getGoodsCartList();
     this.loadMore();//获取店铺评论列表
+    this.getWeixinData();
   },
   mounted() {//给window添加一个滚动滚动监听事件
     window.addEventListener('scroll', this.handleScroll, true);
     let a = document.getElementsByClassName("mint-header")[0];
     let b = document.getElementsByClassName("storeTab")[0];
-    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-20+'px';
+    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-15+'px';
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll, true);
@@ -523,18 +523,12 @@ export default {
       if(top<10){
         this.storeTitle = "";
         this.top = 0;
-        this.tabActive = false;
         setTimeout(()=>{
             document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = 0;
           },3)
       }else{
          this.storeTitle = this.storeData.merchantName;
          this.top = top;
-          this.tabActive = true;
-          setTimeout(()=>{
-            document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = 10;
-          },3)
-        
       }
     },
     toDetail (item) {
@@ -701,7 +695,114 @@ export default {
           storeId:this.id
         }
       })
-    }
+    },
+    // 从后台拿到微信签名等数据
+    getWeixinData() {
+        this.$axios
+          .post(this.api.wxShareSign,
+           JSON.stringify({
+            'url': window.location.href
+           }),
+           {
+               headers: { "content-type": "application/json"}
+            })
+          .then(res => {
+            const resData = res.data;
+            if (resData.code !== 1 || !resData.content) {
+              this.showTip('获取微信分享参数失败');
+              return;
+            }
+            this.wakeWeiXin(resData.content);
+          })
+          .catch(res => {
+           // this.showTip('获取微信分享参数失败');
+          });
+      },
+      // 拿到数据后执行唤醒微信分享更改函数
+      wakeWeiXin(objData) {
+        const _this = this;
+        let link = '';
+        if(!_this.userId && localStorage.getItem("userId")){
+          _this.atnUserId(localStorage.getItem("userId"));
+        }
+        if(objData.url.indexOf('&proUserId=')<0){
+          if(_this.userId){
+            link = objData.url + '&proUserId=' + _this.userId;
+          }else{
+            link = objData.url;
+          }
+        }else{
+          if(_this.userId){
+            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
+          }else{
+            link = objData.url.split('&proUserId=')[0];
+          }
+        }
+        console.log('link:'+link);
+        wx.config({
+          debug: false, 
+          appId: objData.appId,
+          timestamp: objData.timestamp,
+          nonceStr: objData.nonceStr,
+          signature: objData.signature,
+          jsApiList: [
+            "hideMenuItems",
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage"
+          ]
+        });
+        wx.ready(function () {
+          // 隐藏一些功能
+          wx.hideMenuItems({
+            menuList: [
+              "menuItem:share:qq",
+              "menuItem:share:QZone",
+              "menuItem:share:weiboApp",
+              "menuItem:share:facebook",
+              "menuItem:originPage",
+              "menuItem:openWithQQBrowser",
+              "menuItem:openWithSafari",
+              "menuItem:share:email"
+            ]
+          });
+          // 分享到朋友圈
+          wx.onMenuShareTimeline({
+            title: _this.goodsMainData.name,
+            link: link,
+            imgUrl: _this.photoUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 分享到朋友
+          wx.onMenuShareAppMessage({
+            title: _this.goodsMainData.name,
+            desc: _this.goodsMainData.saleSpots,
+            link: link,
+            imgUrl: _this.photoUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 检查微信接口是否调用成功
+          wx.checkJsApi({
+            jsApiList: [
+              "hideMenuItems",
+              "onMenuShareTimeline",
+              "onMenuShareAppMessage"
+            ],
+            success: function (res) {
+              console.log("微信接口调用成功");
+            }
+          });
+        });
+      }
   }
 };
 </script>
