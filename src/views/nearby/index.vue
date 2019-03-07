@@ -337,7 +337,8 @@ export default {
           jsApiList: [
             "hideMenuItems",
             "onMenuShareTimeline",
-            "onMenuShareAppMessage"
+            "onMenuShareAppMessage",
+            "getLocation"
           ]
         });
         wx.ready(function () {
@@ -394,7 +395,8 @@ export default {
             jsApiList: [
               "hideMenuItems",
               "onMenuShareTimeline",
-              "onMenuShareAppMessage"
+              "onMenuShareAppMessage",
+              "getLocation"
             ],
             success: function (res) {
               console.log("微信接口调用成功");
