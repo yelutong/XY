@@ -155,10 +155,10 @@ export default {
             link: window.location.href,
             imgUrl: picSwipe.arrData[0],
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
           // 分享到朋友
@@ -168,10 +168,10 @@ export default {
             link: window.location.href,
             imgUrl: picSwipe.arrData[0],
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
           // 检查微信接口是否调用成功

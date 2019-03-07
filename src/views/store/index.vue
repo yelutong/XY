@@ -276,7 +276,7 @@ export default {
     let b = document.getElementsByClassName("storeTab")[0];
     let c = document.getElementsByClassName("pay-act-btom")[0];
     console.log(a.offsetHeight,b.offsetHeight,c.offsetHeight);
-    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-c.offsetHeight+'px';
+    this.height = document.body.clientHeight-a.offsetHeight-b.offsetHeight-c.offsetHeight+'px';
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll, true);
@@ -755,10 +755,10 @@ export default {
             link: window.location.href,
             imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
           // 分享到朋友
@@ -768,10 +768,10 @@ export default {
             link: window.location.href,
             imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
           // 检查微信接口是否调用成功

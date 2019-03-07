@@ -1,5 +1,6 @@
 <!-- 微信分享 -->
 <template>
+
   <div class="wechat-share"></div>
 </template>
 <script>
@@ -42,7 +43,7 @@ export default {
           this.wakeWeiXin(resData.content);
         })
         .catch(res => {
-          this.showTip('获取微信分享参数失败');
+          //this.showTip('获取微信分享参数失败');
         });
     },
     // 拿到数据后执行唤醒微信分享更改函数

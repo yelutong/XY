@@ -109,9 +109,18 @@ export default {
     FlexboxItem
   },
   computed: {
-    ...mapState(["token","city","location"]),
+    ...mapState(["token", "openId", "userId" ,"city","location"]),
   },
   mounted(){
+    
+  },
+  beforeCreate(){
+    document.title = '附近商家'; 
+  },
+  created() {
+    this.getstoreClass(); 
+    this.getCurrentCityName();
+    this.getWeixinData();
     if(!this.city || !this.location){
      let _this = this;
      this.getCurrentCityName().then(function(val){
@@ -122,27 +131,14 @@ export default {
         }
         _this.cityInputVal = data;
         _this.atnCity(data);
-         
-        if (navigator.geolocation){ //用浏览器获取坐标地址
-         navigator.geolocation.getCurrentPosition(function(position){
-            _this.atnLocation({
-             'lat': position.coords.latitude,
-             'lng': position.coords.longitude
-            });
-         },function(err){
-           _this.atnLocation(val.center);
-         }) 
-        }
-       
+        _this.atnLocation(val.center); 
       })
     }else{
      this.cityInputVal = this.city||'城市';
     }
    console.log('城市:'+this.city,'经纬度：'+ this.location.lat,this.location.lng);
-  },
-  beforeCreate(){
-    document.title = '附近商家';
-    if(navigator.geolocation){
+   this.loadMore();
+   if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(showPosition,showError);
       function showPosition(position){
         lat=position.coords.latitude;
@@ -153,33 +149,28 @@ export default {
              'lat': lat,
              'lng': lon
         });
+        this.listData=[];
+        this.loadMore();
       }
       function showError(error){
-        switch(error.code)
-          {
+        switch(error.code){
           case error.PERMISSION_DENIED://用户不允许地理定位
-            x.innerHTML="User denied the request for Geolocation."
+            alert("User denied the request for Geolocation.");
             break;
           case error.POSITION_UNAVAILABLE://无法获取当前位置
-            x.innerHTML="Location information is unavailable."
+            alert("Location information is unavailable.");
             break;
           case error.TIMEOUT://操作超时
-            x.innerHTML="The request to get user location timed out."
+            alert("The request to get user location timed out.");
             break;
           case error.UNKNOWN_ERROR://未知错误
-            x.innerHTML="An unknown error occurred."
+            alert("An unknown error occurred.");
             break;
           }
-        }
+      }
     }else{
       this.showTip("浏览器不支持定位");
     }
-  },
-  created() {
-    this.getstoreClass();
-    this.loadMore();
-    this.getCurrentCityName();
-    this.getWeixinData();
   },
   methods: { 
     ...mapActions(["atnCity","atnLocation"]),
@@ -306,8 +297,26 @@ export default {
           });
       },
       // 拿到数据后执行唤醒微信分享更改函数
-      wakeWeiXin(objData) {
+      wakeWeiXin(objData) {console.log(objData);
         const _this = this;
+        let link = '';
+        if(!_this.userId && localStorage.getItem("userId")){
+          _this.atnUserId(localStorage.getItem("userId"));
+        }
+        if(objData.url.indexOf('&proUserId=')<0){
+          if(_this.userId){
+            link = objData.url + '&proUserId=' + _this.userId;
+          }else{
+            link = objData.url;
+          }
+        }else{
+          if(_this.userId){
+            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
+          }else{
+            link = objData.url.split('&proUserId=')[0];
+          }
+        }
+        console.log('link:'+link);
         wx.config({
           debug: true, 
           appId: objData.appId,
@@ -321,17 +330,7 @@ export default {
             "getLocation"
           ]
         });
-        wx.ready(function () {
-          wx.getLocation({  
-           type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'  
-           success: function (res) {  
-               let latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90  
-               let longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。  
-               let speed = res.speed; // 速度，以米/每秒计  
-               let accuracy = res.accuracy; // 位置精度  
-               alert(latitude,longitude,speed,accuracy);
-             }  
-          });  
+        wx.ready(function () {console.log(43);
           // 隐藏一些功能
           wx.hideMenuItems({
             menuList: [
@@ -348,28 +347,39 @@ export default {
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title:'新银众商优惠大放送，创造财富不是梦！',
-            link: 'http://www.xy268.com/m/#/index',
+            link: link,
             imgUrl: 'http://www.xy268.com/m/static/favicon.png',
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
             title: '新银众商优惠大放送，创造财富不是梦！',
             desc: '以消费者做代言人为己任，以品牌为生命之使命，以创新为发展之生产力，新银众商等你加入！',
-            link: 'http://www.xy268.com/m/#/index',
+            link: link,
             imgUrl: 'http://www.xy268.com/m/static/favicon.png',
             success: function () {
-              vue.showTip("分享成功");
+              _this.showTip("分享成功");
             },
             cancel: function () {
-              vue.showTip("取消分享");
+              _this.showTip("取消分享");
             }
           });
+         wx.getLocation({  
+           type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'  
+           success: function (res) {  
+              alert(res);
+               let latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90  
+               let longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。  
+               let speed = res.speed; // 速度，以米/每秒计  
+               let accuracy = res.accuracy; // 位置精度  
+               alert(latitude,longitude,speed,accuracy);
+             }  
+          }); 
           // 检查微信接口是否调用成功
           wx.checkJsApi({
             jsApiList: [
