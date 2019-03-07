@@ -24,7 +24,7 @@
         </tab>
       </div>
       
-      <swiper v-model="index" :min-moving-distance="50" class="mb10" :height="height" :show-dots="false">
+      <swiper v-model="index" :min-moving-distance="50" class="mb50" :height="height" :show-dots="false">
         <swiper-item v-for="(item, index) in list2" :key="index"> 
           <div class="tab-swiper vux-center" v-if="index==0">
               <div class="box2 newListData relative">
