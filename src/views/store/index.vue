@@ -767,9 +767,9 @@ export default {
           });
           // 分享到朋友圈
           wx.onMenuShareTimeline({
-            title: _this.goodsMainData.name,
-            link: link,
-            imgUrl: _this.photoUrl,
+            title: _this.storeData.merchantName,
+            link: window.location.href,
+            imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
               vue.showTip("分享成功");
             },
@@ -779,10 +779,10 @@ export default {
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
-            title: _this.goodsMainData.name,
-            desc: _this.goodsMainData.saleSpots,
-            link: link,
-            imgUrl: _this.photoUrl,
+            title: _this.storeData.merchantName,
+            desc: _this.storeData.merchantAddress,
+            link: window.location.href,
+            imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
               vue.showTip("分享成功");
             },

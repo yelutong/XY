@@ -367,9 +367,9 @@ export default {
           });
           // 分享到朋友圈
           wx.onMenuShareTimeline({
-            title: _this.goodsMainData.name,
-            link: link,
-            imgUrl: _this.photoUrl,
+            title:'新银众商优惠大放送，创造财富不是梦！',
+            link: 'http://www.xy268.com/m/#/index',
+            imgUrl: 'http://www.xy268.com/m/static/favicon.png',
             success: function () {
               vue.showTip("分享成功");
             },
@@ -379,10 +379,10 @@ export default {
           });
           // 分享到朋友
           wx.onMenuShareAppMessage({
-            title: _this.goodsMainData.name,
-            desc: _this.goodsMainData.saleSpots,
-            link: link,
-            imgUrl: _this.photoUrl,
+            title: '新银众商优惠大放送，创造财富不是梦！',
+            desc: '以消费者做代言人为己任，以品牌为生命之使命，以创新为发展之生产力，新银众商等你加入！',
+            link: 'http://www.xy268.com/m/#/index',
+            imgUrl: 'http://www.xy268.com/m/static/favicon.png',
             success: function () {
               vue.showTip("分享成功");
             },
