@@ -145,7 +145,7 @@ export default {
     document.title = '附近商家';
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(showPosition,showError);
-      function showPosition(position){alert(1);
+      function showPosition(position){
         lat=position.coords.latitude;
         lon=position.coords.longitude;
         alert('lat:'+lat);
@@ -156,7 +156,7 @@ export default {
         });
       }
 
-      function showError(error){alert(0);
+      function showError(error){
         switch(error.code)
           {
           case error.PERMISSION_DENIED://用户不允许地理定位
@@ -181,6 +181,7 @@ export default {
     this.getstoreClass();
     this.loadMore();
     this.getCurrentCityName();
+    this.getWeixinData();
   },
   methods: { 
     ...mapActions(["atnCity","atnLocation"]),
@@ -283,7 +284,124 @@ export default {
           resolve(result)
         })
       })
-    }
+    },
+    // 从后台拿到微信签名等数据
+    getWeixinData() {
+        this.$axios
+          .post(this.api.wxShareSign,
+           JSON.stringify({
+            'url': window.location.href
+           }),
+           {
+               headers: { "content-type": "application/json"}
+            })
+          .then(res => {
+            const resData = res.data;
+            if (resData.code !== 1 || !resData.content) {
+              this.showTip('获取微信分享参数失败');
+              return;
+            }
+            this.wakeWeiXin(resData.content);
+          })
+          .catch(res => {
+           // this.showTip('获取微信分享参数失败');
+          });
+      },
+      // 拿到数据后执行唤醒微信分享更改函数
+      wakeWeiXin(objData) {
+        const _this = this;
+        let link = '';
+        if(!_this.userId && localStorage.getItem("userId")){
+          _this.atnUserId(localStorage.getItem("userId"));
+        }
+        if(objData.url.indexOf('&proUserId=')<0){
+          if(_this.userId){
+            link = objData.url + '&proUserId=' + _this.userId;
+          }else{
+            link = objData.url;
+          }
+        }else{
+          if(_this.userId){
+            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
+          }else{
+            link = objData.url.split('&proUserId=')[0];
+          }
+        }
+        console.log('link:'+link);
+        wx.config({
+          debug: false, 
+          appId: objData.appId,
+          timestamp: objData.timestamp,
+          nonceStr: objData.nonceStr,
+          signature: objData.signature,
+          jsApiList: [
+            "hideMenuItems",
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage"
+          ]
+        });
+        wx.ready(function () {
+          wx.getLocation({  
+           type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'  
+           success: function (res) {  
+               let latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90  
+               let longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。  
+               let speed = res.speed; // 速度，以米/每秒计  
+               let accuracy = res.accuracy; // 位置精度  
+               alert(latitude,longitude,speed,accuracy);
+             }  
+          });  
+          // 隐藏一些功能
+          wx.hideMenuItems({
+            menuList: [
+              "menuItem:share:qq",
+              "menuItem:share:QZone",
+              "menuItem:share:weiboApp",
+              "menuItem:share:facebook",
+              "menuItem:originPage",
+              "menuItem:openWithQQBrowser",
+              "menuItem:openWithSafari",
+              "menuItem:share:email"
+            ]
+          });
+          // 分享到朋友圈
+          wx.onMenuShareTimeline({
+            title: _this.goodsMainData.name,
+            link: link,
+            imgUrl: _this.photoUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 分享到朋友
+          wx.onMenuShareAppMessage({
+            title: _this.goodsMainData.name,
+            desc: _this.goodsMainData.saleSpots,
+            link: link,
+            imgUrl: _this.photoUrl,
+            success: function () {
+              vue.showTip("分享成功");
+            },
+            cancel: function () {
+              vue.showTip("取消分享");
+            }
+          });
+          // 检查微信接口是否调用成功
+          wx.checkJsApi({
+            jsApiList: [
+              "hideMenuItems",
+              "onMenuShareTimeline",
+              "onMenuShareAppMessage"
+            ],
+            success: function (res) {
+              console.log("微信接口调用成功");
+            }
+          });
+        });
+      }
   }
 };
 </script>

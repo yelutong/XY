@@ -274,7 +274,7 @@ export default {
     window.addEventListener('scroll', this.handleScroll, true);
     let a = document.getElementsByClassName("mint-header")[0];
     let b = document.getElementsByClassName("storeTab")[0];
-    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-15+'px';
+    this.height = window.screen.height-a.offsetHeight-b.offsetHeight-45+'px';
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll, true);
