@@ -723,24 +723,6 @@ export default {
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
         const _this = this;
-        let link = '';
-        if(!_this.userId && localStorage.getItem("userId")){
-          _this.atnUserId(localStorage.getItem("userId"));
-        }
-        if(objData.url.indexOf('&proUserId=')<0){
-          if(_this.userId){
-            link = objData.url + '&proUserId=' + _this.userId;
-          }else{
-            link = objData.url;
-          }
-        }else{
-          if(_this.userId){
-            link = objData.url.split('&proUserId=')[0]+'&proUserId='+_this.userId;
-          }else{
-            link = objData.url.split('&proUserId=')[0];
-          }
-        }
-        console.log('link:'+link);
         wx.config({
           debug: false, 
           appId: objData.appId,

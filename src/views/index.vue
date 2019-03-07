@@ -12,7 +12,7 @@
     </swiper>
  
     <v-footer active="index" />
-    <v-wechatshare :friendShare="weChatShare" />
+    <!--<v-wechatshare :friendShare="weChatShare" />-->
   </div>
 </template>
 
