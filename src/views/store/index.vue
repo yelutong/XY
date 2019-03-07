@@ -275,8 +275,8 @@ export default {
     let a = document.getElementsByClassName("mint-header")[0];
     let b = document.getElementsByClassName("storeTab")[0];
     let c = document.getElementsByClassName("pay-act-btom")[0];
-    console.log(a.offsetHeight,b.offsetHeight,c.offsetHeight);
-    this.height = document.body.clientHeight-a.offsetHeight-b.offsetHeight-c.offsetHeight+'px';
+    console.log(document.documentElement.clientHeight,a.offsetHeight,b.offsetHeight,c.offsetHeight);
+    this.height = document.documentElement.clientHeight-a.offsetHeight-b.offsetHeight-c.offsetHeight+'px';
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll, true);
