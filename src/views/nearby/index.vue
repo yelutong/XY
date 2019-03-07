@@ -329,7 +329,7 @@ export default {
         }
         console.log('link:'+link);
         wx.config({
-          debug: false, 
+          debug: true, 
           appId: objData.appId,
           timestamp: objData.timestamp,
           nonceStr: objData.nonceStr,
