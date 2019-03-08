@@ -153,7 +153,7 @@ export default {
           wx.onMenuShareTimeline({
             title: _this.goodsMainData.goodsName,
             link: window.location.href,
-            imgUrl: picSwipe.arrData[0],
+            imgUrl: _this.picSwipe.arrData[0],
             success: function () {
               _this.showTip("分享成功");
             },
@@ -166,7 +166,7 @@ export default {
             title: _this.goodsMainData.goodsName,
             desc: _this.storeData.merchantAddress,
             link: window.location.href,
-            imgUrl: picSwipe.arrData[0],
+            imgUrl: _this.picSwipe.arrData[0],
             success: function () {
               _this.showTip("分享成功");
             },

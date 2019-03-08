@@ -105,6 +105,8 @@ const otoOrderDetail = () =>
   import ('@/views/store/orderDetail'); // oto买家订单   
 const evaStore = () =>
   import ('@/views/store/evaStore'); // 评价订单 
+const wxLogin = () =>
+  import ('@/views/nearby/wxLogin'); // 微信登录 
 
 // 附近 -------------------------------
 const nearby = () =>
@@ -150,6 +152,11 @@ const router = new Router({
     {
       path: '/map',
       component: map
+    },
+    // 微信登录
+    {
+      path: '/wxLogin',
+      component: wxLogin
     },
     // 店铺首页路由
     {
