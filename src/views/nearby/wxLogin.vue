@@ -12,7 +12,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { Toast } from "mint-ui";
+import { Toast, MessageBox} from "mint-ui";
 import vHeader from "@/components/v-header";
 const qs = require("qs");
 export default {
@@ -53,7 +53,7 @@ export default {
       let openId = this.openId||localStorage.getItem('openId');
       let token = this.token||localStorage.getItem('token');
       if(!openId && !token){//授权操作
-        let okRedirectUrl = 'http://www.xy268.com/m/#/index';
+        let okRedirectUrl = 'http://www.xy268.com/m/h5_login.html';
         let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
         window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
       }

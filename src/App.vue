@@ -93,7 +93,6 @@ export default {
               localStorage.setItem("bindInfo",JSON.stringify(resData.content));
               sessionStorage.removeItem('code');
               if(resData.content.token){
-               // alert('获得token数据');
                 this.atnToken(resData.content.token);
                 localStorage.setItem("token",resData.content.token);
               }

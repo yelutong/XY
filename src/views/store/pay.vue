@@ -19,7 +19,7 @@
             <p class="mt5 fs-12 txt-gray">亿万用户的选择，更快更安全</p>
           </span>
         </div>
-        <div  @click="select('wxpay')"><i :class="selectVal=='wxpay'?'ico i-cks checked mt10':'ico i-cks mt10'"></i></div>
+        <div  @click="select('wxpublicpay')"><i :class="selectVal=='wxpublicpay'?'ico i-cks checked mt10':'ico i-cks mt10'"></i></div>
       </div>
       <div class="mt20 full-screen justify-content-space-between">
         <div class="horizontal-view orderPay">
@@ -35,7 +35,7 @@
     </div>
     <div class="lay-action fix-btom pay-act-btom">
       
-        <button class="btn-submit nordu full-screen" v-if="selectVal=='wxpay'" @click="payOrder">{{ payName }} <i class="fs-14">￥{{ price }}</i></button>
+        <button class="btn-submit nordu full-screen" v-if="selectVal=='wxpublicpay'" @click="payOrder">{{ payName }} <i class="fs-14">￥{{ price }}</i></button>
         <button class="btn-submit nordu full-screen" v-else @click="confirmPwd">{{ payName }} <i class="fs-14">￥{{ price }}</i></button>
       
     </div>
@@ -69,7 +69,7 @@ export default {
       pwd:'',
       walletInfo:'',
       payName: '微信支付',
-      selectVal:'wxpay',
+      selectVal:'wxpublicpay',
       price: this.getUrlParam("payPrice") || "",
       orderNo: this.getUrlParam("orderNumbers") || ""
     };
@@ -117,8 +117,8 @@ export default {
       this.show5=true; 
     },
     select(obj){
-      if(obj=='wxpay'){
-        this.selectVal='wxpay';
+      if(obj=='wxpublicpay'){
+        this.selectVal='wxpublicpay';
         this.payName='微信支付';
       }else{
         this.selectVal='xypay';
@@ -221,7 +221,7 @@ export default {
             return;
           }
           // 返回数据成功后，拿到参数唤起微信支付
-          if(this.selectVal=='wxpay'){
+          if(this.selectVal=='wxpublicpay'){
             this.weiXinPay(resData.content);
           }else{
             this.showTip("支付成功");

@@ -1,6 +1,7 @@
 <template>
   <div :class="top==0?'nearby active storeIndex':'nearby storeIndex'" id="storePage" @scroll=handleScroll>
-    <vHeader :title="storeTitle"/>
+    <header class="mint-header is-fixed"><div class="mint-header-button is-left"><button class="mint-button mint-button--default mint-button--normal"><span class="mint-button-icon"><i class="mintui mintui-back"></i></span> <label class="mint-button-text"></label></button></div> <h1 class="mint-header-title" v-text="storeTitle"></h1> <div class="mint-header-button is-right shareImg" @click="share"></div></header>
+
     <div class="white mt40 blueBg w100 relative">
       <p class="storeImgBox"><img v-if="storeData.imgLogo" :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
     </div>
@@ -155,6 +156,10 @@
       </div>
     </div> 
    
+   <div :class="shareVal?'sharebg-active sharebg':'sharebg'" @click="close"></div>
+   <div :class="shareVal?'block share_wxbg':'share_wxbg'"><img :src="shareWx"></div>
+
+
   </div>
 </template>
         
@@ -167,12 +172,15 @@ import vNodata from "@/components/v-nodata";
 import vHeader from "@/components/v-header";
 import vImglist from "@/components/v-imglist";
 const qs = require("qs");
+const wx = require("weixin-js-sdk");
 const list = () => ['商品', '商铺', '评论'];
 export default {
   data() {
     return {
       id: this.getUrlParam("id"),
       urlPic:this.api.urlPic,
+      shareVal: false,
+      shareWx: require("../../assets/images/share_weixin.png"),
       imgLicense:[],
       imgStore:[],
       carts:[],
@@ -194,6 +202,7 @@ export default {
       totalPage: 1,
       currentPage: 0,
       listDataEva:[],
+      shareLink:"",
       loadMoreVal:true,
       pullupEnabled: true,
       status: {
@@ -217,7 +226,7 @@ export default {
     "v-nodata": vNodata
   },
   computed: {
-    ...mapState(["token", "autoAddress", "choseAddress"]),
+    ...mapState(["token", "autoAddress", "choseAddress", "userId"]),
   },
   
   beforeCreate(){
@@ -282,6 +291,12 @@ export default {
     window.removeEventListener('scroll', this.handleScroll, true);
   },
   methods: {
+   close(){
+    this.shareVal = false;
+   },
+   share(){
+    this.shareVal = true;
+   },
    goGoodsCart(){
      this.$router.push({//核心语句
         path:'/store/cart'
@@ -475,10 +490,10 @@ export default {
         });
     },
     onItemClick (index) {
-      console.log('on item click:', index);
+      
       this.classDataList = [];
       this.classDataList = this.listData2[index];
-      console.log(this.cartList);
+      
       for(let item of this.cartList){
           for(let i of this.classDataList){
              if(item.goodsId==i.id){
@@ -487,7 +502,6 @@ export default {
              }
           }
       }
-      console.log(this.classDataList);
    },
    getGoodsList () {
      this.$axios.post(this.api.otoStoreList,qs.parse({"storeId":this.id}),{headers: {"content-type": "application/json"}})
@@ -700,10 +714,12 @@ export default {
     },
     // 从后台拿到微信签名等数据
     getWeixinData() {
+      this.shareLink = window.location.href
+
         this.$axios
           .post(this.api.wxShareSign,
            JSON.stringify({
-            'url': window.location.href
+            'url': this.shareLink
            }),
            {
                headers: { "content-type": "application/json"}
@@ -714,6 +730,7 @@ export default {
               this.showTip('获取微信分享参数失败');
               return;
             }
+            
             this.wakeWeiXin(resData.content);
           })
           .catch(res => {
@@ -722,6 +739,9 @@ export default {
       },
       // 拿到数据后执行唤醒微信分享更改函数
       wakeWeiXin(objData) {
+        if(this.userId){
+          this.shareLink = this.shareLink + "&proUserId=" + this.userId
+        }
         const _this = this;
         wx.config({
           debug: false, 
@@ -752,7 +772,7 @@ export default {
           // 分享到朋友圈
           wx.onMenuShareTimeline({
             title: _this.storeData.merchantName,
-            link: window.location.href,
+            link: _this.shareLink,
             imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
               _this.showTip("分享成功");
@@ -765,7 +785,7 @@ export default {
           wx.onMenuShareAppMessage({
             title: _this.storeData.merchantName,
             desc: _this.storeData.merchantAddress,
-            link: window.location.href,
+            link: this.shareLink,
             imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
               _this.showTip("分享成功");

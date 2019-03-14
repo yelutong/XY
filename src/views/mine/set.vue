@@ -58,7 +58,7 @@ export default {
             console.log(0);
             let _this = this;
             setTimeout(() => {
-              _this.$router.push({path: "/mine/login"});
+              _this.$router.push({path: "/"});
             }, 1000);
           })
           .catch(res => {
@@ -66,7 +66,7 @@ export default {
             this.atnToken('');
             let _this = this;
             setTimeout(() => {
-              _this.$router.push({path: "/mine/login"});
+              _this.$router.push({path: "/"});
             }, 1000);
           });
     }

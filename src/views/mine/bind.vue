@@ -106,13 +106,17 @@ export default {
       });
      
       let ajaxData = localStorage.getItem('bindInfo');
+      if(!ajaxData || ajaxData == null){
+        let okRedirectUrl = 'http://www.xy268.com/m/h5_login.html';
+        let reUrl = encodeURIComponent(okRedirectUrl) + '&response_type=code&scope=snsapi_userinfo&state=xyh5#wechat_redirect';
+        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf7af59cdfbcb5388&redirect_uri=' + reUrl;
+      }
       ajaxData = JSON.parse(ajaxData);
       ajaxData.username = bindInfo.phone;
       ajaxData.smsCode = bindInfo.code;
       ajaxData.proUserId = localStorage.getItem('proUserId');
-      let code = '';
       this.$axios
-        .post(this.api.wxBind+code, JSON.stringify(ajaxData),{
+        .post(this.api.wxBind, JSON.stringify(ajaxData),{
           headers: {"content-type": "application/json"}
         })
         .then(res => {
@@ -122,7 +126,7 @@ export default {
              // 绑定成功后
             this.setUserIdBack(resData.content)
           }else{
-            this.showTip(resData.message);
+            this.showTip(resData.msg);
             return;
           }
          

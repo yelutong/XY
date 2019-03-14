@@ -103,8 +103,6 @@ const otoOrders = () =>
   import ('@/views/store/orders'); // oto买家订单   
 const otoOrderDetail = () =>
   import ('@/views/store/orderDetail'); // oto买家订单   
-const toBpay = () =>
-  import ('@/views/store/toBpay'); // oto向商家付款  
 const evaStore = () =>
   import ('@/views/store/evaStore'); // 评价订单 
 const wxLogin = () =>
@@ -174,11 +172,6 @@ const router = new Router({
     {
       path: '/store/cart',
       component: otoGoodsCart
-    },
-    // oto向商家付款
-    {
-      path: '/store/toBpay',
-      component: toBpay
     },
     // oto支付
     {

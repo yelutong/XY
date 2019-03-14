@@ -46,7 +46,7 @@
       Cell
     },
     computed: {
-      ...mapState(["token"])
+      ...mapState(["token" ,"location"]),
     },
     created() {
       // 来源id，有id就是编辑，没有就是新增
@@ -123,7 +123,9 @@
           areaId: Number(addressData.areaId),
           address: addressData.adres,
           areaInfo: addressData.city[0]+' '+addressData.city[1]+' '+addressData.city[2],
-          isChecked: Number(this.stringValue)
+          isChecked: Number(this.stringValue),
+          latitude: this.location.lat,
+          longitude: this.location.lng
         };
         // 如果有ID，则改为编辑地址
         if (addressId) {
