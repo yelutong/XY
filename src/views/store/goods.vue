@@ -27,7 +27,7 @@ import vCell from "@/components/v-cell";
 import vNodata from "@/components/v-nodata";
 import vImglist from "@/components/v-imglist";
 import vHeader from "@/components/v-header";
-//const wx = require("weixin-js-sdk");
+const wx = require("weixin-js-sdk");
 export default {
   data() {
     return {

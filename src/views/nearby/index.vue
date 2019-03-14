@@ -76,6 +76,7 @@ import vFooter from "@/components/v-footer";
 import comCitychoice from "@/components/comCitychoice";
 import search from "@/components/search";
 const qs = require("qs");
+const wx = require("weixin-js-sdk");
 export default {
   data() {
     return {
