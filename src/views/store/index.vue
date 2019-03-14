@@ -743,6 +743,7 @@ export default {
           this.shareLink = this.shareLink + "&proUserId=" + this.userId
         }
         const _this = this;
+        alert('分享地址:'+_this.shareLink);
         wx.config({
           debug: false, 
           appId: objData.appId,
@@ -785,7 +786,7 @@ export default {
           wx.onMenuShareAppMessage({
             title: _this.storeData.merchantName,
             desc: _this.storeData.merchantAddress,
-            link: this.shareLink,
+            link: _this.shareLink,
             imgUrl: _this.urlPic+_this.storeData.imgLogo,
             success: function () {
               _this.showTip("分享成功");
