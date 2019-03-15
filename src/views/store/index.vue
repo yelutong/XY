@@ -1,6 +1,6 @@
 <template>
   <div :class="top==0?'nearby active storeIndex':'nearby storeIndex'" id="storePage" @scroll=handleScroll>
-    <header class="mint-header is-fixed"><div class="mint-header-button is-left"><button class="mint-button mint-button--default mint-button--normal"><span class="mint-button-icon"><i class="mintui mintui-back"></i></span> <label class="mint-button-text"></label></button></div> <h1 class="mint-header-title" v-text="storeTitle"></h1> <div class="mint-header-button is-right shareImg" @click="share"></div></header>
+    <header class="mint-header is-fixed"><div class="mint-header-button is-left" @click="back"><button class="mint-button mint-button--default mint-button--normal"><span class="mint-button-icon"><i class="mintui mintui-back"></i></span> <label class="mint-button-text"></label></button></div> <h1 class="mint-header-title" v-text="storeTitle"></h1> <div class="mint-header-button is-right shareImg" @click="share"></div></header>
 
     <div class="white mt40 blueBg w100 relative">
       <p class="storeImgBox"><img v-if="storeData.imgLogo" :src="urlPic+storeData.imgLogo" class="storeImg" /></p>
@@ -291,6 +291,11 @@ export default {
     window.removeEventListener('scroll', this.handleScroll, true);
   },
   methods: {
+   back(){
+     this.$router.push({//后退
+        path:'/index'
+      })
+   },
    close(){
     this.shareVal = false;
    },
@@ -743,7 +748,7 @@ export default {
           this.shareLink = this.shareLink + "&proUserId=" + this.userId
         }
         const _this = this;
-        alert('分享地址:'+_this.shareLink);
+        // alert('分享地址:'+_this.shareLink);
         wx.config({
           debug: false, 
           appId: objData.appId,
