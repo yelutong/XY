@@ -151,6 +151,8 @@ export default {
              'lng': lon
         });
         this.listData=[];
+        this.totalPage=1;
+        this.currentPage=0;
         this.loadMore();
       }
       function showError(error){

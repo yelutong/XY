@@ -70,6 +70,9 @@ const ajaxUrl = {
   otoCancelOrder: urlHost + 'o2oorderform/cancel/user/',//{orderNumber}买家取消订单
   otoOrderEva: urlHost + 'o2oorderform/addComment',//评价订单
   confirmPwd: urlHost + 'user/checkPassword',//检查密码是否正确
+  getVideoList: urlHost + 'videoshortinfo/list',//获取视频列表
+  getSTS: urlHost + 'aliyunsts/getSTS',//获取STS
+  getvideoInfo: urlHost + 'videoshortinfo/',//根据视频主键查找视频queryById
 }
 // 返回模块
 export default ajaxUrl;

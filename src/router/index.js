@@ -117,7 +117,10 @@ const nearIndex = () =>
   import ('@/views/nearby/tabIndex'); // 附近店铺首页    
 const map = () =>
   import ('@/views/nearby/map'); // 附近店铺首页  
-
+const storeVideo = () =>
+  import ('@/views/nearby/storeVideo'); // 刷店   
+const videoDetail = () =>
+  import ('@/views/nearby/videoDetail'); // 视频详情
 // 路由加载 --------------------------------------
 const router = new Router({
   // mode: "history",
@@ -144,6 +147,16 @@ const router = new Router({
     {
       path: '/nearby',
       component: nearby
+    },
+    // 刷店
+    {
+      path: '/storeVideo',
+      component: storeVideo
+    },
+    // 视频详情
+    {
+      path: '/videoDetail',
+      component: videoDetail
     },
     // 附近商店 分类
     {

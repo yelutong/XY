@@ -53,7 +53,7 @@ axios.interceptors.response.use(function (response) {
    // console.log(response);
     if(response.data.code == 403){
       //Toast('登录超时，请重新登录');
-       window.location.hash= '/wxLogin?url='+window.location.href;
+       //window.location.hash= '/wxLogin?url='+window.location.href;
     }
 　　return response
 }, function (error) {

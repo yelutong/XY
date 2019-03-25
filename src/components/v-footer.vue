@@ -17,6 +17,7 @@ export default {
         //{ title: "首页", type: "index" },
         //{ title: "小V", type: "vGoods" },
         { title: "附近", type: "nearby" },
+        { title: "刷店", type: "storeVideo" },
         { title: "购物车", type: "goodsCart" },
         { title: "订单", type: "orders" },
         { title: "个人", type: "mine" }
@@ -102,7 +103,9 @@ export default {
     .i-goodsCart {
       background-image: url('../assets/images/cart.png');
     }
-
+    .i-storeVideo {
+      background-image: url('../assets/images/video.png');
+    }
     .i-mine {
       background-image: url('../assets/images/user.png');
     }
@@ -124,7 +127,9 @@ export default {
       .i-vGoods {
         background-image: url('../assets/images/v1.png');
       }
-      
+      .i-storeVideo {
+        background-image: url('../assets/images/video-act.png');
+      }
       .i-goodsCart {
         background-image: url('../assets/images/cart1.png');
       }
