@@ -228,7 +228,6 @@ export default {
   computed: {
     ...mapState(["token", "autoAddress", "choseAddress", "userId"]),
   },
-  
   beforeCreate(){
     document.title = '店铺详情';
   },

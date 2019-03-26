@@ -47,6 +47,16 @@ export default {
       }
       return distance;
     };
+    Vue.prototype.disFormat2 = function (val) {
+      let distance='';
+      if(val<1000){
+        distance = val+'m';
+      }else{
+        let vals = val/1000;
+        distance = vals.toFixed(2)+'km';
+      }
+      return distance;
+    };
     Vue.prototype.isAndroid = function () {
       const u = navigator.userAgent;
       return u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;

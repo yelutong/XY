@@ -73,6 +73,10 @@ const ajaxUrl = {
   getVideoList: urlHost + 'videoshortinfo/list',//获取视频列表
   getSTS: urlHost + 'aliyunsts/getSTS',//获取STS
   getvideoInfo: urlHost + 'videoshortinfo/',//根据视频主键查找视频queryById
+  cancelOrCoVideo: urlHost + 'videoshortcollect/cancelOrCollectVideo',//收藏或取消收藏视频
+  zanVideo: urlHost + 'videoshortinfo/clickGoods/',//{videoId}点赞视频
+  commitVideo: urlHost + 'videoshortcomment/addComment',//提交视频评论
+  commitVideoList: urlHost + 'videoshortcomment/commentList',//视频评论列表
 }
 // 返回模块
 export default ajaxUrl;
