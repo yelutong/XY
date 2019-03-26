@@ -6,7 +6,7 @@
         <h1 class="mint-header-title">
           <button-tab>
             <button-tab-item :selected="selected==1?true:false" @on-item-click="consoleIndex(1)">推荐</button-tab-item>
-            <button-tab-item :selected="selected==2?true:false" @on-item-click="consoleIndex(2)">分类</button-tab-item>
+            <button-tab-item :selected="selected==2?true:false" @on-item-click="consoleIndex(2)">列表</button-tab-item>
             <button-tab-item :selected="selected==3?true:false" @on-item-click="consoleIndex(3)">收藏</button-tab-item>
           </button-tab>
         </h1> 

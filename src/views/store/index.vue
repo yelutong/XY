@@ -66,7 +66,7 @@
 
           <div class="tab-swiper white vux-center pdb10" v-if="index==1">
             <div class="pd10">
-               <p class="fs-14 txt-black pdt10 h40">营业执照</p>
+               <p class="fs-14 txt-black pdt10 h40">门头照</p>
                <v-imglist :image-data="imgLicense" size="80" touch="preview" />
                <p class="fs-14 txt-black mgt10 h40">商家照片</p>
                <v-imglist :image-data="imgStore" size="80" touch="preview" />
