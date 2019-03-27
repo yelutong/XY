@@ -40,7 +40,7 @@
      <div>
      <flexbox :gutter="0" wrap="wrap" class="storeVideoData pda15 bg-white" v-if="listData">
       <flexbox-item v-for="(item, index) in listData" :key="index">
-        <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title}}">
+        <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.id,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
           <div class="relative"><img class="absolute topImg" :src="topImg"/><img ref="companyStyle" :height="clientHeight" class="img" :src="item.videoCover" /></div>
           <div class="flexg2 listRight">
             <p class="goodsName pdlr5 txt-black-real" v-text="item.title"></p> 
@@ -67,7 +67,7 @@
     <div v-if="selected==3">
       <flexbox :gutter="0" wrap="wrap" class="storeVideoData pda15 bg-white" v-if="listDataCom">
           <flexbox-item v-for="(item, index) in listDataCom" :key="index">
-            <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title}}">
+            <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.id,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
               <div class="relative"><img class="absolute topImg" :src="topImg"/><img ref="reviceStyle" :height="clientHeight" class="img" :src="item.videoCover" /></div>
               <div class="flexg2 listRight">
                 <p class="goodsName pdlr5 txt-black-real" v-text="item.title"></p> 
@@ -210,6 +210,10 @@ export default {
             this.showTip(resData.msg);
             return;
           }
+          this.listDataEva=[];
+          this.getEvaData();
+          this.textareaCom='';
+          this.commentCount++;
           this.showTip('评论成功');
         })
         .catch(res => {
@@ -222,12 +226,15 @@ export default {
     toastCom(item){
       this.show = true;
       this.gentel = item;
+      this.getEvaData();
+    },
+    getEvaData(){
       this.$axios
         .post(
           this.api.commitVideoList,
           JSON.stringify({
-           'storeId': item.storeId,
-           'videoId': item.id,
+           'storeId': this.gentel.storeId,
+           'videoId': this.gentel.id,
           }),
           {
             headers: {
@@ -264,8 +271,12 @@ export default {
             return;
           }
           if(item.clickStatus==true){
+            item.goodsCount--;
+            item.clickStatus=false;
             this.showTip('已取消');
           }else{
+            item.clickStatus=true;
+            item.goodsCount++;
             this.showTip('已点赞');
           }
         })
@@ -295,8 +306,10 @@ export default {
             return;
           }
           if(item.collectStatus==true){
-           this.showTip('取消收藏成功');
+           item.collectStatus=false;
+           this.showTip('取消收藏');
           }else{
+           item.collectStatus=true;
            this.showTip('收藏成功');
           }
         })
