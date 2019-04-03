@@ -67,7 +67,7 @@
           <div class="tab-swiper white vux-center pdb10" v-if="index==1">
             <div class="pd10">
                <p class="fs-14 txt-black pdt10 h40">门头照</p>
-               <v-imglist :image-data="imgLicense" size="80" touch="preview" />
+               <v-imglist :image-data="imgIndoor" size="80" touch="preview" />
                <p class="fs-14 txt-black mgt10 h40">商家照片</p>
                <v-imglist :image-data="imgStore" size="80" touch="preview" />
                <div class="salebuy norms mgt10">
@@ -181,7 +181,7 @@ export default {
       urlPic:this.api.urlPic,
       shareVal: false,
       shareWx: require("../../assets/images/share_weixin.png"),
-      imgLicense:[],
+      imgIndoor:[],
       imgStore:[],
       carts:[],
       top:0,
@@ -273,8 +273,11 @@ export default {
   created() {
     this.sellerstoreData();
     this.getGoodsList();
-    this.getGoodsCount();
-    this.getGoodsCartList();
+     //如果用户登录了获取，没有登录不获取
+     if(this.token){
+       this.getGoodsCount();
+       this.getGoodsCartList();
+     }
     this.loadMore();//获取店铺评论列表
     this.getWeixinData();
   },
@@ -625,14 +628,11 @@ export default {
         if(res.data.code === 1){
           let arrData = res.data.content;
           this.storeData = arrData;
-          if(arrData.imgLicense){
-            this.imgLicense.push(this.urlPic+arrData.imgLicense); 
-          }
           if(arrData.imgIndoor){
-            let imgIndoor = arrData.imgIndoor.split(',');
-            for (let item of imgIndoor) {
-              this.imgStore.push(this.urlPic+item); 
-            }
+            this.imgIndoor.push(this.urlPic+arrData.imgIndoor); 
+          }
+          if(arrData.imgLogo){
+            this.imgStore.push(this.urlPic+arrData.imgLogo); 
           }
         }
       })

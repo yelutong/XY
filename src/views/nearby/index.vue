@@ -142,10 +142,9 @@ export default {
    if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(showPosition,showError);
       function showPosition(position){
-        lat=position.coords.latitude;
-        lon=position.coords.longitude;
-        alert('lat:'+lat);
-        alert('lon:'+lon);
+        let lat=position.coords.latitude;
+        let lon=position.coords.longitude;
+        alert('lat:'+lat+',lon:'+lon);
         this.atnLocation({
              'lat': lat,
              'lng': lon

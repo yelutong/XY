@@ -1,5 +1,5 @@
 // 域名
-const urlHost = 'http://api.xy999888.cn/api/';//接口请求域名
+const urlHost = 'https://api.xy999888.com/api/';//接口请求域名
 const uploadPic = 'https://api.xy999888.com/api/'; //上传图片请求域名
 // 接口
 const ajaxUrl = {

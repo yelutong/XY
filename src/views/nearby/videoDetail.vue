@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper vdDetail storeVideo">
-    <vHeader :title="mapTitle"/>
+    <vHeader :title="mapTitle" to="/storeVideo"/>
     <div  class="prism-player" id="J_prismPlayer"></div>
     <div class="storeIconBtm vertical-view">
       <p><img :src="storeIcon" class="storeIcon left" /><span class="txt-white left lh-30 ml5 fs-14" v-text="mapTitle"></span></p>
@@ -9,7 +9,7 @@
     </div>
     <div class="vertical-view storeIconRt">
       <p @click="toStore(storeId)"><img :src="urlPic+imgLogo" class="storeImg mb10" /></p>
-      <p @click="recivce(videoId,collectStatus)"><img :src="storeIcon1" class="storeImg2" /></p>
+      <p @click="recivce(id,collectStatus)"><img :src="storeIcon1" class="storeImg2" /></p>
       <p class="txt-white lh-30 fs-14">收藏</p>
       <p @click="zanStore"><img :src="storeIcon2" class="storeImg2" /></p>
       <p class="txt-white lh-30 fs-14" v-text="goodsCount"></p>
@@ -113,7 +113,7 @@ export default {
     
   },
   beforeCreate(){
-    document.title = '购物车';
+    document.title = '刷店';
   },
   computed: {
     ...mapState(["token","location"]),
@@ -175,7 +175,7 @@ export default {
             }
           ],
             //播放方式四：使用STS方式播放
-            vid : this.id,
+            vid : this.videoId,
             accessKeyId: resData.content.accessKeyId,
             securityToken: resData.content.securityToken,
             accessKeySecret: resData.content.accessKeySecret,
@@ -196,7 +196,7 @@ export default {
           JSON.stringify({
            'context': this.textareaCom,
            'storeId': Number(this.storeId),
-           'videoId': Number(this.videoId),
+           'videoId': Number(this.id),
           }),
           {
             headers: {
@@ -234,7 +234,7 @@ export default {
           this.api.commitVideoList,
           JSON.stringify({
            'storeId': Number(this.storeId),
-           'videoId': Number(this.videoId),
+           'videoId': Number(this.id),
           }),
           {
             headers: {
@@ -258,7 +258,7 @@ export default {
     },
     zanStore(){
      this.$axios
-        .get(this.api.zanVideo+this.videoId,{
+        .get(this.api.zanVideo+this.id,{
           headers: {
             "content-type": "application/json",
             "Authorization": this.token

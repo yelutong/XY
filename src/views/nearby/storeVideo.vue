@@ -40,7 +40,7 @@
      <div>
      <flexbox :gutter="0" wrap="wrap" class="storeVideoData pda15 bg-white" v-if="listData">
       <flexbox-item v-for="(item, index) in listData" :key="index">
-        <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.id,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
+        <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.id,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.videoId,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
           <div class="relative"><img class="absolute topImg" :src="topImg"/><img ref="companyStyle" :height="clientHeight" class="img" :src="item.videoCover" /></div>
           <div class="flexg2 listRight">
             <p class="goodsName pdlr5 txt-black-real" v-text="item.title"></p> 
@@ -67,7 +67,7 @@
     <div v-if="selected==3">
       <flexbox :gutter="0" wrap="wrap" class="storeVideoData pda15 bg-white" v-if="listDataCom">
           <flexbox-item v-for="(item, index) in listDataCom" :key="index">
-            <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.videoId,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.id,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
+            <router-link class="relative vertical-view" :to="{path:'/videoDetail', query:{id:item.id,title:item.title,distance:item.distance,storeId:item.storeId,videoId:item.videoId,collectStatus:item.collectStatus?1:0,goodsCount:item.goodsCount,commentCount: item.commentCount,clickStatus:item.clickStatus?1:0,imgLogo:item.imgLogo }}">
               <div class="relative"><img class="absolute topImg" :src="topImg"/><img ref="reviceStyle" :height="clientHeight" class="img" :src="item.videoCover" /></div>
               <div class="flexg2 listRight">
                 <p class="goodsName pdlr5 txt-black-real" v-text="item.title"></p> 
@@ -179,7 +179,7 @@ export default {
     
   },
   beforeCreate(){
-    document.title = '购物车';
+    document.title = '刷店';
   },
   computed: {
     ...mapState(["token","location"]),
